@@ -1,0 +1,100 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.namsor.api.samples.gendre.MainActivity$PlaceholderFragment" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/hello_world" />
+
+    <Button
+        android:id="@+id/button_genderize"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView1"
+        android:layout_below="@+id/textView1"
+        android:text="@string/btn_genderize"
+        android:onClick="startService"
+        />
+
+    <TextView
+        android:id="@+id/textView_female"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/button_genderize"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="170dp"
+        android:text="0"
+        android:textSize="@dimen/abc_gender_counter_size" />
+
+    <TextView
+        android:id="@+id/textView_male"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textView_female"
+        android:layout_alignBottom="@+id/textView_female"
+        android:layout_alignRight="@+id/textView1"
+        android:text="0"
+        android:textSize="@dimen/abc_gender_counter_size" />
+
+    <TextView
+        android:id="@+id/textView_unknown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textView_male"
+        android:layout_alignBottom="@+id/textView_male"
+        android:layout_centerHorizontal="true"
+        android:text="0" />
+
+    <TextView
+        android:id="@+id/textView_venus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textView_female"
+        android:layout_toRightOf="@+id/textView_female"
+        android:text="♀"
+        android:textSize="@dimen/abc_gender_counter_size" />
+
+    <TextView
+        android:id="@+id/textView_mars"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textView_male"
+        android:layout_toLeftOf="@+id/textView_male"
+        android:text="♂"
+        android:textSize="@dimen/abc_gender_counter_size" />
+
+    <ImageButton
+        android:id="@+id/imageButton_tweet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView_female"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="17dp"
+        android:padding="0dp"
+        android:paddingBottom="0dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:paddingTop="0dp"
+        android:src="@drawable/ic_tweet"
+        android:visibility="invisible" 
+        android:onClick="tweetThis"
+        />
+
+    <TextView
+        android:id="@+id/textView_tweetthis"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/imageButton_tweet"
+        android:layout_alignLeft="@+id/imageButton_tweet"
+        android:text="@string/sharethis"
+        android:visibility="invisible" />
+
+</RelativeLayout>
