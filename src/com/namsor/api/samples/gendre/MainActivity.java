@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.os.Build;
 
 public class MainActivity extends ActionBarActivity {
+	
 	private boolean running = false;
 	private ResponseReceiver receiver;
 	private int[] genderStats;
@@ -107,7 +108,7 @@ public class MainActivity extends ActionBarActivity {
 		if( genderStats==null) {
 			return;
 		}
-		String tweetText = "My Android contacts: "+genderStats[0]+"♀ and "+genderStats[1]+"♂ (via #Gendre at @NamSor_com)";
+		String tweetText = "My Android contacts: "+genderStats[0]+GenderizeTask.PREFIX_GENDERF+" and "+genderStats[1]+GenderizeTask.PREFIX_GENDERF+"� (via #Gendre at @NamSor_com)";
 		String tweetURL = "http://namesorts.com/api";
 		String tweetUrl;
 		try {

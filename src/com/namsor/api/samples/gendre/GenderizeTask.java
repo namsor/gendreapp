@@ -44,8 +44,8 @@ public class GenderizeTask extends IntentService {
 	private static final String PREFIX_MR = "Mr.";
 	private static final String PREFIX_UNKNOWN = "M.";
 
-	private static final String PREFIX_GENDERF = "♀";
-	private static final String PREFIX_GENDERM = "♂";
+	public static final String PREFIX_GENDERF = "♀";
+	public static final String PREFIX_GENDERM = "♂";
 	private static final String PREFIX_GENDERU = "∅";
 
 	private static final String PREFIX_HEART = "♥";
@@ -264,7 +264,7 @@ public class GenderizeTask extends IntentService {
 			if (iCount % COMMIT_SIZE == 0) {
 				commitOps(ops);
 			}
-			// processing done here….
+			// processing done hereâ€¦.
 			Intent broadcastIntent = new Intent();
 			broadcastIntent
 					.setAction(MainActivity.ResponseReceiver.ACTION_RESP);
