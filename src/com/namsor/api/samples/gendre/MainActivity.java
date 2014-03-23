@@ -108,7 +108,7 @@ public class MainActivity extends ActionBarActivity {
 		if( genderStats==null) {
 			return;
 		}
-		String tweetText = "My Android contacts: "+genderStats[0]+GenderizeTask.PREFIX_GENDERF+" and "+genderStats[1]+GenderizeTask.PREFIX_GENDERF+"‚ (via #Gendre at @NamSor_com)";
+		String tweetText = "My Android contacts: "+genderStats[0]+GenderizeTask.PREFIX_GENDERF+" and "+genderStats[1]+GenderizeTask.PREFIX_GENDERM+"‚ (via #Gendre at @NamSor_com)";
 		String tweetURL = "http://namesorts.com/api";
 		String tweetUrl;
 		try {

@@ -319,6 +319,7 @@ public class GenderizeTask extends IntentService {
 							.setAction(MainActivity.ResponseReceiver.ACTION_RESP);
 					broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
 					broadcastIntent.putExtra(PARAM_OUT_MSG, genderizedCount);
+					broadcastIntent.putExtra(PARAM_OUT_STATUS, true);
 					sendBroadcast(broadcastIntent);
 					Thread.sleep(SECONDS);					
 				}
