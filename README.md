@@ -2,13 +2,13 @@
 
 Predict gender from contact name. Gendre enriches Android contact titles (Mr., Ms., M.) with the gender inferred from a contact name.
 
-![GenderApp](https://https://raw.githubusercontent.com/namsor/gendreapp/master/ic_launcher-web.png)
+![GenderApp](https://raw.githubusercontent.com/namsor/gendreapp/master/ic_launcher-web.png)
 
 Get Gendre_v004:
-[![Get it now](https://raw.githubusercontent.com/namsor/gendreapp/master/dist/Gendre_v004.apk)
+![Get Gendre v004 now](https://raw.githubusercontent.com/namsor/gendreapp/master/dist/Gendre_v004.apk)
 
 Or the latest version:
-[![Get it now](https://raw.githubusercontent.com/namsor/gendreapp/master/bin/Gendre.apk)
+![Get Gendre now](https://raw.githubusercontent.com/namsor/gendreapp/master/bin/Gendre.apk)
 
 We recommend backing up your contacts before running the program.
 
