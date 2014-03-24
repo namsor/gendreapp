@@ -29,7 +29,7 @@ public class MainActivity extends ActionBarActivity {
 	private boolean running = false;
 	private ResponseReceiver receiver;
 	private int[] genderStats;
-	private static final String TWEET_URL = "https://raw.githubusercontent.com/namsor/gendreapp/master/bin/Gendre.apk";
+	private static final String TWEET_URL = "http://namesorts.com/api";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
