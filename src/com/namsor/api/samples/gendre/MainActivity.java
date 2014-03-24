@@ -29,7 +29,8 @@ public class MainActivity extends ActionBarActivity {
 	private boolean running = false;
 	private ResponseReceiver receiver;
 	private int[] genderStats;
-
+	private static final String TWEET_URL = "https://raw.githubusercontent.com/namsor/gendreapp/master/bin/Gendre.apk";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -108,8 +109,8 @@ public class MainActivity extends ActionBarActivity {
 		if( genderStats==null) {
 			return;
 		}
-		String tweetText = "My Android contacts: "+genderStats[0]+GenderizeTask.PREFIX_GENDERF+" and "+genderStats[1]+GenderizeTask.PREFIX_GENDERM+"‚ (via #Gendre at @NamSor_com)";
-		String tweetURL = "http://namesorts.com/api";
+		String tweetText = "My Android contacts: "+genderStats[0]+GenderizeTask.PREFIX_GENDERF+" and "+genderStats[1]+GenderizeTask.PREFIX_GENDERM+"‚ via @NamSor_com #Gender App ";
+		String tweetURL = TWEET_URL;
 		String tweetUrl;
 		try {
 			tweetUrl = String.format(
