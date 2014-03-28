@@ -988,8 +988,9 @@ containing a value of this type.
         public static final int abc_textfield_searchview_holo_light=0x7f020054;
         public static final int abc_textfield_searchview_right_holo_dark=0x7f020055;
         public static final int abc_textfield_searchview_right_holo_light=0x7f020056;
-        public static final int ic_launcher=0x7f020057;
-        public static final int ic_tweet=0x7f020058;
+        public static final int ic_funpic=0x7f020057;
+        public static final int ic_launcher=0x7f020058;
+        public static final int ic_tweet=0x7f020059;
     }
     public static final class id {
         public static final int action_bar=0x7f06001c;
@@ -1003,7 +1004,7 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f060016;
         public static final int action_menu_presenter=0x7f060017;
         public static final int action_mode_close_button=0x7f060024;
-        public static final int action_settings=0x7f060046;
+        public static final int action_settings=0x7f060047;
         public static final int activity_chooser_view_content=0x7f060025;
         public static final int always=0x7f06000b;
         public static final int beginning=0x7f060011;
@@ -1024,7 +1025,7 @@ containing a value of this type.
         public static final int icon=0x7f06002a;
         public static final int ifRoom=0x7f06000a;
         public static final int image=0x7f060027;
-        public static final int imageButton_tweet=0x7f060044;
+        public static final int imageButton_tweet=0x7f060045;
         public static final int listMode=0x7f060001;
         public static final int list_item=0x7f060029;
         public static final int middle=0x7f060012;
@@ -1052,10 +1053,11 @@ containing a value of this type.
         public static final int submit_area=0x7f060039;
         public static final int tabMode=0x7f060002;
         public static final int textView1=0x7f06003d;
-        public static final int textView_female=0x7f06003f;
-        public static final int textView_male=0x7f060040;
+        public static final int textView2=0x7f060046;
+        public static final int textView_female=0x7f060040;
+        public static final int textView_male=0x7f06003f;
         public static final int textView_mars=0x7f060043;
-        public static final int textView_tweetthis=0x7f060045;
+        public static final int textView_tweetthis=0x7f060044;
         public static final int textView_unknown=0x7f060041;
         public static final int textView_venus=0x7f060042;
         public static final int title=0x7f06002b;
@@ -1166,19 +1168,20 @@ containing a value of this type.
         public static final int btn_genderize=0x7f0b0010;
         public static final int btn_genderize_running=0x7f0b0011;
         public static final int hello_world=0x7f0b000e;
-        public static final int pref_description_social_recommendations=0x7f0b0016;
+        public static final int pref_description_social_recommendations=0x7f0b0017;
         /**  Example settings for Data & Sync 
          */
-        public static final int pref_header_data_sync=0x7f0b0018;
+        public static final int pref_header_data_sync=0x7f0b0019;
         /**  Strings related to Settings 
  Example General settings 
          */
-        public static final int pref_header_general=0x7f0b0014;
-        public static final int pref_title_add_friends_to_messages=0x7f0b0017;
-        public static final int pref_title_social_recommendations=0x7f0b0015;
-        public static final int pref_title_sync_frequency=0x7f0b0019;
+        public static final int pref_header_general=0x7f0b0015;
+        public static final int pref_title_add_friends_to_messages=0x7f0b0018;
+        public static final int pref_title_social_recommendations=0x7f0b0016;
+        public static final int pref_title_sync_frequency=0x7f0b001a;
         public static final int sharethis=0x7f0b0012;
-        public static final int title_activity_gendre_settings=0x7f0b0013;
+        public static final int title_activity_gendre_settings=0x7f0b0014;
+        public static final int txt_quote=0x7f0b0013;
     }
     public static final class style {
         /** 
