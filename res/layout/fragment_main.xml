@@ -103,6 +103,6 @@
         android:layout_below="@+id/button_genderize"
         android:layout_marginTop="22dp"
         android:text="@string/txt_quote"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+	/>
 
 </RelativeLayout>

@@ -406,6 +406,8 @@ public class GenderizeTask extends IntentService {
 		wipe = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
 				"example_checkbox", false);
 
+		mHandler.post(new DisplayToast(this, "Starting genderizing"));
+		
 		if (BuildConfig.DEBUG) {
 			Log.d(TAG, "Getting all contacts");
 		}
@@ -451,6 +453,9 @@ public class GenderizeTask extends IntentService {
 	}
 
 	private void commitOps(ArrayList<ContentProviderOperation> ops) {
+		if( ops == null || ops.size() == 0 ) {
+			return;
+		}
 		try {
 			if (BuildConfig.DEBUG) {
 				Log.d(TAG, "Updating " + ops.size() + " contacts");
