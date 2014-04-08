@@ -1,0 +1,10 @@
+-P1 Open prefs on first Run
+-P1 Service Binding
+-P1 Groups
+
+-P2 Localization
+-P2 Other Icon Choices
+-P2 Error Diagnoses (ex. Con error, reversed fn/ln, unsupported language,...)
+
+-P3 Ringtone
+

@@ -24,13 +24,14 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.os.Build;
+import android.preference.PreferenceManager;
 
 public class MainActivity extends ActionBarActivity {
 	
 	private boolean running = false;
 	private ResponseReceiver receiver;
 	private int[] genderStats;
-	private static final String TWEET_URL = "http://namesorts.com/api";
+	private static final String TWEET_URL = "http://namesorts.com/api/gendre";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +42,18 @@ public class MainActivity extends ActionBarActivity {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
-
-		IntentFilter filter = new IntentFilter(ResponseReceiver.ACTION_RESP);
+		
+		// launch preferences on first occurrence ?
+		/*
+		long batchRequestId = PreferenceManager.getDefaultSharedPreferences(this)
+				.getLong("batchRequestId", -1);
+		if (batchRequestId == -1) {
+			Intent settingsIntent = new Intent(this,
+					GendreSettingsActivity.class);
+			startActivity(settingsIntent);
+		}*/
+		
+		IntentFilter filter = new IntentFilter(ResponseReceiver.ACTION_STATUS);
 		filter.addCategory(Intent.CATEGORY_DEFAULT);
 		receiver = new ResponseReceiver(this);
 		registerReceiver(receiver, filter);
@@ -111,7 +122,7 @@ public class MainActivity extends ActionBarActivity {
 		if( genderStats==null) {
 			return;
 		}
-		String tweetText = "My Android contacts: "+genderStats[0]+GenderizeTask.PREFIX_GENDERF+" and "+genderStats[1]+GenderizeTask.PREFIX_GENDERM+"‚ via @NamSor_com #Gender App ";
+		String tweetText = "My Android contacts: "+genderStats[0]+GenderizeTask.PREFIX_GENDERF+" and "+genderStats[1]+GenderizeTask.PREFIX_GENDERM+" via @gendreapp ";
 		String tweetURL = TWEET_URL;
 		String tweetUrl;
 		try {
@@ -138,7 +149,14 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	public class ResponseReceiver extends BroadcastReceiver {
-		public static final String ACTION_RESP = "com.namsor.api.samples.gendre.intent.action.MESSAGE_PROCESSED";
+		public static final String ACTION_STATUS = "com.namsor.api.samples.gendre.intent.action.SERVICE_STATUS";
+		public static final String ATTR_genderCount = "genderCount";
+		public static final String ATTR_statusType = "statusType";
+		public static final String ATTRVAL_statusType_GENDERIZING = "genderizing";
+		public static final String ATTRVAL_statusType_GENDERIZED = "genderized";
+		public static final String ATTRVAL_statusType_WIPING = "wiping";
+		public static final String ATTRVAL_statusType_WIPED = "wiped";
+		
 		private MainActivity activity;
 		public ResponseReceiver(MainActivity activity) {
 			this.activity = activity;
@@ -146,32 +164,43 @@ public class MainActivity extends ActionBarActivity {
 		
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Button btn = (Button) findViewById(R.id.button_genderize);
-			btn.setText(R.string.btn_genderize_running);
-			btn.setEnabled(false);
-			running = true;
+			String statusType = intent.getStringExtra(ATTR_statusType);			
+			if (statusType.equals(ATTRVAL_statusType_GENDERIZED) || statusType.equals(ATTRVAL_statusType_GENDERIZING) || statusType.equals(ATTRVAL_statusType_WIPING)) {
 
-			int[] data = intent.getIntArrayExtra(GenderizeTask.PARAM_OUT_MSG);
-			genderStats=data;
-			
-			btn.setText(R.string.btn_genderize_running);
-			if (data != null && data.length == 3) {
-				TextView tvf = (TextView) findViewById(R.id.textView_female);
-				TextView tvm = (TextView) findViewById(R.id.textView_male);
-				TextView tvu = (TextView) findViewById(R.id.textView_unknown);
-				tvf.setText("" + data[0]);
-				tvm.setText("" + data[1]);
-				tvu.setText("" + data[2]);
-				Boolean statusClean = intent.getBooleanExtra(
-						GenderizeTask.PARAM_OUT_STATUS, false);
-				ImageButton btnTweet = (ImageButton) findViewById(R.id.imageButton_tweet);
-				TextView tweetThis = (TextView) findViewById(R.id.textView_tweetthis);
-				if (statusClean) {
-					btnTweet.setVisibility(Button.VISIBLE);
-					btnTweet.setEnabled(true);
-					tweetThis.setVisibility(TextView.VISIBLE);
-					tweetThis.setEnabled(true);
-				} 
+				Button btn = (Button) findViewById(R.id.button_genderize);
+				btn.setText(R.string.btn_genderize_running);
+				btn.setEnabled(false);
+				running = true;
+				
+				int[] data = intent.getIntArrayExtra(ATTR_genderCount);
+				genderStats=data;				
+				
+				btn.setText(R.string.btn_genderize_running);
+				
+				if (data != null && data.length == 3) {
+					TextView tvf = (TextView) findViewById(R.id.textView_female);
+					TextView tvm = (TextView) findViewById(R.id.textView_male);
+					TextView tvu = (TextView) findViewById(R.id.textView_unknown);
+					tvf.setText("" + data[0]);
+					tvm.setText("" + data[1]);
+					tvu.setText("" + data[2]);
+
+					if (statusType.equals(ATTRVAL_statusType_GENDERIZED)) {
+						ImageButton btnTweet = (ImageButton) findViewById(R.id.imageButton_tweet);
+						TextView tweetThis = (TextView) findViewById(R.id.textView_tweetthis);					
+						btnTweet.setVisibility(Button.VISIBLE);
+						btnTweet.setEnabled(true);
+						tweetThis.setVisibility(TextView.VISIBLE);
+						tweetThis.setEnabled(true);
+					}
+				}
+				
+			} else if (statusType.equals(ATTRVAL_statusType_WIPED)) {
+				Button btn = (Button) findViewById(R.id.button_genderize);
+				btn.setText(R.string.btn_genderize_wiped);
+				btn.setEnabled(false);
+				int[] data = { 0, 0, 0 };
+				genderStats=data;			
 			}
 		}
 	};

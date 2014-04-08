@@ -1166,21 +1166,22 @@ containing a value of this type.
         public static final int app_name=0x7f0b000d;
         public static final int btn_genderize=0x7f0b0010;
         public static final int btn_genderize_running=0x7f0b0011;
+        public static final int btn_genderize_wiped=0x7f0b0012;
         public static final int hello_world=0x7f0b000e;
-        public static final int pref_description_social_recommendations=0x7f0b0017;
+        public static final int pref_description_social_recommendations=0x7f0b0018;
         /**  Example settings for Data & Sync 
          */
-        public static final int pref_header_data_sync=0x7f0b0019;
+        public static final int pref_header_data_sync=0x7f0b001a;
         /**  Strings related to Settings 
  Example General settings 
          */
-        public static final int pref_header_general=0x7f0b0015;
-        public static final int pref_title_add_friends_to_messages=0x7f0b0018;
-        public static final int pref_title_social_recommendations=0x7f0b0016;
-        public static final int pref_title_sync_frequency=0x7f0b001a;
-        public static final int sharethis=0x7f0b0012;
-        public static final int title_activity_gendre_settings=0x7f0b0014;
-        public static final int txt_quote=0x7f0b0013;
+        public static final int pref_header_general=0x7f0b0016;
+        public static final int pref_title_add_friends_to_messages=0x7f0b0019;
+        public static final int pref_title_social_recommendations=0x7f0b0017;
+        public static final int pref_title_sync_frequency=0x7f0b001b;
+        public static final int sharethis=0x7f0b0013;
+        public static final int title_activity_gendre_settings=0x7f0b0015;
+        public static final int txt_quote=0x7f0b0014;
     }
     public static final class style {
         /** 

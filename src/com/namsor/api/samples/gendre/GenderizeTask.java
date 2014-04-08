@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -32,19 +33,21 @@ import android.widget.Toast;
 
 public class GenderizeTask extends IntentService {
 	Handler mHandler = new Handler();
+
 	public class DisplayToast implements Runnable {
-	    private final Context mContext;
-	    String mText;
+		private final Context mContext;
+		String mText;
 
-	    public DisplayToast(Context mContext, String text){
-	        this.mContext = mContext;
-	        mText = text;
-	    }
+		public DisplayToast(Context mContext, String text) {
+			this.mContext = mContext;
+			mText = text;
+		}
 
-	    public void run(){
-	        Toast.makeText(mContext, mText, Toast.LENGTH_LONG).show();
-	    }
+		public void run() {
+			Toast.makeText(mContext, mText, Toast.LENGTH_LONG).show();
+		}
 	}
+
 	// private static final Random RND = new Random();
 	private final String xLocale;
 	private static final long SECONDS = 1000;
@@ -52,11 +55,12 @@ public class GenderizeTask extends IntentService {
 	// sleeper : in seconds
 	private long sleeper = SLEEPER_DEFAULT;
 	// sleeper in case network / API is down (in ms)
-	private static final long SLEEPER_IN_API_ERROR = 60*SECONDS;
+	private static final long SLEEPER_IN_API_ERROR = 60 * SECONDS;
 
 	private static final double GENDER_THRESHOLD = .1;
 
 	private static final int GENDERSTYLE_DEFAULT = 2;
+	private static final int GENDERSTYLE_NONE = 3;
 	private int genderStyle = GENDERSTYLE_DEFAULT;
 
 	private static final String PREFIX_MS = "Ms.";
@@ -75,10 +79,10 @@ public class GenderizeTask extends IntentService {
 
 	private static final boolean WIPE_DEFAULT = false;
 	private boolean wipe = WIPE_DEFAULT;
-	
-	// max number of moving error count 
+
+	// max number of moving error count
 	private static final int ERROR_COUNT_MOVING_MAX = 10;
-	
+
 	private static final String[][] GENDER_STYLES = {
 			{ PREFIX_MS, PREFIX_MR, PREFIX_UNKNOWN },
 			{ PREFIX_GENDERF, PREFIX_GENDERM, PREFIX_GENDERU },
@@ -88,7 +92,6 @@ public class GenderizeTask extends IntentService {
 	private static final String ATTR_XBatchRequest = "X-BatchRequest-Id";
 	private static final String ATTR_XLocale = "X-Locale";
 	private long batchRequestId = -1;
-	
 
 	private static final Map<String, Double> CACHE = Collections
 			.synchronizedMap(new HashMap());
@@ -111,8 +114,6 @@ public class GenderizeTask extends IntentService {
 	// Defines a tag for identifying log entries
 	private static final String TAG = "GenderizeTask";
 	private static final int COMMIT_SIZE = 50;
-	public static final String PARAM_OUT_MSG = "genderCount";
-	public static final String PARAM_OUT_STATUS = "genderCountStatus";
 
 	/**
 	 * Predict Gender from a Personal name
@@ -160,13 +161,15 @@ public class GenderizeTask extends IntentService {
 			Log.e(TAG, "Failed to get gender for firstName " + firstName
 					+ " lastName " + lastName + " ex=" + e.getMessage());
 			// display error msg
-			mHandler.post(new DisplayToast(this, "API Error "+e.getMessage()));
+			mHandler.post(new DisplayToast(this, "API Error " + e.getMessage()));
 			// empty or null? should we retry?
 			return null;
 		}
 	}
 
 	private void wipe() {
+		genderizedCount = new int[3];
+		mHandler.post(new DisplayToast(this, "Wiping ..."));
 		ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
 		Cursor c = getContentResolver()
 				.query(ContactsContract.Data.CONTENT_URI,
@@ -187,6 +190,7 @@ public class GenderizeTask extends IntentService {
 			Log.d(TAG, "Wiping " + cCount + " contacts");
 		}
 		int iCount = 0;
+		List<Object[]> wipeTodo = new ArrayList();
 		while (c.moveToNext()) {
 			int i = 0;
 			String rawContactId = c.getString(i++);
@@ -194,56 +198,82 @@ public class GenderizeTask extends IntentService {
 			String dataId = c.getString(i++);
 			String mimeType = c.getString(i++);
 			String prefix = c.getString(i++);
-			boolean prefixMatch = false;
-			for (int j = 0; j < GENDER_STYLES.length & !prefixMatch; j++) {
-				for (int j2 = 0; j2 < GENDER_STYLES[j].length & !prefixMatch; j2++) {
+			for (int j = 0; j < GENDER_STYLES.length; j++) {
+				for (int j2 = 0; j2 < GENDER_STYLES[j].length; j2++) {
 					if (prefix != null && !prefix.isEmpty()
 							&& prefix.equals(GENDER_STYLES[j][j2])) {
-						prefixMatch = true;
+
+						genderizedCount[j2]++;
+						Intent broadcastIntent = new Intent();
+						broadcastIntent
+								.setAction(MainActivity.ResponseReceiver.ACTION_STATUS);
+						broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
+						broadcastIntent.putExtra(
+								MainActivity.ResponseReceiver.ATTR_genderCount,
+								genderizedCount);
+						broadcastIntent
+								.putExtra(
+										MainActivity.ResponseReceiver.ATTR_statusType,
+										MainActivity.ResponseReceiver.ATTRVAL_statusType_WIPING);
+						sendBroadcast(broadcastIntent);
+
+						Object[] toWipe = { rawContactId, j2 };
+						wipeTodo.add(toWipe);
 						break;
 					}
 				}
 			}
-			if (prefixMatch) {
-				ops.add(ContentProviderOperation
-						.newUpdate(ContactsContract.Data.CONTENT_URI)
-						.withSelection(
-								ContactsContract.Data.RAW_CONTACT_ID
-										+ "=? AND "
-										+ ContactsContract.Data.MIMETYPE + "=?",
-								new String[] {
-										rawContactId,
-										ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE })
-						.withValue(
-								ContactsContract.CommonDataKinds.StructuredName.PREFIX,
-								"").build());
-			}
-			iCount++;
 		}
 		c.close();
+		for (Object[] toWipe : wipeTodo) {
+			ops.add(ContentProviderOperation
+					.newUpdate(ContactsContract.Data.CONTENT_URI)
+					.withSelection(
+							ContactsContract.Data.RAW_CONTACT_ID + "=? AND "
+									+ ContactsContract.Data.MIMETYPE + "=?",
+							new String[] {
+									(String) toWipe[0],
+									ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE })
+					.withValue(
+							ContactsContract.CommonDataKinds.StructuredName.PREFIX,
+							"").build());
+			genderizedCount[(Integer) toWipe[1]]--;
+			Intent broadcastIntent = new Intent();
+			broadcastIntent
+					.setAction(MainActivity.ResponseReceiver.ACTION_STATUS);
+			broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
+			broadcastIntent.putExtra(
+					MainActivity.ResponseReceiver.ATTR_genderCount,
+					genderizedCount);
+			broadcastIntent.putExtra(
+					MainActivity.ResponseReceiver.ATTR_statusType,
+					MainActivity.ResponseReceiver.ATTRVAL_statusType_WIPING);
+			sendBroadcast(broadcastIntent);
+
+			iCount++;
+			if (iCount % COMMIT_SIZE == 0) {
+				commitOps(ops);
+			}
+		}
 		commitOps(ops);
 
 		genderizedCount = null;
 		Intent broadcastIntent = new Intent();
-		broadcastIntent.setAction(MainActivity.ResponseReceiver.ACTION_RESP);
+		broadcastIntent.setAction(MainActivity.ResponseReceiver.ACTION_STATUS);
 		broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
-		broadcastIntent.putExtra(PARAM_OUT_MSG, new int[3]);
-		broadcastIntent.putExtra(PARAM_OUT_STATUS, true);
+		broadcastIntent
+				.putExtra(MainActivity.ResponseReceiver.ATTR_genderCount,
+						genderizedCount);
+		broadcastIntent.putExtra(MainActivity.ResponseReceiver.ATTR_statusType,
+				MainActivity.ResponseReceiver.ATTRVAL_statusType_WIPED);
 		sendBroadcast(broadcastIntent);
+		mHandler.post(new DisplayToast(this, "Wiped " + wipeTodo.size()
+				+ " titles."));
 	}
 
 	private boolean genderizeContacts() {
 		if (wipe) {
 			throw new IllegalStateException("wipe & genderize at the same time");
-		}
-		if (genderizedCount == null) {
-			Intent broadcastIntent = new Intent();
-			broadcastIntent
-					.setAction(MainActivity.ResponseReceiver.ACTION_RESP);
-			broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
-			int[] arr = { 0, 0, 1 };
-			broadcastIntent.putExtra(PARAM_OUT_MSG, arr);
-			sendBroadcast(broadcastIntent);
 		}
 		ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
 		Cursor c = getContentResolver()
@@ -282,7 +312,7 @@ public class GenderizeTask extends IntentService {
 			String givenName = c.getString(i++);
 			String familyName = c.getString(i++);
 
-			if (prefix != null && !prefix.isEmpty() ) {
+			if (prefix != null && !prefix.isEmpty()) {
 				// never override an existing prefix / phonetic name
 				if (prefix.equals(GENDER_STYLES[genderStyle][0])) {
 					genderizedCount[0]++;
@@ -293,14 +323,20 @@ public class GenderizeTask extends IntentService {
 				}
 				Intent broadcastIntent = new Intent();
 				broadcastIntent
-						.setAction(MainActivity.ResponseReceiver.ACTION_RESP);
+						.setAction(MainActivity.ResponseReceiver.ACTION_STATUS);
 				broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
-				broadcastIntent.putExtra(PARAM_OUT_MSG, genderizedCount);
+				broadcastIntent.putExtra(
+						MainActivity.ResponseReceiver.ATTR_genderCount,
+						genderizedCount);
+				broadcastIntent
+						.putExtra(
+								MainActivity.ResponseReceiver.ATTR_statusType,
+								MainActivity.ResponseReceiver.ATTRVAL_statusType_GENDERIZING);
 				sendBroadcast(broadcastIntent);
 				continue;
-			} else if (givenName != null && !givenName.isEmpty() && givenName.length() > 1 &&
-					   familyName != null && !familyName.isEmpty() && familyName.length() > 1
-						) {
+			} else if (givenName != null && !givenName.isEmpty()
+					&& givenName.length() > 1 && familyName != null
+					&& !familyName.isEmpty() && familyName.length() > 1) {
 				String[] todo = new String[3];
 				todo[0] = rawContactId;
 				todo[1] = givenName;
@@ -308,9 +344,9 @@ public class GenderizeTask extends IntentService {
 				genderizeTodo.add(todo);
 			}
 		}
-		c.close();		
+		c.close();
 		if (BuildConfig.DEBUG && cCount > 0) {
-			Log.d(TAG, "Got " + genderizeTodo.size()+ " contacts to genderize");
+			Log.d(TAG, "Got " + genderizeTodo.size() + " contacts to genderize");
 		}
 		int iCount = 0;
 		int errCount = 0;
@@ -323,9 +359,9 @@ public class GenderizeTask extends IntentService {
 			firstName = firstName.replace('/', ' ');
 			lastName = lastName.replace('/', ' ');
 			Double gender = genderize(firstName, lastName);
-			if(gender != null) {
+			if (gender != null) {
 				iCount++;
-				if( errCountMoving>0) {
+				if (errCountMoving > 0) {
 					errCountMoving--;
 				}
 				String genderizedPrefix = GENDER_STYLES[genderStyle][2];
@@ -343,7 +379,8 @@ public class GenderizeTask extends IntentService {
 				ops.add(ContentProviderOperation
 						.newUpdate(ContactsContract.Data.CONTENT_URI)
 						.withSelection(
-								ContactsContract.Data.RAW_CONTACT_ID + "=? AND "
+								ContactsContract.Data.RAW_CONTACT_ID
+										+ "=? AND "
 										+ ContactsContract.Data.MIMETYPE + "=?",
 								new String[] {
 										rawContactId,
@@ -355,25 +392,33 @@ public class GenderizeTask extends IntentService {
 				// processing done here
 				Intent broadcastIntent = new Intent();
 				broadcastIntent
-						.setAction(MainActivity.ResponseReceiver.ACTION_RESP);
+						.setAction(MainActivity.ResponseReceiver.ACTION_STATUS);
 				broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
-				broadcastIntent.putExtra(PARAM_OUT_MSG, genderizedCount);
+				broadcastIntent.putExtra(
+						MainActivity.ResponseReceiver.ATTR_genderCount,
+						genderizedCount);
+				broadcastIntent
+						.putExtra(
+								MainActivity.ResponseReceiver.ATTR_statusType,
+								MainActivity.ResponseReceiver.ATTRVAL_statusType_GENDERIZING);
 				sendBroadcast(broadcastIntent);
-				if( iCount % COMMIT_SIZE == 0) {
+				if (iCount % COMMIT_SIZE == 0) {
 					commitOps(ops);
 				}
 			} else {
 				errCount++;
 				errCountMoving++;
-				if( errCountMoving > ERROR_COUNT_MOVING_MAX ) {
+				if (errCountMoving > ERROR_COUNT_MOVING_MAX) {
 					// no point continuing
-					mHandler.post(new DisplayToast(this, "Too many API Errors ("+errCount+"/"+(iCount+errCount)+") check network"));
+					mHandler.post(new DisplayToast(this,
+							"Too many API Errors (" + errCount + "/"
+									+ (iCount + errCount) + ") check network"));
 					break;
 				}
 			}
 		}
 		commitOps(ops);
-		if( errCountMoving > ERROR_COUNT_MOVING_MAX ) {
+		if (errCountMoving > ERROR_COUNT_MOVING_MAX) {
 			// sleep an additional time
 			try {
 				Thread.sleep(SLEEPER_IN_API_ERROR);
@@ -389,13 +434,12 @@ public class GenderizeTask extends IntentService {
 
 	protected void onHandleIntent(Intent arg0) {
 		// TODO Auto-generated method stub
-		batchRequestId = PreferenceManager
-				.getDefaultSharedPreferences(this).getLong("batchRequestId",
-						-1);
-		if( batchRequestId == -1 ) {
+		batchRequestId = PreferenceManager.getDefaultSharedPreferences(this)
+				.getLong("batchRequestId", -1);
+		if (batchRequestId == -1) {
 			batchRequestId = System.currentTimeMillis();
 			PreferenceManager.getDefaultSharedPreferences(this).edit()
-			.putLong("batchRequestId", batchRequestId).commit();
+					.putLong("batchRequestId", batchRequestId).commit();
 		}
 		genderStyle = Integer.parseInt(PreferenceManager
 				.getDefaultSharedPreferences(this).getString("example_list",
@@ -407,12 +451,13 @@ public class GenderizeTask extends IntentService {
 				"example_checkbox", false);
 
 		mHandler.post(new DisplayToast(this, "Starting genderizing"));
-		
+
 		if (BuildConfig.DEBUG) {
 			Log.d(TAG, "Getting all contacts");
 		}
 
-		while (true) {
+		boolean servicing = true;
+		while (servicing) {
 			if (wipe) {
 				// reset counters
 				genderizedCount = null;
@@ -421,25 +466,41 @@ public class GenderizeTask extends IntentService {
 				PreferenceManager.getDefaultSharedPreferences(this).edit()
 						.putBoolean("example_checkbox", false).commit();
 				// wipe contacts only once
-				stopSelf();
-				// now what?
-				try {
-					Thread.sleep(SECONDS);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				if (genderStyle == GENDERSTYLE_NONE) {
+					// wipe & none : stop servicing
+					servicing = false;
+					stopSelf();
+				} else {
+					// now what?
+					try {
+						Thread.sleep(SECONDS);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-			} else {
+			} else if (genderStyle != GENDERSTYLE_NONE) {
 				boolean success = genderizeContacts();
 				try {
 					for (int i = 0; i < sleeper; i++) {
 						Intent broadcastIntent = new Intent();
 						broadcastIntent
-								.setAction(MainActivity.ResponseReceiver.ACTION_RESP);
+								.setAction(MainActivity.ResponseReceiver.ACTION_STATUS);
 						broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
-						broadcastIntent.putExtra(PARAM_OUT_MSG, genderizedCount);
-						if( success ) {
-							broadcastIntent.putExtra(PARAM_OUT_STATUS, true);
+						broadcastIntent.putExtra(
+								MainActivity.ResponseReceiver.ATTR_genderCount,
+								genderizedCount);
+						if (success) {
+							broadcastIntent
+									.putExtra(
+											MainActivity.ResponseReceiver.ATTR_statusType,
+											MainActivity.ResponseReceiver.ATTRVAL_statusType_GENDERIZED);
+						} else {
+							broadcastIntent
+									.putExtra(
+											MainActivity.ResponseReceiver.ATTR_statusType,
+											MainActivity.ResponseReceiver.ATTRVAL_statusType_GENDERIZING);
+
 						}
 						sendBroadcast(broadcastIntent);
 						Thread.sleep(SECONDS);
@@ -453,7 +514,7 @@ public class GenderizeTask extends IntentService {
 	}
 
 	private void commitOps(ArrayList<ContentProviderOperation> ops) {
-		if( ops == null || ops.size() == 0 ) {
+		if (ops == null || ops.size() == 0) {
 			return;
 		}
 		try {

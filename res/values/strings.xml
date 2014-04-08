@@ -6,6 +6,7 @@
     <string name="action_settings">Settings</string>
     <string name="btn_genderize">Start</string>
     <string name="btn_genderize_running">Running</string>
+    <string name="btn_genderize_wiped">Wiped</string>
     <string name="sharethis">Share this</string>
-    <string name="txt_quote">\"It\'s not what you know, but who you know. It\'s not who you know, but who knows YOU.\"\n\nHumm ... OK, thanks Gendre but I only want to know how many men or women I have in my contacts.</string>
+    <string name="txt_quote">\"It\'s not what you know, but who you know. It\'s not who you know, but who knows YOU.\"\n\nHumm ... OK, thanks Gendre but I only want to know how many boys/men, girls/women I have in my contacts.</string>
 </resources>
