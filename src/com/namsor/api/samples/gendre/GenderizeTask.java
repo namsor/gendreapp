@@ -17,10 +17,14 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import com.namsor.api.samples.gendre.MainActivity.ResponseReceiver;
+
 import android.app.IntentService;
+import android.content.BroadcastReceiver;
 import android.content.ContentProviderOperation;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.os.Handler;
@@ -29,6 +33,9 @@ import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Data;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class GenderizeTask extends IntentService {
@@ -93,6 +100,7 @@ public class GenderizeTask extends IntentService {
 	private static final String ATTR_XLocale = "X-Locale";
 	private long batchRequestId = -1;
 
+	private boolean stopRequested = false;
 	private static final Map<String, Double> CACHE = Collections
 			.synchronizedMap(new HashMap());
 
@@ -106,9 +114,24 @@ public class GenderizeTask extends IntentService {
 		xLocale = Locale.getDefault().toString();
 	}
 
+	private ActivityReceiver receiver;
+	
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		IntentFilter filter = new IntentFilter(ActivityReceiver.ACTIVITY_STATUS);
+		filter.addCategory(Intent.CATEGORY_DEFAULT);
+		receiver = new ActivityReceiver(this);
+		registerReceiver(receiver, filter);
+		
+	}
+	
+
+	
+	@Override
+	public void onDestroy() {
+	    unregisterReceiver(receiver);
+		super.onDestroy();
 	}
 
 	// Defines a tag for identifying log entries
@@ -191,7 +214,7 @@ public class GenderizeTask extends IntentService {
 		}
 		int iCount = 0;
 		List<Object[]> wipeTodo = new ArrayList();
-		while (c.moveToNext()) {
+		while (c.moveToNext() && !isStopRequested() ) {
 			int i = 0;
 			String rawContactId = c.getString(i++);
 			String contactId = c.getString(i++);
@@ -221,11 +244,20 @@ public class GenderizeTask extends IntentService {
 						wipeTodo.add(toWipe);
 						break;
 					}
+					if( isStopRequested() ) {
+						break;
+					}
+				}
+				if( isStopRequested() ) {
+					break;
 				}
 			}
 		}
 		c.close();
 		for (Object[] toWipe : wipeTodo) {
+			if( isStopRequested() ) {
+				break;
+			}
 			ops.add(ContentProviderOperation
 					.newUpdate(ContactsContract.Data.CONTENT_URI)
 					.withSelection(
@@ -302,7 +334,7 @@ public class GenderizeTask extends IntentService {
 			genderizedCount = new int[3];
 		}
 		List<String[]> genderizeTodo = new ArrayList();
-		while (c.moveToNext()) {
+		while (c.moveToNext() && !isStopRequested()) {
 			int i = 0;
 			String rawContactId = c.getString(i++);
 			String contactId = c.getString(i++);
@@ -352,6 +384,9 @@ public class GenderizeTask extends IntentService {
 		int errCount = 0;
 		int errCountMoving = 0;
 		for (String[] todo : genderizeTodo) {
+			if( isStopRequested() ) {
+				break;
+			}			
 			String rawContactId = todo[0];
 			String firstName = todo[1];
 			String lastName = todo[2];
@@ -456,8 +491,7 @@ public class GenderizeTask extends IntentService {
 			Log.d(TAG, "Getting all contacts");
 		}
 
-		boolean servicing = true;
-		while (servicing) {
+		while (!isStopRequested()) {
 			if (wipe) {
 				// reset counters
 				genderizedCount = null;
@@ -468,8 +502,7 @@ public class GenderizeTask extends IntentService {
 				// wipe contacts only once
 				if (genderStyle == GENDERSTYLE_NONE) {
 					// wipe & none : stop servicing
-					servicing = false;
-					stopSelf();
+					setStopRequested(true);
 				} else {
 					// now what?
 					try {
@@ -482,7 +515,7 @@ public class GenderizeTask extends IntentService {
 			} else if (genderStyle != GENDERSTYLE_NONE) {
 				boolean success = genderizeContacts();
 				try {
-					for (int i = 0; i < sleeper; i++) {
+					for (int i = 0; i < sleeper && !isStopRequested() ; i++) {
 						Intent broadcastIntent = new Intent();
 						broadcastIntent
 								.setAction(MainActivity.ResponseReceiver.ACTION_STATUS);
@@ -511,6 +544,15 @@ public class GenderizeTask extends IntentService {
 				}
 			}
 		}
+		// service stopped
+		Intent broadcastIntent = new Intent();
+		broadcastIntent
+				.setAction(MainActivity.ResponseReceiver.ACTION_STATUS);
+		broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
+		broadcastIntent.putExtra(
+				MainActivity.ResponseReceiver.ATTR_statusType,
+				MainActivity.ResponseReceiver.ATTRVAL_statusType_STOPPED);
+		sendBroadcast(broadcastIntent);
 	}
 
 	private void commitOps(ArrayList<ContentProviderOperation> ops) {
@@ -545,4 +587,37 @@ public class GenderizeTask extends IntentService {
 		return START_STICKY;
 	}
 
+	
+	private synchronized boolean isStopRequested() {
+		return stopRequested;
+	}
+
+	private synchronized void setStopRequested(boolean stopRequested) {
+		this.stopRequested = stopRequested;
+	}
+
+	public class ActivityReceiver extends BroadcastReceiver {
+		public static final String ACTIVITY_STATUS = "com.namsor.api.samples.gendre.intent.action.ACTIVITY_STATUS";
+		public static final String ATTR_statusType = "statusType";
+		public static final String ATTRVAL_statusType_STOP_REQUEST = "stopRequested";
+		
+		private GenderizeTask service;
+		public ActivityReceiver(GenderizeTask service) {
+			this.service = service;
+		}
+		
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if(! intent.getAction().equals(ACTIVITY_STATUS) ) {
+				return;
+			}
+			String statusType = intent.getStringExtra(ATTR_statusType);			
+			if (statusType.equals(ATTRVAL_statusType_STOP_REQUEST)) {
+				mHandler.post(new DisplayToast(service, "Stopping ..."));
+				setStopRequested(true);				
+			}
+		}
+	};
+	
+	
 }

@@ -43,16 +43,7 @@ public class MainActivity extends ActionBarActivity {
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 		
-		// launch preferences on first occurrence ?
-		/*
-		long batchRequestId = PreferenceManager.getDefaultSharedPreferences(this)
-				.getLong("batchRequestId", -1);
-		if (batchRequestId == -1) {
-			Intent settingsIntent = new Intent(this,
-					GendreSettingsActivity.class);
-			startActivity(settingsIntent);
-		}*/
-		
+		// launch preferences on first occurrence ?		
 		IntentFilter filter = new IntentFilter(ResponseReceiver.ACTION_STATUS);
 		filter.addCategory(Intent.CATEGORY_DEFAULT);
 		receiver = new ResponseReceiver(this);
@@ -81,11 +72,12 @@ public class MainActivity extends ActionBarActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
-			if (!running) {
-				Intent settingsIntent = new Intent(this,
-						GendreSettingsActivity.class);
-				startActivity(settingsIntent);
+			if (running) {
+				stopService();
 			}
+			Intent settingsIntent = new Intent(this,
+					GendreSettingsActivity.class);
+			startActivity(settingsIntent);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -113,6 +105,11 @@ public class MainActivity extends ActionBarActivity {
 		Button btn = (Button) view;
 		btn.setText(R.string.btn_genderize_running);
 		btn.setEnabled(false);
+
+		Button btnStop = (Button) findViewById(R.id.button_stop);
+		btnStop.setEnabled(true);
+		btnStop.setVisibility(Button.VISIBLE);
+		
 		Intent mServiceIntent = new Intent(this, GenderizeTask.class);
 		startService(mServiceIntent);
 		running = true;
@@ -156,6 +153,7 @@ public class MainActivity extends ActionBarActivity {
 		public static final String ATTRVAL_statusType_GENDERIZED = "genderized";
 		public static final String ATTRVAL_statusType_WIPING = "wiping";
 		public static final String ATTRVAL_statusType_WIPED = "wiped";
+		public static final String ATTRVAL_statusType_STOPPED = "stopped";
 		
 		private MainActivity activity;
 		public ResponseReceiver(MainActivity activity) {
@@ -164,6 +162,9 @@ public class MainActivity extends ActionBarActivity {
 		
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			if(! intent.getAction().equals(ACTION_STATUS) ) {
+				return;
+			}
 			String statusType = intent.getStringExtra(ATTR_statusType);			
 			if (statusType.equals(ATTRVAL_statusType_GENDERIZED) || statusType.equals(ATTRVAL_statusType_GENDERIZING) || statusType.equals(ATTRVAL_statusType_WIPING)) {
 
@@ -174,9 +175,7 @@ public class MainActivity extends ActionBarActivity {
 				
 				int[] data = intent.getIntArrayExtra(ATTR_genderCount);
 				genderStats=data;				
-				
-				btn.setText(R.string.btn_genderize_running);
-				
+								
 				if (data != null && data.length == 3) {
 					TextView tvf = (TextView) findViewById(R.id.textView_female);
 					TextView tvm = (TextView) findViewById(R.id.textView_male);
@@ -194,7 +193,17 @@ public class MainActivity extends ActionBarActivity {
 						tweetThis.setEnabled(true);
 					}
 				}
+			} else if (statusType.equals(ATTRVAL_statusType_STOPPED)) {
+				Button btn = (Button) findViewById(R.id.button_genderize);
+				btn.setText(R.string.btn_genderize);
+				btn.setEnabled(true);
 				
+				Button btnStop = (Button) findViewById(R.id.button_stop);
+				btnStop.setText(R.string.btn_stop);
+				btnStop.setEnabled(false);
+				btnStop.setVisibility(Button.INVISIBLE);
+				
+				running = false;
 			} else if (statusType.equals(ATTRVAL_statusType_WIPED)) {
 				Button btn = (Button) findViewById(R.id.button_genderize);
 				btn.setText(R.string.btn_genderize_wiped);
@@ -205,4 +214,25 @@ public class MainActivity extends ActionBarActivity {
 		}
 	};
 
+	public void stopService() {
+		Button btn = (Button) findViewById(R.id.button_genderize);
+		btn.setText(R.string.btn_genderize_stopping);
+		btn.setEnabled(false);
+		
+		running = false;
+	
+		Intent broadcastIntent = new Intent();
+		broadcastIntent
+				.setAction(GenderizeTask.ActivityReceiver.ACTIVITY_STATUS);
+		broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
+		broadcastIntent
+				.putExtra(
+						GenderizeTask.ActivityReceiver.ATTR_statusType,
+						GenderizeTask.ActivityReceiver.ATTRVAL_statusType_STOP_REQUEST);
+		sendBroadcast(broadcastIntent);		
+	}
+	
+	public void stopService(View view) {
+		stopService();
+	}
 }

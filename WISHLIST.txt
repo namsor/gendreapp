@@ -8,3 +8,34 @@
 
 -P3 Ringtone
 
+> from Test Report 1
+KRISHNA
+- 'Quick start Guide'
+- Dynamic settings
+
+Philip
+- Dynamic Settings: Change settings while the service runs
+- 'Twitter immediately force closes when trying to open it from the app.'
+- 'Contact numbers are incorrect and misaligned.'
+- 'Application doesnt seem to work with contacts merged from Facebook.'
+- 'add some color or graphics to the main page of the app.'
+
+Fani
+- '1. Add stop button'
+- 'give more options for symbols.'
+- ' if possible customize symbols'
+
+Jan
+- voiceover ??
+
+Amit
+- Dynamic settings
+- Start, Stop, Uninstall, Service ... 
+
+Marc Edward
+- Add Facebook button
+- Background theme (design)
+
+Tasha
+- Add stop button
+

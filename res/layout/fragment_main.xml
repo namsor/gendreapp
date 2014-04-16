@@ -105,4 +105,14 @@
         android:text="@string/txt_quote"
 	/>
 
+    <Button
+        android:id="@+id/button_stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView1"
+        android:layout_toRightOf="@+id/button_genderize"
+        android:onClick="stopService"
+        android:text="@string/btn_stop"
+        android:visibility="invisible" />
+
 </RelativeLayout>
