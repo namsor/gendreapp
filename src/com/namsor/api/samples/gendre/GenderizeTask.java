@@ -363,7 +363,7 @@ public class GenderizeTask extends IntentService {
 				broadcastIntent
 						.putExtra(
 								MainActivity.ResponseReceiver.ATTR_statusType,
-								MainActivity.ResponseReceiver.ATTRVAL_statusType_GENDERIZING);
+								MainActivity.ResponseReceiver.ATTRVAL_statusType_COUNTING);
 				sendBroadcast(broadcastIntent);
 				continue;
 			} else if (givenName != null && !givenName.isEmpty()
@@ -383,6 +383,7 @@ public class GenderizeTask extends IntentService {
 		int iCount = 0;
 		int errCount = 0;
 		int errCountMoving = 0;
+		Collections.shuffle(genderizeTodo);
 		for (String[] todo : genderizeTodo) {
 			if( isStopRequested() ) {
 				break;
@@ -400,16 +401,20 @@ public class GenderizeTask extends IntentService {
 					errCountMoving--;
 				}
 				String genderizedPrefix = GENDER_STYLES[genderStyle][2];
+				int genderIndex = 2;
 				if (Math.abs(gender) > GENDER_THRESHOLD) {
 					genderizedPrefix = (gender > 0 ? GENDER_STYLES[genderStyle][0]
 							: GENDER_STYLES[genderStyle][1]);
 					if (gender > 0) {
 						genderizedCount[0]++;
+						genderIndex = 0;
 					} else {
 						genderizedCount[1]++;
+						genderIndex = 1;
 					}
 				} else {
 					genderizedCount[2]++;
+					genderIndex = 2;
 				}
 				ops.add(ContentProviderOperation
 						.newUpdate(ContactsContract.Data.CONTENT_URI)
@@ -436,6 +441,17 @@ public class GenderizeTask extends IntentService {
 						.putExtra(
 								MainActivity.ResponseReceiver.ATTR_statusType,
 								MainActivity.ResponseReceiver.ATTRVAL_statusType_GENDERIZING);
+				if( genderIndex < 2) {
+					String[] genderSample = new String[4];
+					genderSample[0] = firstName;
+					genderSample[1] = lastName;
+					genderSample[2] = genderizedPrefix;
+					genderSample[3] = ""+genderIndex;
+					broadcastIntent
+					.putExtra(
+							MainActivity.ResponseReceiver.ATTR_genderSample,
+							genderSample);					
+				}
 				sendBroadcast(broadcastIntent);
 				if (iCount % COMMIT_SIZE == 0) {
 					commitOps(ops);

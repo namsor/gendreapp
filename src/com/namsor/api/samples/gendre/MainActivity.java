@@ -7,6 +7,8 @@ import java.util.List;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +22,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -27,12 +31,77 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 
 public class MainActivity extends ActionBarActivity {
-	
-	private boolean running = false;
+
+	private boolean serviceRunning = false;
+	public synchronized boolean isServiceRunning() {
+		return serviceRunning;
+	}
+
+	public synchronized void setServiceRunning(boolean serviceRunning) {
+		this.serviceRunning = serviceRunning;
+	}
+
 	private ResponseReceiver receiver;
-	private int[] genderStats;
+	private int[] genderStat;
+	public synchronized int[] getGenderStat() {
+		return genderStat;
+	}
+
+	public synchronized void setGenderStat(int[] genderStat) {
+		this.genderStat = genderStat;
+	}
+
+	private String[] genderSample;
+	public synchronized String[] getGenderSample() {
+		return genderSample;
+	}
+
+	public synchronized void setGenderSample(String[] genderSample) {
+		this.genderSample = genderSample;
+	}
+
 	private static final String TWEET_URL = "http://namesorts.com/api/gendre";
-	
+
+
+    private class AnimationRunnable implements Runnable {
+    	public AnimationRunnable(MainActivity activity) {
+			super();
+			this.activity = activity;
+		}
+		private final MainActivity activity;
+		public synchronized MainActivity getActivity() {
+			return activity;
+		}
+		@Override
+		public void run() {
+			String[] sampleOld = null;
+			
+			while( activity.isServiceRunning() ) {
+				final String[] sample = activity.getGenderSample();
+				if( sample == null ) {
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				} else if( sampleOld == null || !sampleOld[0].equals(sample[0]) || !sampleOld[1].equals(sample[1])  ) {
+					runOnUiThread(new Runnable() {
+
+		                @Override
+		                public void run() {
+							activity.animateContact(sample);
+		                }
+		            });
+					sampleOld = sample;
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	};
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -42,13 +111,13 @@ public class MainActivity extends ActionBarActivity {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
-		
-		// launch preferences on first occurrence ?		
+
+		// launch preferences on first occurrence ?
 		IntentFilter filter = new IntentFilter(ResponseReceiver.ACTION_STATUS);
 		filter.addCategory(Intent.CATEGORY_DEFAULT);
 		receiver = new ResponseReceiver(this);
 		registerReceiver(receiver, filter);
-		
+
 	}
 
 	@Override
@@ -65,6 +134,47 @@ public class MainActivity extends ActionBarActivity {
 		return true;
 	}
 
+	public void animateContact(String[] sample) {
+		TextView textView2 = (TextView) findViewById(R.id.textView2);
+		
+		TextView contactView = (TextView) findViewById(R.id.textView_contact);
+		contactView.setText(sample[0]+" "+sample[1]);
+		contactView.setX(textView2.getX()+textView2.getWidth()/2-contactView.getWidth()/2);
+		contactView.setY(textView2.getY()+textView2.getHeight());
+		contactView.setAlpha(0f);
+		
+		ObjectAnimator fadeIn = ObjectAnimator.ofFloat(contactView, "alpha",
+				0f, 1f);
+		fadeIn.setDuration(300);
+		fadeIn.start();
+
+		int gender = Integer.parseInt(sample[3])*2-1;
+		ObjectAnimator moveDown1 = ObjectAnimator.ofFloat(contactView,
+				"translationY", 100f);
+		moveDown1.setDuration(300);
+		moveDown1.setInterpolator(new DecelerateInterpolator());
+
+		ObjectAnimator moveDown2 = ObjectAnimator.ofFloat(contactView,
+				"translationY", 50f);
+		moveDown2.setDuration(300);
+		moveDown2.setInterpolator(new AccelerateInterpolator());
+		
+		
+		ObjectAnimator moveSide = ObjectAnimator.ofFloat(contactView,
+				"translationX", gender*50f);
+		moveSide.setDuration(300);
+		moveSide.setInterpolator(new AccelerateInterpolator());
+
+		ObjectAnimator fadeOut = ObjectAnimator.ofFloat(contactView, "alpha",
+				0f);
+		fadeOut.setDuration(300);
+		
+
+		AnimatorSet animatorSet = new AnimatorSet();
+		animatorSet.play(fadeOut).after(moveDown2).after(moveSide).after(moveDown1);
+		animatorSet.start();
+	}
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
@@ -72,7 +182,7 @@ public class MainActivity extends ActionBarActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
-			if (running) {
+			if (isServiceRunning()) {
 				stopService();
 			}
 			Intent settingsIntent = new Intent(this,
@@ -102,6 +212,7 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	public void startService(View view) {
+		
 		Button btn = (Button) view;
 		btn.setText(R.string.btn_genderize_running);
 		btn.setEnabled(false);
@@ -109,17 +220,25 @@ public class MainActivity extends ActionBarActivity {
 		Button btnStop = (Button) findViewById(R.id.button_stop);
 		btnStop.setEnabled(true);
 		btnStop.setVisibility(Button.VISIBLE);
-		
+
 		Intent mServiceIntent = new Intent(this, GenderizeTask.class);
 		startService(mServiceIntent);
-		running = true;
+		setServiceRunning(true);
+
+		// start animation
+		Thread t = new Thread(new AnimationRunnable(this));
+		t.start();
+		
 	}
 
 	public void tweetThis(View view) {
-		if( genderStats==null) {
+		int[] genderStats = getGenderStat();
+		if (genderStats == null) {
 			return;
 		}
-		String tweetText = "My Android contacts: "+genderStats[0]+GenderizeTask.PREFIX_GENDERF+" and "+genderStats[1]+GenderizeTask.PREFIX_GENDERM+" via @gendreapp ";
+		String tweetText = "My Android contacts: " + genderStats[0]
+				+ GenderizeTask.PREFIX_GENDERF + " and " + genderStats[1]
+				+ GenderizeTask.PREFIX_GENDERM + " via @gendreapp ";
 		String tweetURL = TWEET_URL;
 		String tweetUrl;
 		try {
@@ -148,34 +267,45 @@ public class MainActivity extends ActionBarActivity {
 	public class ResponseReceiver extends BroadcastReceiver {
 		public static final String ACTION_STATUS = "com.namsor.api.samples.gendre.intent.action.SERVICE_STATUS";
 		public static final String ATTR_genderCount = "genderCount";
+		public static final String ATTR_genderSample = "genderSample";
 		public static final String ATTR_statusType = "statusType";
+		public static final String ATTRVAL_statusType_COUNTING = "counting";
 		public static final String ATTRVAL_statusType_GENDERIZING = "genderizing";
 		public static final String ATTRVAL_statusType_GENDERIZED = "genderized";
 		public static final String ATTRVAL_statusType_WIPING = "wiping";
 		public static final String ATTRVAL_statusType_WIPED = "wiped";
 		public static final String ATTRVAL_statusType_STOPPED = "stopped";
-		
+
 		private MainActivity activity;
+
 		public ResponseReceiver(MainActivity activity) {
 			this.activity = activity;
 		}
-		
+
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			if(! intent.getAction().equals(ACTION_STATUS) ) {
+			if (!intent.getAction().equals(ACTION_STATUS)) {
 				return;
 			}
-			String statusType = intent.getStringExtra(ATTR_statusType);			
-			if (statusType.equals(ATTRVAL_statusType_GENDERIZED) || statusType.equals(ATTRVAL_statusType_GENDERIZING) || statusType.equals(ATTRVAL_statusType_WIPING)) {
+			String statusType = intent.getStringExtra(ATTR_statusType);
+			if (statusType.equals(ATTRVAL_statusType_GENDERIZED)
+					|| statusType.equals(ATTRVAL_statusType_GENDERIZING)
+					|| statusType.equals(ATTRVAL_statusType_COUNTING)
+					|| statusType.equals(ATTRVAL_statusType_WIPING)) {
 
 				Button btn = (Button) findViewById(R.id.button_genderize);
 				btn.setText(R.string.btn_genderize_running);
 				btn.setEnabled(false);
-				running = true;
-				
+				setServiceRunning(true);
+
 				int[] data = intent.getIntArrayExtra(ATTR_genderCount);
-				genderStats=data;				
-								
+				setGenderStat(data);
+				if( statusType.equals(ATTRVAL_statusType_GENDERIZING) ) {
+					String[] sample = intent.getStringArrayExtra(ATTR_genderSample);
+					if( sample!=null) {
+						setGenderSample(sample);
+					}
+				}
 				if (data != null && data.length == 3) {
 					TextView tvf = (TextView) findViewById(R.id.textView_female);
 					TextView tvm = (TextView) findViewById(R.id.textView_male);
@@ -186,7 +316,7 @@ public class MainActivity extends ActionBarActivity {
 
 					if (statusType.equals(ATTRVAL_statusType_GENDERIZED)) {
 						ImageButton btnTweet = (ImageButton) findViewById(R.id.imageButton_tweet);
-						TextView tweetThis = (TextView) findViewById(R.id.textView_tweetthis);					
+						TextView tweetThis = (TextView) findViewById(R.id.textView_tweetthis);
 						btnTweet.setVisibility(Button.VISIBLE);
 						btnTweet.setEnabled(true);
 						tweetThis.setVisibility(TextView.VISIBLE);
@@ -197,19 +327,19 @@ public class MainActivity extends ActionBarActivity {
 				Button btn = (Button) findViewById(R.id.button_genderize);
 				btn.setText(R.string.btn_genderize);
 				btn.setEnabled(true);
-				
+
 				Button btnStop = (Button) findViewById(R.id.button_stop);
 				btnStop.setText(R.string.btn_stop);
 				btnStop.setEnabled(false);
 				btnStop.setVisibility(Button.INVISIBLE);
-				
-				running = false;
+
+				setServiceRunning(false);
 			} else if (statusType.equals(ATTRVAL_statusType_WIPED)) {
 				Button btn = (Button) findViewById(R.id.button_genderize);
 				btn.setText(R.string.btn_genderize_wiped);
 				btn.setEnabled(false);
 				int[] data = { 0, 0, 0 };
-				genderStats=data;			
+				setGenderStat(data);
 			}
 		}
 	};
@@ -218,20 +348,19 @@ public class MainActivity extends ActionBarActivity {
 		Button btn = (Button) findViewById(R.id.button_genderize);
 		btn.setText(R.string.btn_genderize_stopping);
 		btn.setEnabled(false);
-		
-		running = false;
-	
+
+		setServiceRunning(false);
+
 		Intent broadcastIntent = new Intent();
 		broadcastIntent
 				.setAction(GenderizeTask.ActivityReceiver.ACTIVITY_STATUS);
 		broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
-		broadcastIntent
-				.putExtra(
-						GenderizeTask.ActivityReceiver.ATTR_statusType,
-						GenderizeTask.ActivityReceiver.ATTRVAL_statusType_STOP_REQUEST);
-		sendBroadcast(broadcastIntent);		
+		broadcastIntent.putExtra(
+				GenderizeTask.ActivityReceiver.ATTR_statusType,
+				GenderizeTask.ActivityReceiver.ATTRVAL_statusType_STOP_REQUEST);
+		sendBroadcast(broadcastIntent);
 	}
-	
+
 	public void stopService(View view) {
 		stopService();
 	}
