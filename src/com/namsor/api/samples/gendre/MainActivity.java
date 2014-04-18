@@ -136,32 +136,41 @@ public class MainActivity extends ActionBarActivity {
 
 	public void animateContact(String[] sample) {
 		TextView textView2 = (TextView) findViewById(R.id.textView2);
-		
+						
 		TextView contactView = (TextView) findViewById(R.id.textView_contact);
 		contactView.setText(sample[0]+" "+sample[1]);
 		contactView.setX(textView2.getX()+textView2.getWidth()/2-contactView.getWidth()/2);
 		contactView.setY(textView2.getY()+textView2.getHeight());
 		contactView.setAlpha(0f);
 		
+		TextView textViewVenus = (TextView) findViewById(R.id.textView_venus);
+		TextView textViewMars = (TextView) findViewById(R.id.textView_mars);
+		float distY = textViewMars.getY()-contactView.getY()-contactView.getHeight();
+		float distX = 0;
+		int gender = Integer.parseInt(sample[3])*2-1;
+		if( gender < 0 ) {
+			distX = (textViewVenus.getX()-contactView.getX())/2;			
+		} else {
+			distX = (textViewMars.getX()+textViewMars.getWidth()-contactView.getX()-contactView.getWidth())/2;			
+		}
+				
 		ObjectAnimator fadeIn = ObjectAnimator.ofFloat(contactView, "alpha",
 				0f, 1f);
 		fadeIn.setDuration(300);
 		fadeIn.start();
 
-		int gender = Integer.parseInt(sample[3])*2-1;
 		ObjectAnimator moveDown1 = ObjectAnimator.ofFloat(contactView,
-				"translationY", 100f);
+				"translationY", 0, distY*2/3);
 		moveDown1.setDuration(300);
 		moveDown1.setInterpolator(new DecelerateInterpolator());
 
 		ObjectAnimator moveDown2 = ObjectAnimator.ofFloat(contactView,
-				"translationY", 50f);
+				"translationY", 0, distY*1/3);
 		moveDown2.setDuration(300);
 		moveDown2.setInterpolator(new AccelerateInterpolator());
 		
-		
 		ObjectAnimator moveSide = ObjectAnimator.ofFloat(contactView,
-				"translationX", gender*50f);
+				"translationX", 0, distX);
 		moveSide.setDuration(300);
 		moveSide.setInterpolator(new AccelerateInterpolator());
 
@@ -217,7 +226,8 @@ public class MainActivity extends ActionBarActivity {
 		btn.setText(R.string.btn_genderize_running);
 		btn.setEnabled(false);
 
-		Button btnStop = (Button) findViewById(R.id.button_stop);
+		View v = findViewById(R.id.button_stop);
+		Button btnStop = (Button)v ;
 		btnStop.setEnabled(true);
 		btnStop.setVisibility(Button.VISIBLE);
 
@@ -294,10 +304,21 @@ public class MainActivity extends ActionBarActivity {
 					|| statusType.equals(ATTRVAL_statusType_WIPING)) {
 
 				Button btn = (Button) findViewById(R.id.button_genderize);
-				btn.setText(R.string.btn_genderize_running);
+				if( statusType.equals(ATTRVAL_statusType_GENDERIZING) ) {
+					btn.setText(R.string.btn_genderize_running);
+				} else if( statusType.equals(ATTRVAL_statusType_COUNTING) ) {
+					btn.setText(R.string.btn_genderize_counting);
+				} else if( statusType.equals(ATTRVAL_statusType_WIPING) ) {
+					btn.setText(R.string.btn_genderize_wiping);
+				}
 				btn.setEnabled(false);
 				setServiceRunning(true);
 
+				Button btnStop = (Button) findViewById(R.id.button_stop);
+				btnStop.setText(R.string.btn_stop);
+				btnStop.setEnabled(true);
+				btnStop.setVisibility(Button.VISIBLE);
+				
 				int[] data = intent.getIntArrayExtra(ATTR_genderCount);
 				setGenderStat(data);
 				if( statusType.equals(ATTRVAL_statusType_GENDERIZING) ) {

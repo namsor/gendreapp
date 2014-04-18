@@ -17,6 +17,7 @@ import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 
 import java.util.List;
@@ -113,6 +114,50 @@ public class GendreSettingsActivity extends PreferenceActivity {
 		// to reflect the new value, per the Android Design guidelines.
 		bindPreferenceSummaryToValue(findPreference("example_list"));
 		bindPreferenceSummaryToValue(findPreference("sync_frequency"));
+		
+		// more binding
+		Preference listPref = findPreference("example_list");
+		final Preference.OnPreferenceChangeListener listener1 = listPref.getOnPreferenceChangeListener();
+		Preference.OnPreferenceChangeListener myListener = new Preference.OnPreferenceChangeListener() {
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object value) {
+				if( listener1 != null ) {
+					listener1.onPreferenceChange(preference, value);
+				}
+				String stringValue = value.toString();
+				if (preference instanceof ListPreference) {
+					// For list preferences, look up the correct display value in
+					// the preference's 'entries' list.
+					ListPreference listPreference = (ListPreference) preference;
+					int index = listPreference.findIndexOfValue(stringValue);
+					
+						String[] keys = { "custom_f", "custom_m", "custom_u" };
+						for (int i = 0; i < keys.length; i++) {
+							Preference p = findPreference(keys[i]);
+							p.setEnabled(index == GenderizeTask.GENDERSTYLE_CUSTOM);
+						}
+
+				} 
+				return true;
+			}
+		};
+		listPref.setOnPreferenceChangeListener(myListener);
+		// validation
+		Preference.OnPreferenceChangeListener genderFormatChecker = new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+            	if( newValue == null) {
+            		return false;
+            	}
+               String nV=(String)newValue;
+               return nV.trim().length()>0;
+            }
+		};
+		String[] keys = { "custom_f", "custom_m", "custom_u" };
+		for (int i = 0; i < keys.length; i++) {
+			Preference custom_f = findPreference(keys[i]);
+			custom_f.setOnPreferenceChangeListener(genderFormatChecker);
+		}		
 	}
 
 	/** {@inheritDoc} */
@@ -165,7 +210,7 @@ public class GendreSettingsActivity extends PreferenceActivity {
 				// the preference's 'entries' list.
 				ListPreference listPreference = (ListPreference) preference;
 				int index = listPreference.findIndexOfValue(stringValue);
-
+				
 				// Set the summary to reflect the new value.
 				preference
 						.setSummary(index >= 0 ? listPreference.getEntries()[index]
@@ -221,7 +266,6 @@ public class GendreSettingsActivity extends PreferenceActivity {
 			bindPreferenceSummaryToValue(findPreference("example_list"));
 		}
 	}
-
 
 	/**
 	 * This fragment shows data and sync preferences only. It is used when the

@@ -14,5 +14,26 @@
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
         android:title="@string/pref_title_add_friends_to_messages" />
-
+    
+	<EditTextPreference 
+	    android:defaultValue="Ms."
+        android:key="custom_f"
+	    android:title="@string/pref_title_custom_f"
+	    android:enabled="false" 
+	    />    
+	    
+	<EditTextPreference 
+	    android:defaultValue="Mr."
+        android:key="custom_m"
+	    android:enabled="false" 
+	    android:title="@string/pref_title_custom_m" 
+	    />
+	    
+	<EditTextPreference 
+	    android:defaultValue="M."
+        android:key="custom_u"
+	    android:enabled="false" 
+	    android:title="@string/pref_title_custom_u" 
+	    />    
+		
 </PreferenceScreen>

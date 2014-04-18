@@ -2,13 +2,15 @@
 <resources>
 
     <string name="app_name">Gendre</string>
-    <string name="hello_world">enrich contact titles with name gender</string>
+    <string name="hello_world">Enrich contact titles with name gender</string>
     <string name="action_settings">Settings</string>
     <string name="btn_genderize">Start</string>
     <string name="btn_stop">Stop</string>
+    <string name="btn_genderize_counting">Counting</string>
+    <string name="btn_genderize_wiping">Wiping</string>
     <string name="btn_genderize_running">Running</string>
     <string name="btn_genderize_stopping">Stopping</string>
     <string name="btn_genderize_wiped">Wiped</string>
     <string name="sharethis">Share this</string>
-    <string name="txt_quote">\"It\'s not what you know, but who you know. It\'s not who you know, but who knows YOU.\"\n\nHumm ... OK, thanks Gendre but I only want to know how many boys/men, girls/women I have in my contacts.</string>
+    <string name="txt_quote">\"It\'s not what you know, but who you know. It\'s not who you know, but who knows YOU.\"\nThx, Gendre... just genderize my contacts.</string>
 </resources>

@@ -66,8 +66,9 @@ public class GenderizeTask extends IntentService {
 
 	private static final double GENDER_THRESHOLD = .1;
 
-	private static final int GENDERSTYLE_DEFAULT = 2;
-	private static final int GENDERSTYLE_NONE = 3;
+	public static final int GENDERSTYLE_DEFAULT = 2;
+	public static final int GENDERSTYLE_CUSTOM = 4;
+	public static final int GENDERSTYLE_NONE = 5;
 	private int genderStyle = GENDERSTYLE_DEFAULT;
 
 	private static final String PREFIX_MS = "Ms.";
@@ -82,18 +83,28 @@ public class GenderizeTask extends IntentService {
 	private static final String PREFIX_SPADE = "♤";
 	private static final String PREFIX_DIAMOND = "♢";
 
+	private static final String PREFIX_CHINAF = "女";
+	private static final String PREFIX_CHINAM = "男";
+	private static final String PREFIX_CHINAU = "另"; // check this
+
+	private static final String PREFIX_CUSTOMF = "%f";
+	private static final String PREFIX_CUSTOMM = "%m";
+	private static final String PREFIX_CUSTOMU = "%u"; // check this
+	
 	private static final String PREFIX_NONE = "";
 
 	private static final boolean WIPE_DEFAULT = false;
 	private boolean wipe = WIPE_DEFAULT;
 
 	// max number of moving error count
-	private static final int ERROR_COUNT_MOVING_MAX = 10;
+	private static final int ERROR_COUNT_MOVING_MAX = 10;	
 
 	private static final String[][] GENDER_STYLES = {
 			{ PREFIX_MS, PREFIX_MR, PREFIX_UNKNOWN },
 			{ PREFIX_GENDERF, PREFIX_GENDERM, PREFIX_GENDERU },
 			{ PREFIX_HEART, PREFIX_SPADE, PREFIX_DIAMOND },
+			{ PREFIX_CHINAF, PREFIX_CHINAM, PREFIX_CHINAU },
+			{ PREFIX_CUSTOMF, PREFIX_CUSTOMM, PREFIX_CUSTOMU },
 			{ PREFIX_NONE, PREFIX_NONE, PREFIX_NONE }, };
 
 	private static final String ATTR_XBatchRequest = "X-BatchRequest-Id";
@@ -237,7 +248,7 @@ public class GenderizeTask extends IntentService {
 						broadcastIntent
 								.putExtra(
 										MainActivity.ResponseReceiver.ATTR_statusType,
-										MainActivity.ResponseReceiver.ATTRVAL_statusType_WIPING);
+										MainActivity.ResponseReceiver.ATTRVAL_statusType_COUNTING);
 						sendBroadcast(broadcastIntent);
 
 						Object[] toWipe = { rawContactId, j2 };
@@ -503,6 +514,21 @@ public class GenderizeTask extends IntentService {
 
 		mHandler.post(new DisplayToast(this, "Starting genderizing"));
 
+		
+		String genderStyleF = PreferenceManager
+				.getDefaultSharedPreferences(this).getString("custom_f",
+						"Ms.");
+		String genderStyleM = PreferenceManager
+				.getDefaultSharedPreferences(this).getString("custom_m",
+						"Mr.");
+		String genderStyleU = PreferenceManager
+				.getDefaultSharedPreferences(this).getString("custom_u",
+						"M.");
+		
+		GENDER_STYLES[GENDERSTYLE_CUSTOM][0] = genderStyleF;
+		GENDER_STYLES[GENDERSTYLE_CUSTOM][1] = genderStyleM;
+		GENDER_STYLES[GENDERSTYLE_CUSTOM][2] = genderStyleU;
+		
 		if (BuildConfig.DEBUG) {
 			Log.d(TAG, "Getting all contacts");
 		}

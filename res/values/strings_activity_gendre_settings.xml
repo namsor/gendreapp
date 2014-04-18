@@ -10,11 +10,16 @@
     <string name="pref_title_social_recommendations">Wipe titles?</string>
     <string name="pref_description_social_recommendations">Beware, this will wipe existing TITLE information in your contacts.</string>
     <string name="pref_title_add_friends_to_messages">Select gender format</string>
-
+    <string name="pref_title_custom_f">Female title</string>
+    <string name="pref_title_custom_m">Male title</string>
+    <string name="pref_title_custom_u">Unknown title</string>
+    
     <string-array name="pref_example_list_titles">
         <item>Classic (Ms.,Mr.,M.)</item>
         <item>Gender (♀,♂,∅)</item>
         <item>Heart (♥,♤,♢)</item>
+        <item>Chinese (女,男,另)</item>
+        <item>Custom</item>
         <item>None</item>
         </string-array>
     <string-array name="pref_example_list_values">
@@ -22,7 +27,9 @@
         <item>1</item>
         <item>2</item>
         <item>3</item>
-    </string-array>
+        <item>4</item>
+        <item>5</item>
+        </string-array>
 
     <!-- Example settings for Data & Sync -->
     <string name="pref_header_data_sync">Data &amp; sync</string>
