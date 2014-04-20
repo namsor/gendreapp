@@ -11,6 +11,8 @@ import java.util.List;
 
 import com.androidplot.xy.XYPlot;
 import com.androidplot.pie.PieChart;
+import com.androidplot.pie.PieRenderer;
+import com.androidplot.pie.PieRenderer.DonutMode;
 import com.androidplot.pie.Segment;
 import com.androidplot.pie.SegmentFormatter;
 import com.facebook.Session;
@@ -64,9 +66,9 @@ public class MainActivity extends ActionBarActivity {
 	
     private PieChart pie;
 
-    private final Segment sM = new Segment("Male", 1);
-    private final Segment sU = new Segment("Unknown", 1);
-    private final Segment sF = new Segment("Female", 1);
+    private final Segment sM = new Segment("♂", 1);
+    private final Segment sU = new Segment("", 1);
+    private final Segment sF = new Segment("♀", 1);
    
 	private UiLifecycleHelper uiHelper;
 	private boolean serviceRunning = false;
@@ -293,6 +295,49 @@ public class MainActivity extends ActionBarActivity {
 
 	}
 
+	private void hidePie() {
+		if( pie == null ) {
+			// pie chart stuff
+		    pie = (PieChart) findViewById(R.id.mySimplePieChart);
+	        if( pie == null ) {
+	        	return;
+	        }
+	        pie.setVisibility(PieChart.INVISIBLE);
+		}
+	}
+	private void drawPie() {
+		if( pie == null ) {
+			// pie chart stuff
+		    pie = (PieChart) findViewById(R.id.mySimplePieChart);
+	        if( pie == null ) {
+	        	return;
+	        }
+	        //EmbossMaskFilter emf = new EmbossMaskFilter(new float[]{1, 1, 1}, 0.4f, 10, 8.2f);
+
+	        SegmentFormatter sFFormat = new SegmentFormatter();
+	        sFFormat.configure(getApplicationContext(), R.xml.pie_segment_formatter3);
+
+	        SegmentFormatter sUFormat = new SegmentFormatter();
+	        sUFormat.configure(getApplicationContext(), R.xml.pie_segment_formatter2);
+
+	        SegmentFormatter sMFormat = new SegmentFormatter();
+	        sMFormat.configure(getApplicationContext(), R.xml.pie_segment_formatter1);
+
+	        pie.addSeries(sM, sMFormat);
+	        pie.addSeries(sF, sFFormat);
+	        pie.addSeries(sU, sUFormat);
+	        // bug: will be fixed
+	        //pie.getRenderer(PieRenderer.class).setDonutSize(0, DonutMode.PERCENT);
+
+	        pie.getBorderPaint().setColor(Color.TRANSPARENT);
+	        pie.getBackgroundPaint().setColor(Color.TRANSPARENT);
+	        
+	        pie.setVisibility(PieChart.VISIBLE);
+		} else {
+			pie.redraw();			
+		}
+	}
+	
 	public void startService(View view) {
 
 		Button btn = (Button) view;
@@ -308,35 +353,8 @@ public class MainActivity extends ActionBarActivity {
 		startService(mServiceIntent);
 		setServiceRunning(true);
 
-		// pie chart stuff
-	    pie = (PieChart) findViewById(R.id.mySimplePieChart);
-        
-        EmbossMaskFilter emf = new EmbossMaskFilter(
-                new float[]{1, 1, 1}, 0.4f, 10, 8.2f);
-
-        SegmentFormatter sf1 = new SegmentFormatter();
-        sf1.configure(getApplicationContext(), R.xml.pie_segment_formatter1);
-
-        sf1.getFillPaint().setMaskFilter(emf);
-
-        SegmentFormatter sf2 = new SegmentFormatter();
-        sf2.configure(getApplicationContext(), R.xml.pie_segment_formatter2);
-
-        sf2.getFillPaint().setMaskFilter(emf);
-
-        SegmentFormatter sf3 = new SegmentFormatter();
-        sf3.configure(getApplicationContext(), R.xml.pie_segment_formatter3);
-
-        sf3.getFillPaint().setMaskFilter(emf);
-
-        pie.addSeries(sF, sf3);
-        pie.addSeries(sU, sf2);
-        pie.addSeries(sM, sf1);
-
-        pie.getBorderPaint().setColor(Color.TRANSPARENT);
-        pie.getBackgroundPaint().setColor(Color.TRANSPARENT);
-        
-		pie.redraw();
+		// draw pie
+		drawPie();
 		
 		// start animation
 		Thread t = new Thread(new AnimationRunnable(this));
@@ -520,13 +538,10 @@ public class MainActivity extends ActionBarActivity {
 					sF.setValue(data[0]);
 					sM.setValue(data[1]);
 					sU.setValue(data[2]);
-										
+
 					if (statusType.equals(ATTRVAL_statusType_GENDERIZED)) {
 						// redraw pie
-					    pie = (PieChart) findViewById(R.id.mySimplePieChart);
-					    if( pie != null) {
-					    	pie.redraw();		
-					    }
+						drawPie();
 
 						ImageButton btnTweet = (ImageButton) findViewById(R.id.imageButton_tweet);
 						TextView tweetThis = (TextView) findViewById(R.id.textView_tweetthis);
@@ -542,11 +557,9 @@ public class MainActivity extends ActionBarActivity {
 						btnGPlus.setEnabled(true);
 					} else {
 						int count = data[0]+data[1]+data[2];
-						if( count > REDRAW_MOD && count%REDRAW_MOD==0) {
-						    pie = (PieChart) findViewById(R.id.mySimplePieChart);
-						    if( pie != null) {
-						    	pie.redraw();		
-						    }							
+						if( pie == null || count > REDRAW_MOD && count%REDRAW_MOD==0) {
+							// redraw pie
+							drawPie();
 						}
 						ImageButton btnTweet = (ImageButton) findViewById(R.id.imageButton_tweet);
 						TextView tweetThis = (TextView) findViewById(R.id.textView_tweetthis);

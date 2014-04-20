@@ -339,7 +339,7 @@ public class GenderizeTask extends IntentService {
 								+ (genderizedCount == null ? ""
 										: " AND "
 												+ ContactsContract.CommonDataKinds.StructuredName.PREFIX
-												+ " IS NULL"), null, null);
+												+ " IS NULL"), null, ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME);
 		int cCount = c.getCount();
 		if (BuildConfig.DEBUG && cCount > 0) {
 			Log.d(TAG, "Got " + cCount + " contacts");
