@@ -16,7 +16,7 @@ X Dynamic settings
 Philip
 X Dynamic Settings: Change settings while the service runs
 - 'Twitter immediately force closes when trying to open it from the app.'
-- 'Contact numbers are incorrect and misaligned.'
+X- 'Contact numbers are incorrect and misaligned.'
 - 'Application doesnt seem to work with contacts merged from Facebook.'
 - 'add some color or graphics to the main page of the app.'
 
@@ -30,7 +30,7 @@ Jan
 
 Amit
 X Dynamic settings
-- Start, Stop, Uninstall, Service ... 
+X Start, Stop, Uninstall, Service ... 
 
 Marc Edward
 - Add Facebook button

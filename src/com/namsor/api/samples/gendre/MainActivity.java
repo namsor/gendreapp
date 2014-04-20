@@ -1,8 +1,25 @@
 package com.namsor.api.samples.gendre;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
+
+import com.androidplot.xy.XYPlot;
+import com.androidplot.pie.PieChart;
+import com.androidplot.pie.Segment;
+import com.androidplot.pie.SegmentFormatter;
+import com.facebook.Session;
+import com.facebook.Session.StatusCallback;
+import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
+import com.facebook.widget.FacebookDialog;
+import com.google.android.gms.plus.PlusClient;
+import com.google.android.gms.plus.PlusShare;
 
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -10,13 +27,25 @@ import android.support.v4.app.Fragment;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
+import android.content.pm.Signature;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.EmbossMaskFilter;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,10 +58,19 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 
 public class MainActivity extends ActionBarActivity {
+	
+    private PieChart pie;
 
+    private final Segment sM = new Segment("Male", 1);
+    private final Segment sU = new Segment("Unknown", 1);
+    private final Segment sF = new Segment("Female", 1);
+   
+	private UiLifecycleHelper uiHelper;
 	private boolean serviceRunning = false;
+
 	public synchronized boolean isServiceRunning() {
 		return serviceRunning;
 	}
@@ -43,6 +81,7 @@ public class MainActivity extends ActionBarActivity {
 
 	private ResponseReceiver receiver;
 	private int[] genderStat;
+
 	public synchronized int[] getGenderStat() {
 		return genderStat;
 	}
@@ -52,6 +91,7 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	private String[] genderSample;
+
 	public synchronized String[] getGenderSample() {
 		return genderSample;
 	}
@@ -61,37 +101,41 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	private static final String TWEET_URL = "http://namesorts.com/api/gendre";
+	private static final String FACEBOOKAPP_NAME = "GendRE App";
 
-
-    private class AnimationRunnable implements Runnable {
-    	public AnimationRunnable(MainActivity activity) {
+	private class AnimationRunnable implements Runnable {
+		public AnimationRunnable(MainActivity activity) {
 			super();
 			this.activity = activity;
 		}
+
 		private final MainActivity activity;
+
 		public synchronized MainActivity getActivity() {
 			return activity;
 		}
+
 		@Override
 		public void run() {
 			String[] sampleOld = null;
-			
-			while( activity.isServiceRunning() ) {
+
+			while (activity.isServiceRunning()) {
 				final String[] sample = activity.getGenderSample();
-				if( sample == null ) {
+				if (sample == null) {
 					try {
 						Thread.sleep(100);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-				} else if( sampleOld == null || !sampleOld[0].equals(sample[0]) || !sampleOld[1].equals(sample[1])  ) {
+				} else if (sampleOld == null || !sampleOld[0].equals(sample[0])
+						|| !sampleOld[1].equals(sample[1])) {
 					runOnUiThread(new Runnable() {
 
-		                @Override
-		                public void run() {
+						@Override
+						public void run() {
 							activity.animateContact(sample);
-		                }
-		            });
+						}
+					});
 					sampleOld = sample;
 					try {
 						Thread.sleep(1000);
@@ -102,6 +146,7 @@ public class MainActivity extends ActionBarActivity {
 			}
 		}
 	};
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -111,19 +156,37 @@ public class MainActivity extends ActionBarActivity {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
+		// dump hash for FB integration
+		dumpHash();
 
-		// launch preferences on first occurrence ?
 		IntentFilter filter = new IntentFilter(ResponseReceiver.ACTION_STATUS);
 		filter.addCategory(Intent.CATEGORY_DEFAULT);
 		receiver = new ResponseReceiver(this);
 		registerReceiver(receiver, filter);
 
+		// FB stuff
+		StatusCallback callback = new StatusCallback() {
+
+			@Override
+			public void call(Session session, SessionState state,
+					Exception exception) {
+				if (exception != null) {
+					Log.e("Activity",
+							String.format("Error: %s", exception.toString()));
+					exception.printStackTrace();
+				}
+			}
+
+		};
+		uiHelper = new UiLifecycleHelper(this, callback);
+		uiHelper.onCreate(savedInstanceState);			
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
 		unregisterReceiver(receiver);
+		uiHelper.onDestroy();
 	}
 
 	@Override
@@ -136,39 +199,43 @@ public class MainActivity extends ActionBarActivity {
 
 	public void animateContact(String[] sample) {
 		TextView textView2 = (TextView) findViewById(R.id.textView2);
-						
+
 		TextView contactView = (TextView) findViewById(R.id.textView_contact);
-		contactView.setText(sample[0]+" "+sample[1]);
-		contactView.setX(textView2.getX()+textView2.getWidth()/2-contactView.getWidth()/2);
-		contactView.setY(textView2.getY()+textView2.getHeight());
+		contactView.setText(sample[0] + " " + sample[1]);
+		contactView.setX(textView2.getX() + textView2.getWidth() / 2
+				- contactView.getWidth() / 2);
+		contactView.setY(textView2.getY() + textView2.getHeight());
 		contactView.setAlpha(0f);
-		
+		contactView.bringToFront();
+
 		TextView textViewVenus = (TextView) findViewById(R.id.textView_venus);
 		TextView textViewMars = (TextView) findViewById(R.id.textView_mars);
-		float distY = textViewMars.getY()-contactView.getY()-contactView.getHeight();
+		float distY = textViewMars.getY() - contactView.getY()
+				- contactView.getHeight();
 		float distX = 0;
-		int gender = Integer.parseInt(sample[3])*2-1;
-		if( gender < 0 ) {
-			distX = (textViewVenus.getX()-contactView.getX())/2;			
+		int gender = Integer.parseInt(sample[3]) * 2 - 1;
+		if (gender < 0) {
+			distX = (textViewVenus.getX() - contactView.getX()) / 2;
 		} else {
-			distX = (textViewMars.getX()+textViewMars.getWidth()-contactView.getX()-contactView.getWidth())/2;			
+			distX = (textViewMars.getX() + textViewMars.getWidth()
+					- contactView.getX() - contactView.getWidth()) / 2;
 		}
-				
+
 		ObjectAnimator fadeIn = ObjectAnimator.ofFloat(contactView, "alpha",
 				0f, 1f);
 		fadeIn.setDuration(300);
 		fadeIn.start();
 
 		ObjectAnimator moveDown1 = ObjectAnimator.ofFloat(contactView,
-				"translationY", 0, distY*2/3);
+				"translationY", 0, 100+distY * 2 / 3);
 		moveDown1.setDuration(300);
 		moveDown1.setInterpolator(new DecelerateInterpolator());
 
 		ObjectAnimator moveDown2 = ObjectAnimator.ofFloat(contactView,
-				"translationY", 0, distY*1/3);
+				"translationY", 0, distY * 1 / 3);
 		moveDown2.setDuration(300);
 		moveDown2.setInterpolator(new AccelerateInterpolator());
-		
+
 		ObjectAnimator moveSide = ObjectAnimator.ofFloat(contactView,
 				"translationX", 0, distX);
 		moveSide.setDuration(300);
@@ -177,11 +244,17 @@ public class MainActivity extends ActionBarActivity {
 		ObjectAnimator fadeOut = ObjectAnimator.ofFloat(contactView, "alpha",
 				0f);
 		fadeOut.setDuration(300);
-		
 
 		AnimatorSet animatorSet = new AnimatorSet();
-		animatorSet.play(fadeOut).after(moveDown2).after(moveSide).after(moveDown1);
+		animatorSet.play(fadeOut).after(moveDown2).after(moveSide)
+				.after(moveDown1);
 		animatorSet.start();
+
+		// redraw pie
+	    pie = (PieChart) findViewById(R.id.mySimplePieChart);
+	    if( pie != null) {
+	    	pie.redraw();		
+	    }
 	}
 
 	@Override
@@ -221,13 +294,13 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	public void startService(View view) {
-		
+
 		Button btn = (Button) view;
 		btn.setText(R.string.btn_genderize_running);
 		btn.setEnabled(false);
 
 		View v = findViewById(R.id.button_stop);
-		Button btnStop = (Button)v ;
+		Button btnStop = (Button) v;
 		btnStop.setEnabled(true);
 		btnStop.setVisibility(Button.VISIBLE);
 
@@ -235,10 +308,118 @@ public class MainActivity extends ActionBarActivity {
 		startService(mServiceIntent);
 		setServiceRunning(true);
 
+		// pie chart stuff
+	    pie = (PieChart) findViewById(R.id.mySimplePieChart);
+        
+        EmbossMaskFilter emf = new EmbossMaskFilter(
+                new float[]{1, 1, 1}, 0.4f, 10, 8.2f);
+
+        SegmentFormatter sf1 = new SegmentFormatter();
+        sf1.configure(getApplicationContext(), R.xml.pie_segment_formatter1);
+
+        sf1.getFillPaint().setMaskFilter(emf);
+
+        SegmentFormatter sf2 = new SegmentFormatter();
+        sf2.configure(getApplicationContext(), R.xml.pie_segment_formatter2);
+
+        sf2.getFillPaint().setMaskFilter(emf);
+
+        SegmentFormatter sf3 = new SegmentFormatter();
+        sf3.configure(getApplicationContext(), R.xml.pie_segment_formatter3);
+
+        sf3.getFillPaint().setMaskFilter(emf);
+
+        pie.addSeries(sF, sf3);
+        pie.addSeries(sU, sf2);
+        pie.addSeries(sM, sf1);
+
+        pie.getBorderPaint().setColor(Color.TRANSPARENT);
+        pie.getBackgroundPaint().setColor(Color.TRANSPARENT);
+        
+		pie.redraw();
+		
 		// start animation
 		Thread t = new Thread(new AnimationRunnable(this));
 		t.start();
-		
+
+	}
+
+	public void facebookThis(View view) {
+		int[] genderStats = getGenderStat();
+		if (genderStats == null) {
+			return;
+		}
+		String shareText = "My Android contacts: " + genderStats[0]
+				+ GenderizeTask.PREFIX_GENDERF + " and " + genderStats[1]
+				+ GenderizeTask.PREFIX_GENDERM + " via GendRE #gender App ";
+		String shareURL = TWEET_URL;
+		FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(this).setDescription(shareText).setApplicationName(FACEBOOKAPP_NAME)
+				.setLink(shareURL).build();
+		uiHelper.trackPendingDialogCall(shareDialog.present());
+	}
+	
+	/* IDEA? make a screenshot for sharing
+	private void screenShot() {
+		View view= findViewById(R.id.relativeLayout); 
+		View v = view.getRootView();
+		v.setDrawingCacheEnabled(true);
+		Bitmap b = v.getDrawingCache();
+		String extr = Environment.getExternalStorageDirectory().toString();
+		File myPath = new File(extr, "snapshot.jpg");
+		FileOutputStream fos = null;
+		try {
+		    fos = new FileOutputStream(myPath);
+		    b.compress(Bitmap.CompressFormat.PNG, 100, fos);
+		    fos.flush();
+		    fos.close();
+		    MediaStore.Images.Media.insertImage(getContentResolver(), b, "Screen", "screen");
+		} catch (FileNotFoundException e) {
+		    // TODO Auto-generated catch block
+		    e.printStackTrace();
+		} catch (Exception e) {
+		    // TODO Auto-generated catch block
+		    e.printStackTrace();
+		}		
+	}*/
+
+	public void gplusThis(View view) {
+		int[] genderStats = getGenderStat();
+		if (genderStats == null) {
+			return;
+
+		}
+		String shareText = "My Android contacts: " + genderStats[0]
+				+ GenderizeTask.PREFIX_GENDERF + " and " + genderStats[1]
+				+ GenderizeTask.PREFIX_GENDERM + " via GendRE #gender App ";
+		String shareURL = TWEET_URL;
+
+		// Launch the Google+ share dialog with attribution to your app.
+		Intent shareIntent = new PlusShare.Builder(this).setType("text/plain")
+				.setText(shareText).setContentUrl(Uri.parse(shareURL))
+				.getIntent();
+
+		startActivityForResult(shareIntent, 0);
+	}
+
+	private void dumpHash() {
+		// Add code to print out the key hash
+		try {
+			PackageInfo info = getPackageManager().getPackageInfo(
+					"com.namsor.api.samples.gendre",
+					PackageManager.GET_SIGNATURES);
+			for (Signature signature : info.signatures) {
+				MessageDigest md = MessageDigest.getInstance("SHA");
+				md.update(signature.toByteArray());
+
+				Log.d("KeyHash:",
+						Base64.encodeToString(md.digest(), Base64.DEFAULT));
+			}
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	public void tweetThis(View view) {
@@ -248,7 +429,7 @@ public class MainActivity extends ActionBarActivity {
 		}
 		String tweetText = "My Android contacts: " + genderStats[0]
 				+ GenderizeTask.PREFIX_GENDERF + " and " + genderStats[1]
-				+ GenderizeTask.PREFIX_GENDERM + " via @gendreapp ";
+				+ GenderizeTask.PREFIX_GENDERM + " via @gendreapp #Gender App";
 		String tweetURL = TWEET_URL;
 		String tweetUrl;
 		try {
@@ -285,6 +466,7 @@ public class MainActivity extends ActionBarActivity {
 		public static final String ATTRVAL_statusType_WIPING = "wiping";
 		public static final String ATTRVAL_statusType_WIPED = "wiped";
 		public static final String ATTRVAL_statusType_STOPPED = "stopped";
+		private static final int REDRAW_MOD = 20;
 
 		private MainActivity activity;
 
@@ -304,11 +486,11 @@ public class MainActivity extends ActionBarActivity {
 					|| statusType.equals(ATTRVAL_statusType_WIPING)) {
 
 				Button btn = (Button) findViewById(R.id.button_genderize);
-				if( statusType.equals(ATTRVAL_statusType_GENDERIZING) ) {
+				if (statusType.equals(ATTRVAL_statusType_GENDERIZING)) {
 					btn.setText(R.string.btn_genderize_running);
-				} else if( statusType.equals(ATTRVAL_statusType_COUNTING) ) {
+				} else if (statusType.equals(ATTRVAL_statusType_COUNTING)) {
 					btn.setText(R.string.btn_genderize_counting);
-				} else if( statusType.equals(ATTRVAL_statusType_WIPING) ) {
+				} else if (statusType.equals(ATTRVAL_statusType_WIPING)) {
 					btn.setText(R.string.btn_genderize_wiping);
 				}
 				btn.setEnabled(false);
@@ -318,12 +500,13 @@ public class MainActivity extends ActionBarActivity {
 				btnStop.setText(R.string.btn_stop);
 				btnStop.setEnabled(true);
 				btnStop.setVisibility(Button.VISIBLE);
-				
+
 				int[] data = intent.getIntArrayExtra(ATTR_genderCount);
 				setGenderStat(data);
-				if( statusType.equals(ATTRVAL_statusType_GENDERIZING) ) {
-					String[] sample = intent.getStringArrayExtra(ATTR_genderSample);
-					if( sample!=null) {
+				if (statusType.equals(ATTRVAL_statusType_GENDERIZING)) {
+					String[] sample = intent
+							.getStringArrayExtra(ATTR_genderSample);
+					if (sample != null) {
 						setGenderSample(sample);
 					}
 				}
@@ -334,14 +517,49 @@ public class MainActivity extends ActionBarActivity {
 					tvf.setText("" + data[0]);
 					tvm.setText("" + data[1]);
 					tvu.setText("" + data[2]);
-
+					sF.setValue(data[0]);
+					sM.setValue(data[1]);
+					sU.setValue(data[2]);
+										
 					if (statusType.equals(ATTRVAL_statusType_GENDERIZED)) {
+						// redraw pie
+					    pie = (PieChart) findViewById(R.id.mySimplePieChart);
+					    if( pie != null) {
+					    	pie.redraw();		
+					    }
+
 						ImageButton btnTweet = (ImageButton) findViewById(R.id.imageButton_tweet);
 						TextView tweetThis = (TextView) findViewById(R.id.textView_tweetthis);
 						btnTweet.setVisibility(Button.VISIBLE);
 						btnTweet.setEnabled(true);
 						tweetThis.setVisibility(TextView.VISIBLE);
 						tweetThis.setEnabled(true);
+						ImageButton btnFacebook = (ImageButton) findViewById(R.id.imageButton_facebook);
+						btnFacebook.setVisibility(Button.VISIBLE);
+						btnFacebook.setEnabled(true);
+						ImageButton btnGPlus = (ImageButton) findViewById(R.id.imageButton_googleplus);
+						btnGPlus.setVisibility(Button.VISIBLE);
+						btnGPlus.setEnabled(true);
+					} else {
+						int count = data[0]+data[1]+data[2];
+						if( count > REDRAW_MOD && count%REDRAW_MOD==0) {
+						    pie = (PieChart) findViewById(R.id.mySimplePieChart);
+						    if( pie != null) {
+						    	pie.redraw();		
+						    }							
+						}
+						ImageButton btnTweet = (ImageButton) findViewById(R.id.imageButton_tweet);
+						TextView tweetThis = (TextView) findViewById(R.id.textView_tweetthis);
+						btnTweet.setVisibility(Button.INVISIBLE);
+						btnTweet.setEnabled(false);
+						tweetThis.setVisibility(TextView.INVISIBLE);
+						tweetThis.setEnabled(false);
+						ImageButton btnFacebook = (ImageButton) findViewById(R.id.imageButton_facebook);
+						btnFacebook.setVisibility(Button.INVISIBLE);
+						btnFacebook.setEnabled(false);
+						ImageButton btnGPlus = (ImageButton) findViewById(R.id.imageButton_googleplus);
+						btnGPlus.setVisibility(Button.INVISIBLE);
+						btnGPlus.setEnabled(false);
 					}
 				}
 			} else if (statusType.equals(ATTRVAL_statusType_STOPPED)) {
@@ -385,4 +603,23 @@ public class MainActivity extends ActionBarActivity {
 	public void stopService(View view) {
 		stopService();
 	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		uiHelper.onResume();
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		uiHelper.onSaveInstanceState(outState);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		uiHelper.onPause();
+	}
+
 }

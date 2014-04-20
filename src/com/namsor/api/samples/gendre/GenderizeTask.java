@@ -8,10 +8,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -318,6 +320,7 @@ public class GenderizeTask extends IntentService {
 		if (wipe) {
 			throw new IllegalStateException("wipe & genderize at the same time");
 		}
+		//Set<String> namesUnique = new HashSet();
 		ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
 		Cursor c = getContentResolver()
 				.query(ContactsContract.Data.CONTENT_URI,
@@ -355,14 +358,19 @@ public class GenderizeTask extends IntentService {
 			String givenName = c.getString(i++);
 			String familyName = c.getString(i++);
 
-			if (prefix != null && !prefix.isEmpty()) {
+			if (prefix != null && !prefix.isEmpty() ) {
+					//&& !namesUnique.contains(givenName+" "+familyName) ) {
+				
 				// never override an existing prefix / phonetic name
 				if (prefix.equals(GENDER_STYLES[genderStyle][0])) {
 					genderizedCount[0]++;
+					//namesUnique.add(givenName+" "+familyName);
 				} else if (prefix.equals(GENDER_STYLES[genderStyle][1])) {
 					genderizedCount[1]++;
+					//namesUnique.add(givenName+" "+familyName);					
 				} else if (prefix.equals(GENDER_STYLES[genderStyle][2])) {
 					genderizedCount[2]++;
+					//namesUnique.add(givenName+" "+familyName);
 				}
 				Intent broadcastIntent = new Intent();
 				broadcastIntent
@@ -417,14 +425,23 @@ public class GenderizeTask extends IntentService {
 					genderizedPrefix = (gender > 0 ? GENDER_STYLES[genderStyle][0]
 							: GENDER_STYLES[genderStyle][1]);
 					if (gender > 0) {
-						genderizedCount[0]++;
+						//if( !namesUnique.contains(firstName+" "+lastName) ) {
+							genderizedCount[0]++;
+							//namesUnique.add(firstName+" "+lastName);
+						//}
 						genderIndex = 0;
 					} else {
-						genderizedCount[1]++;
+						//if( !namesUnique.contains(firstName+" "+lastName) ) {
+							genderizedCount[1]++;
+							//namesUnique.add(firstName+" "+lastName);
+						//}
 						genderIndex = 1;
 					}
 				} else {
-					genderizedCount[2]++;
+					//if( !namesUnique.contains(firstName+" "+lastName) ) {
+						genderizedCount[2]++;
+						//namesUnique.add(firstName+" "+lastName);
+					//}
 					genderIndex = 2;
 				}
 				ops.add(ContentProviderOperation
@@ -660,6 +677,5 @@ public class GenderizeTask extends IntentService {
 			}
 		}
 	};
-	
-	
+		
 }
