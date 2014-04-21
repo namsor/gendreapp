@@ -2,10 +2,10 @@
 
 Predict gender from contact name. Gendre enriches Android contact titles (Mr., Ms., M.) with the gender inferred from a contact name.
 
-![GenderApp](https://raw.githubusercontent.com/namsor/gendreapp/master/ic_launcher-web.png)
+![GenderApp](https://raw.githubusercontent.com/namsor/gendreapp/master/gendre_logo_v128.png)
 
-Get Gendre_v005 now:
-https://raw.githubusercontent.com/namsor/gendreapp/master/dist/Gendre_v005.apk
+Get Gendre_v006 now:
+https://raw.githubusercontent.com/namsor/gendreapp/master/dist/Gendre_v006.apk
 
 Get the latest dev version:
 https://raw.githubusercontent.com/namsor/gendreapp/master/bin/Gendre.apk
@@ -13,11 +13,15 @@ https://raw.githubusercontent.com/namsor/gendreapp/master/bin/Gendre.apk
 We recommend backing up your contacts before running the program.
 
 ## Features
-- Possibility to choose between three Title formats : Classic (Ms.,Mr.,M.), Gender (♀,♂,∅), Heart (♥,♤,♢)
+- Possibility to choose between three Title formats : Classic (Ms.,Mr.,M.), Gender (♀,♂,∅), Heart (♥,♤,♢), Chinese (女, 男) or Custom
 - The gender prediction runs as a background service (every 10 sec, or 1 min, or 10 min or 1 hour)
 - Your existing Title data (Mr., Dr. etc.) is not overwritten, unless you specifically request a wipe 
 - Once all contacts are genderized, the App shows a summary of how many Female / Male contacts were detected
-- You can share this #funstat on Twitter, if you like
+- You can share this #funstat on Twitter, G+, Facebook if you like
+
+## Known issues
+- Facebook contacts don't seem to be synchronized in Android the way other contacts are synchronized (LinkedIn, Google,...)
+http://stackoverflow.com/questions/23195352/query-android-contacts-synchronized-from-facebook
 
 ## Gender API
 GenderApp uses the GendreAPI for name gender prediction. This is a free Application Programming Interface (API) to predict the gender of a personal name on a -1 (Male) to +1 (Female) scale, for a given geography/locale. You can test it directly from your web browser, entering this kind URL:
