@@ -17,6 +17,9 @@ import com.androidplot.pie.Segment;
 import com.androidplot.pie.SegmentFormatter;
 import com.facebook.Session;
 import com.facebook.Session.StatusCallback;
+import com.facebook.HttpMethod;
+import com.facebook.Request;
+import com.facebook.Response;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 import com.facebook.widget.FacebookDialog;
@@ -63,13 +66,15 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 
 public class MainActivity extends ActionBarActivity {
-	
-    private PieChart pie;
 
-    private final Segment sM = new Segment("♂", 1);
-    private final Segment sU = new Segment("", 1);
-    private final Segment sF = new Segment("♀", 1);
-   
+	private static final String TAG = "MainActivity";
+
+	private PieChart pie;
+
+	private final Segment sM = new Segment("♂", 1);
+	private final Segment sU = new Segment("", 1);
+	private final Segment sF = new Segment("♀", 1);
+
 	private UiLifecycleHelper uiHelper;
 	private boolean serviceRunning = false;
 
@@ -181,7 +186,7 @@ public class MainActivity extends ActionBarActivity {
 
 		};
 		uiHelper = new UiLifecycleHelper(this, callback);
-		uiHelper.onCreate(savedInstanceState);			
+		uiHelper.onCreate(savedInstanceState);
 	}
 
 	@Override
@@ -229,7 +234,7 @@ public class MainActivity extends ActionBarActivity {
 		fadeIn.start();
 
 		ObjectAnimator moveDown1 = ObjectAnimator.ofFloat(contactView,
-				"translationY", 0, 100+distY * 2 / 3);
+				"translationY", 0, 100 + distY * 2 / 3);
 		moveDown1.setDuration(300);
 		moveDown1.setInterpolator(new DecelerateInterpolator());
 
@@ -253,10 +258,10 @@ public class MainActivity extends ActionBarActivity {
 		animatorSet.start();
 
 		// redraw pie
-	    pie = (PieChart) findViewById(R.id.mySimplePieChart);
-	    if( pie != null) {
-	    	pie.redraw();		
-	    }
+		pie = (PieChart) findViewById(R.id.mySimplePieChart);
+		if (pie != null) {
+			pie.redraw();
+		}
 	}
 
 	@Override
@@ -296,51 +301,109 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	private void hidePie() {
-		if( pie == null ) {
+		if (pie == null) {
 			// pie chart stuff
-		    pie = (PieChart) findViewById(R.id.mySimplePieChart);
-	        if( pie == null ) {
-	        	return;
-	        }
-	        pie.setVisibility(PieChart.INVISIBLE);
+			pie = (PieChart) findViewById(R.id.mySimplePieChart);
+			if (pie == null) {
+				return;
+			}
+			pie.setVisibility(PieChart.INVISIBLE);
 		}
 	}
+
 	private void drawPie() {
-		if( pie == null ) {
+		if (pie == null) {
 			// pie chart stuff
-		    pie = (PieChart) findViewById(R.id.mySimplePieChart);
-	        if( pie == null ) {
-	        	return;
-	        }
-	        //EmbossMaskFilter emf = new EmbossMaskFilter(new float[]{1, 1, 1}, 0.4f, 10, 8.2f);
+			pie = (PieChart) findViewById(R.id.mySimplePieChart);
+			if (pie == null) {
+				return;
+			}
+			// EmbossMaskFilter emf = new EmbossMaskFilter(new float[]{1, 1, 1},
+			// 0.4f, 10, 8.2f);
 
-	        SegmentFormatter sFFormat = new SegmentFormatter();
-	        sFFormat.configure(getApplicationContext(), R.xml.pie_segment_formatter3);
+			SegmentFormatter sFFormat = new SegmentFormatter();
+			sFFormat.configure(getApplicationContext(),
+					R.xml.pie_segment_formatter3);
 
-	        SegmentFormatter sUFormat = new SegmentFormatter();
-	        sUFormat.configure(getApplicationContext(), R.xml.pie_segment_formatter2);
+			SegmentFormatter sUFormat = new SegmentFormatter();
+			sUFormat.configure(getApplicationContext(),
+					R.xml.pie_segment_formatter2);
 
-	        SegmentFormatter sMFormat = new SegmentFormatter();
-	        sMFormat.configure(getApplicationContext(), R.xml.pie_segment_formatter1);
+			SegmentFormatter sMFormat = new SegmentFormatter();
+			sMFormat.configure(getApplicationContext(),
+					R.xml.pie_segment_formatter1);
 
-	        pie.addSeries(sM, sMFormat);
-	        pie.addSeries(sF, sFFormat);
-	        pie.addSeries(sU, sUFormat);
-	        // bug: will be fixed
-	        //pie.getRenderer(PieRenderer.class).setDonutSize(0, DonutMode.PERCENT);
+			pie.addSeries(sM, sMFormat);
+			pie.addSeries(sF, sFFormat);
+			pie.addSeries(sU, sUFormat);
+			// bug: will be fixed
+			// pie.getRenderer(PieRenderer.class).setDonutSize(0,
+			// DonutMode.PERCENT);
 
-	        pie.getBorderPaint().setColor(Color.TRANSPARENT);
-	        pie.getBackgroundPaint().setColor(Color.TRANSPARENT);
-	        
-	        pie.setVisibility(PieChart.VISIBLE);
+			pie.getBorderPaint().setColor(Color.TRANSPARENT);
+			pie.getBackgroundPaint().setColor(Color.TRANSPARENT);
+
+			pie.setVisibility(PieChart.VISIBLE);
 		} else {
-			pie.redraw();			
+			pie.redraw();
+		}
+	}
+
+	private void onSessionStateChange(Session session, SessionState state,
+			Exception exception) {
+		if (state.isOpened()) {
+			// Facebook logged in...
+			Log.i(TAG, "Facebook logged in");
+			startService();
+		} else if (state.isClosed()) {
+			// Facebook logged out...
+			Log.i(TAG, "Facebook logged out");
+		}
+	}
+
+	public void facebookConnect() {
+		Session.StatusCallback statusCallback = new Session.StatusCallback() {
+			// callback when session changes state
+			@Override
+			public void call(Session session, SessionState state,
+					Exception exception) {
+				onSessionStateChange(session, state, exception);
+			}
+		};
+		Session session = Session.getActiveSession();
+		if (!session.isOpened() && !session.isClosed()) {
+			System.out.println("here");
+			session.openForRead(new Session.OpenRequest(this)
+					.setCallback(statusCallback));
+		} else {
+			Session.openActiveSession(this, true, statusCallback);
+		}
+	}
+
+	private boolean isAppInstalled(String uri) {
+		PackageManager pm = getPackageManager();
+		boolean installed = false;
+		try {
+			pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+			installed = true;
+		} catch (PackageManager.NameNotFoundException e) {
+			installed = false;
+		}
+		return installed;
+	}
+
+	public void startService(View view) {
+		// if facebook is installed try to connect, the callback will start the service
+		if( isAppInstalled("com.facebook.katana") ) {
+			facebookConnect();
+		} else {
+			startService();
 		}
 	}
 	
-	public void startService(View view) {
-
-		Button btn = (Button) view;
+	public void startService() {
+	
+		Button btn = (Button) findViewById(R.id.button_genderize);
 		btn.setText(R.string.btn_genderize_running);
 		btn.setEnabled(false);
 
@@ -355,7 +418,7 @@ public class MainActivity extends ActionBarActivity {
 
 		// draw pie
 		drawPie();
-		
+
 		// start animation
 		Thread t = new Thread(new AnimationRunnable(this));
 		t.start();
@@ -371,34 +434,25 @@ public class MainActivity extends ActionBarActivity {
 				+ GenderizeTask.PREFIX_GENDERF + " and " + genderStats[1]
 				+ GenderizeTask.PREFIX_GENDERM + " via GendRE #gender App ";
 		String shareURL = TWEET_URL;
-		FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(this).setDescription(shareText).setApplicationName(FACEBOOKAPP_NAME)
+		FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(this)
+				.setDescription(shareText).setApplicationName(FACEBOOKAPP_NAME)
 				.setLink(shareURL).build();
 		uiHelper.trackPendingDialogCall(shareDialog.present());
 	}
-	
-	/* IDEA? make a screenshot for sharing
-	private void screenShot() {
-		View view= findViewById(R.id.relativeLayout); 
-		View v = view.getRootView();
-		v.setDrawingCacheEnabled(true);
-		Bitmap b = v.getDrawingCache();
-		String extr = Environment.getExternalStorageDirectory().toString();
-		File myPath = new File(extr, "snapshot.jpg");
-		FileOutputStream fos = null;
-		try {
-		    fos = new FileOutputStream(myPath);
-		    b.compress(Bitmap.CompressFormat.PNG, 100, fos);
-		    fos.flush();
-		    fos.close();
-		    MediaStore.Images.Media.insertImage(getContentResolver(), b, "Screen", "screen");
-		} catch (FileNotFoundException e) {
-		    // TODO Auto-generated catch block
-		    e.printStackTrace();
-		} catch (Exception e) {
-		    // TODO Auto-generated catch block
-		    e.printStackTrace();
-		}		
-	}*/
+
+	/*
+	 * IDEA? make a screenshot for sharing private void screenShot() { View
+	 * view= findViewById(R.id.relativeLayout); View v = view.getRootView();
+	 * v.setDrawingCacheEnabled(true); Bitmap b = v.getDrawingCache(); String
+	 * extr = Environment.getExternalStorageDirectory().toString(); File myPath
+	 * = new File(extr, "snapshot.jpg"); FileOutputStream fos = null; try { fos
+	 * = new FileOutputStream(myPath); b.compress(Bitmap.CompressFormat.PNG,
+	 * 100, fos); fos.flush(); fos.close();
+	 * MediaStore.Images.Media.insertImage(getContentResolver(), b, "Screen",
+	 * "screen"); } catch (FileNotFoundException e) { // TODO Auto-generated
+	 * catch block e.printStackTrace(); } catch (Exception e) { // TODO
+	 * Auto-generated catch block e.printStackTrace(); } }
+	 */
 
 	public void gplusThis(View view) {
 		int[] genderStats = getGenderStat();
@@ -428,9 +482,9 @@ public class MainActivity extends ActionBarActivity {
 			for (Signature signature : info.signatures) {
 				MessageDigest md = MessageDigest.getInstance("SHA");
 				md.update(signature.toByteArray());
-
-				Log.d("KeyHash:",
-						Base64.encodeToString(md.digest(), Base64.DEFAULT));
+				String keyHash = Base64.encodeToString(md.digest(),
+						Base64.DEFAULT);
+				Log.d("KeyHash:", keyHash);
 			}
 		} catch (NameNotFoundException e) {
 			e.printStackTrace();
@@ -556,8 +610,9 @@ public class MainActivity extends ActionBarActivity {
 						btnGPlus.setVisibility(Button.VISIBLE);
 						btnGPlus.setEnabled(true);
 					} else {
-						int count = data[0]+data[1]+data[2];
-						if( pie == null || count > REDRAW_MOD && count%REDRAW_MOD==0) {
+						int count = data[0] + data[1] + data[2];
+						if (pie == null || count > REDRAW_MOD
+								&& count % REDRAW_MOD == 0) {
 							// redraw pie
 							drawPie();
 						}
@@ -633,6 +688,12 @@ public class MainActivity extends ActionBarActivity {
 	public void onPause() {
 		super.onPause();
 		uiHelper.onPause();
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		uiHelper.onActivityResult(requestCode, resultCode, data);
 	}
 
 }

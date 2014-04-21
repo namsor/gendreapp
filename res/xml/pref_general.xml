@@ -35,5 +35,11 @@
 	    android:enabled="false" 
 	    android:title="@string/pref_title_custom_u" 
 	    />    
-		
+
+	<CheckBoxPreference
+        android:defaultValue="true"
+        android:key="read_facebook"
+        android:summary="@string/pref_description_read_facebook"
+        android:title="@string/pref_title_read_facebook" />
+			
 </PreferenceScreen>

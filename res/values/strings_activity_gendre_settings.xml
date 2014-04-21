@@ -13,6 +13,8 @@
     <string name="pref_title_custom_f">Female title</string>
     <string name="pref_title_custom_m">Male title</string>
     <string name="pref_title_custom_u">Unknown title</string>
+    <string name="pref_title_read_facebook">Include Facebook?</string>
+    <string name="pref_description_read_facebook">Include Facebook contacts in overall stats.</string>
     
     <string-array name="pref_example_list_titles">
         <item>Classic (Ms.,Mr.,M.)</item>

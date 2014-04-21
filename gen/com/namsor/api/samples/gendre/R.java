@@ -1736,10 +1736,11 @@ containing a value of this type.
         /**  Location client code resources (prefix with location_client) 
          */
         public static final int location_client_powered_by_google=0x7f090033;
+        public static final int pref_description_read_facebook=0x7f090057;
         public static final int pref_description_social_recommendations=0x7f090051;
         /**  Example settings for Data & Sync 
          */
-        public static final int pref_header_data_sync=0x7f090056;
+        public static final int pref_header_data_sync=0x7f090058;
         /**  Strings related to Settings 
  Example General settings 
          */
@@ -1748,8 +1749,9 @@ containing a value of this type.
         public static final int pref_title_custom_f=0x7f090053;
         public static final int pref_title_custom_m=0x7f090054;
         public static final int pref_title_custom_u=0x7f090055;
+        public static final int pref_title_read_facebook=0x7f090056;
         public static final int pref_title_social_recommendations=0x7f090050;
-        public static final int pref_title_sync_frequency=0x7f090057;
+        public static final int pref_title_sync_frequency=0x7f090059;
         public static final int sharethis=0x7f09004c;
         public static final int title_activity_gendre_settings=0x7f09004e;
         public static final int txt_quote=0x7f09004d;

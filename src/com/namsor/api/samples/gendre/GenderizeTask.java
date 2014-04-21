@@ -18,7 +18,15 @@ import java.util.Set;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import com.facebook.HttpMethod;
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.model.GraphObject;
 import com.namsor.api.samples.gendre.MainActivity.ResponseReceiver;
 
 import android.app.IntentService;
@@ -28,7 +36,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.OperationApplicationException;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
@@ -41,6 +52,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class GenderizeTask extends IntentService {
+	// need to manually change this before releasing
+	private static final String ATTVALUE_ClientAppVersion = "GendRE_app_v0.0.6";
+	
 	Handler mHandler = new Handler();
 
 	public class DisplayToast implements Runnable {
@@ -59,6 +73,7 @@ public class GenderizeTask extends IntentService {
 
 	// private static final Random RND = new Random();
 	private final String xLocale;
+	private final String xCountry;
 	private static final long SECONDS = 1000;
 	private static final long SLEEPER_DEFAULT = 10;
 	// sleeper : in seconds
@@ -92,14 +107,14 @@ public class GenderizeTask extends IntentService {
 	private static final String PREFIX_CUSTOMF = "%f";
 	private static final String PREFIX_CUSTOMM = "%m";
 	private static final String PREFIX_CUSTOMU = "%u"; // check this
-	
+
 	private static final String PREFIX_NONE = "";
 
 	private static final boolean WIPE_DEFAULT = false;
 	private boolean wipe = WIPE_DEFAULT;
 
 	// max number of moving error count
-	private static final int ERROR_COUNT_MOVING_MAX = 10;	
+	private static final int ERROR_COUNT_MOVING_MAX = 10;
 
 	private static final String[][] GENDER_STYLES = {
 			{ PREFIX_MS, PREFIX_MR, PREFIX_UNKNOWN },
@@ -111,6 +126,8 @@ public class GenderizeTask extends IntentService {
 
 	private static final String ATTR_XBatchRequest = "X-BatchRequest-Id";
 	private static final String ATTR_XLocale = "X-Locale";
+	private static final String ATTR_XHint = "X-Hint";
+	private static final String ATTR_XClientVersion = "X-Client-Version";
 	private long batchRequestId = -1;
 
 	private boolean stopRequested = false;
@@ -125,10 +142,11 @@ public class GenderizeTask extends IntentService {
 	public GenderizeTask() {
 		super("genderize");
 		xLocale = Locale.getDefault().toString();
+		xCountry = Locale.getDefault().getCountry();
 	}
 
 	private ActivityReceiver receiver;
-	
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -138,12 +156,10 @@ public class GenderizeTask extends IntentService {
 		registerReceiver(receiver, filter);
 		
 	}
-	
 
-	
 	@Override
 	public void onDestroy() {
-	    unregisterReceiver(receiver);
+		unregisterReceiver(receiver);
 		super.onDestroy();
 	}
 
@@ -158,7 +174,7 @@ public class GenderizeTask extends IntentService {
 	 * @param lastName
 	 * @return
 	 */
-	public Double genderize(String firstName, String lastName) {
+	public Double genderize(String firstName, String lastName, String hint) {
 		Double result = CACHE.get(firstName + "/" + lastName);
 		if (result != null) {
 			return result;
@@ -173,13 +189,19 @@ public class GenderizeTask extends IntentService {
 			String url = "http://api.onomatic.com/onomastics/api/gendre/"
 					+ URLEncoder.encode(firstName, "UTF-8") + "/"
 					+ URLEncoder.encode(lastName, "UTF-8");
+			if (xCountry != null && xCountry.length() == 2) {
+				url = url + "/" + xCountry;
+			}
 			if (BuildConfig.DEBUG) {
 				Log.d(TAG, "Getting " + url);
 			}
 			HttpGet httpget = new HttpGet(url);
 			httpget.addHeader(ATTR_XBatchRequest, "" + batchRequestId);
 			httpget.addHeader(ATTR_XLocale, "" + xLocale);
-
+			if(hint!=null&&!hint.trim().isEmpty()) {
+				httpget.addHeader(ATTR_XHint, hint);
+			}
+			httpget.addHeader(ATTR_XClientVersion, ATTVALUE_ClientAppVersion);
 			HttpResponse response = httpclient.execute(httpget);
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					response.getEntity().getContent()));
@@ -220,14 +242,19 @@ public class GenderizeTask extends IntentService {
 						Data.MIMETYPE
 								+ "='"
 								+ ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE
-								+ "'", null, null);
+								+ "'"
+								+ " AND "
+								+ ContactsContract.CommonDataKinds.StructuredName.PREFIX
+								+ " IS NOT NULL",
+						null,
+						ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME);
 		int cCount = c.getCount();
 		if (BuildConfig.DEBUG && cCount > 0) {
 			Log.d(TAG, "Wiping " + cCount + " contacts");
 		}
 		int iCount = 0;
 		List<Object[]> wipeTodo = new ArrayList();
-		while (c.moveToNext() && !isStopRequested() ) {
+		while (c.moveToNext() && !isStopRequested()) {
 			int i = 0;
 			String rawContactId = c.getString(i++);
 			String contactId = c.getString(i++);
@@ -257,18 +284,18 @@ public class GenderizeTask extends IntentService {
 						wipeTodo.add(toWipe);
 						break;
 					}
-					if( isStopRequested() ) {
+					if (isStopRequested()) {
 						break;
 					}
 				}
-				if( isStopRequested() ) {
+				if (isStopRequested()) {
 					break;
 				}
 			}
 		}
 		c.close();
 		for (Object[] toWipe : wipeTodo) {
-			if( isStopRequested() ) {
+			if (isStopRequested()) {
 				break;
 			}
 			ops.add(ContentProviderOperation
@@ -316,11 +343,100 @@ public class GenderizeTask extends IntentService {
 				+ " titles."));
 	}
 
+	private List<String[]> facebookContacts() {
+		boolean includeFacebook = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
+				"read_facebook", true);
+		if( ! includeFacebook ) {
+			return null;
+		}
+
+		Session session = Session.getActiveSession();
+		if (session.isOpened()) {
+			mHandler.post(new DisplayToast(this, "Get Facebook contacts"));
+		} else {
+			mHandler.post(new DisplayToast(this,
+					"SKIP: Facebook contacts (logged out)"));
+			return null;
+		}
+		List<String[]> facebookContacts = new ArrayList();
+		try {
+			String fqlQuery = "SELECT uid, name, sex FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me())";
+			Bundle params = new Bundle();
+			params.putString("q", fqlQuery);
+
+			Request request = new Request(session, "/fql", params,
+					HttpMethod.GET);
+			Response response = Request.executeAndWait(request);
+			GraphObject graphObject = response.getGraphObject();
+			if (graphObject != null) {
+				// clear contacts
+				JSONObject jsonObject = graphObject.getInnerJSONObject();
+				JSONArray jsonArray = jsonObject.getJSONArray("data");
+				for (int i = 0; i < jsonArray.length(); i++) {
+					JSONObject object = jsonArray.getJSONObject(i);
+					String userFriendId = object.getString("uid");
+					String userFriendName = object.getString("name");
+					String userFriendSex = object.getString("sex");
+					String[] fbContact = { userFriendId, userFriendName,
+							userFriendSex };
+					facebookContacts.add(fbContact);
+				}
+				mHandler.post(new DisplayToast(this, "Got "
+						+ jsonArray.length() + " Facebook contacts"));
+			}
+			
+			// try reading facebook just once
+			PreferenceManager.getDefaultSharedPreferences(this).edit()
+			.putBoolean("read_facebook", false).commit();
+			return facebookContacts;
+		} catch (Exception ex) {
+			String msg = "Error getting FB contacts "+ex.getMessage();
+			Log.e(TAG,msg,ex);
+			mHandler.post(new DisplayToast(this, msg));
+		}
+		// for now close and clear
+		// session.closeAndClearTokenInformation();
+		return null;
+	}
+	
+	private void emulateGenderize(List<String[]> genderizeTodo, List<String[]> facebookContacts) {
+		for (String[] fbContact : facebookContacts) {
+			String contactName = fbContact[1];
+			String[] nameData = contactName.split(" ");
+			String firstName = contactName;
+			String lastName = xCountry;
+			if( nameData.length == 2 ) {
+				firstName = nameData[0];
+				lastName = nameData[1];
+			}
+			String hint = fbContact[2];
+			String[] todo = {
+					null, // not RAW_CONTACT_ID here ...
+					firstName,
+					lastName,
+					hint
+			};
+			genderizeTodo.add(todo);
+		}
+	}
+	
+
 	private boolean genderizeContacts() {
 		if (wipe) {
 			throw new IllegalStateException("wipe & genderize at the same time");
 		}
-		//Set<String> namesUnique = new HashSet();
+		List<String[]> genderizeTodo = new ArrayList();
+		
+		List<String[]> facebookContacts = null;
+		if (isAppInstalled("com.facebook.katana") ) {
+			// try and get FB contacts
+			facebookContacts = facebookContacts();
+			if( facebookContacts!=null ) {
+				emulateGenderize(genderizeTodo, facebookContacts);
+			}
+		}
+
+		// Set<String> namesUnique = new HashSet();
 		ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
 		Cursor c = getContentResolver()
 				.query(ContactsContract.Data.CONTENT_URI,
@@ -331,23 +447,31 @@ public class GenderizeTask extends IntentService {
 								Data.MIMETYPE,
 								ContactsContract.CommonDataKinds.StructuredName.PREFIX,
 								ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME,
-								ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME },
+								ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME,
+						// ContactsContract.RawContacts.ACCOUNT_NAME,
+						// ContactsContract.RawContacts.ACCOUNT_TYPE,
+						},
 						Data.MIMETYPE
 								+ "='"
 								+ ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE
 								+ "'"
+								+ " AND "
+								+ ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME
+								+ " IS NOT NULL "
 								+ (genderizedCount == null ? ""
 										: " AND "
 												+ ContactsContract.CommonDataKinds.StructuredName.PREFIX
-												+ " IS NULL"), null, ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME);
+												+ " IS NULL"),
+						null,
+						ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME);
+
 		int cCount = c.getCount();
 		if (BuildConfig.DEBUG && cCount > 0) {
-			Log.d(TAG, "Got " + cCount + " contacts");
+			Log.d(TAG, "Got " + cCount + " android contacts");
 		}
 		if (genderizedCount == null) {
 			genderizedCount = new int[3];
 		}
-		List<String[]> genderizeTodo = new ArrayList();
 		while (c.moveToNext() && !isStopRequested()) {
 			int i = 0;
 			String rawContactId = c.getString(i++);
@@ -357,20 +481,21 @@ public class GenderizeTask extends IntentService {
 			String prefix = c.getString(i++);
 			String givenName = c.getString(i++);
 			String familyName = c.getString(i++);
+			// String accountName = c.getString(i++);
+			// String accountType = c.getString(i++);
+			if (prefix != null && !prefix.isEmpty()) {
+				// && !namesUnique.contains(givenName+" "+familyName) ) {
 
-			if (prefix != null && !prefix.isEmpty() ) {
-					//&& !namesUnique.contains(givenName+" "+familyName) ) {
-				
 				// never override an existing prefix / phonetic name
 				if (prefix.equals(GENDER_STYLES[genderStyle][0])) {
 					genderizedCount[0]++;
-					//namesUnique.add(givenName+" "+familyName);
+					// namesUnique.add(givenName+" "+familyName);
 				} else if (prefix.equals(GENDER_STYLES[genderStyle][1])) {
 					genderizedCount[1]++;
-					//namesUnique.add(givenName+" "+familyName);					
+					// namesUnique.add(givenName+" "+familyName);
 				} else if (prefix.equals(GENDER_STYLES[genderStyle][2])) {
 					genderizedCount[2]++;
-					//namesUnique.add(givenName+" "+familyName);
+					// namesUnique.add(givenName+" "+familyName);
 				}
 				Intent broadcastIntent = new Intent();
 				broadcastIntent
@@ -388,10 +513,11 @@ public class GenderizeTask extends IntentService {
 			} else if (givenName != null && !givenName.isEmpty()
 					&& givenName.length() > 1 && familyName != null
 					&& !familyName.isEmpty() && familyName.length() > 1) {
-				String[] todo = new String[3];
+				String[] todo = new String[4];
 				todo[0] = rawContactId;
 				todo[1] = givenName;
 				todo[2] = familyName;
+				todo[3] = null; // no hint, but idea to use later existing title when WIPE=true
 				genderizeTodo.add(todo);
 			}
 		}
@@ -404,16 +530,16 @@ public class GenderizeTask extends IntentService {
 		int errCountMoving = 0;
 		Collections.shuffle(genderizeTodo);
 		for (String[] todo : genderizeTodo) {
-			if( isStopRequested() ) {
+			if (isStopRequested()) {
 				break;
-			}			
+			}
 			String rawContactId = todo[0];
 			String firstName = todo[1];
 			String lastName = todo[2];
-
+			String hint = todo[3];
 			firstName = firstName.replace('/', ' ');
 			lastName = lastName.replace('/', ' ');
-			Double gender = genderize(firstName, lastName);
+			Double gender = genderize(firstName, lastName, hint);
 			if (gender != null) {
 				iCount++;
 				if (errCountMoving > 0) {
@@ -425,37 +551,39 @@ public class GenderizeTask extends IntentService {
 					genderizedPrefix = (gender > 0 ? GENDER_STYLES[genderStyle][0]
 							: GENDER_STYLES[genderStyle][1]);
 					if (gender > 0) {
-						//if( !namesUnique.contains(firstName+" "+lastName) ) {
-							genderizedCount[0]++;
-							//namesUnique.add(firstName+" "+lastName);
-						//}
+						// if( !namesUnique.contains(firstName+" "+lastName) ) {
+						genderizedCount[0]++;
+						// namesUnique.add(firstName+" "+lastName);
+						// }
 						genderIndex = 0;
 					} else {
-						//if( !namesUnique.contains(firstName+" "+lastName) ) {
-							genderizedCount[1]++;
-							//namesUnique.add(firstName+" "+lastName);
-						//}
+						// if( !namesUnique.contains(firstName+" "+lastName) ) {
+						genderizedCount[1]++;
+						// namesUnique.add(firstName+" "+lastName);
+						// }
 						genderIndex = 1;
 					}
 				} else {
-					//if( !namesUnique.contains(firstName+" "+lastName) ) {
-						genderizedCount[2]++;
-						//namesUnique.add(firstName+" "+lastName);
-					//}
+					// if( !namesUnique.contains(firstName+" "+lastName) ) {
+					genderizedCount[2]++;
+					// namesUnique.add(firstName+" "+lastName);
+					// }
 					genderIndex = 2;
 				}
-				ops.add(ContentProviderOperation
-						.newUpdate(ContactsContract.Data.CONTENT_URI)
-						.withSelection(
-								ContactsContract.Data.RAW_CONTACT_ID
-										+ "=? AND "
-										+ ContactsContract.Data.MIMETYPE + "=?",
-								new String[] {
-										rawContactId,
-										ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE })
-						.withValue(
-								ContactsContract.CommonDataKinds.StructuredName.PREFIX,
-								genderizedPrefix).build());
+				if( rawContactId!= null ) { // facebook contacts not saved for now
+					ops.add(ContentProviderOperation
+							.newUpdate(ContactsContract.Data.CONTENT_URI)
+							.withSelection(
+									ContactsContract.Data.RAW_CONTACT_ID
+											+ "=? AND "
+											+ ContactsContract.Data.MIMETYPE + "=?",
+									new String[] {
+											rawContactId,
+											ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE })
+							.withValue(
+									ContactsContract.CommonDataKinds.StructuredName.PREFIX,
+									genderizedPrefix).build());					
+				}
 
 				// processing done here
 				Intent broadcastIntent = new Intent();
@@ -469,16 +597,15 @@ public class GenderizeTask extends IntentService {
 						.putExtra(
 								MainActivity.ResponseReceiver.ATTR_statusType,
 								MainActivity.ResponseReceiver.ATTRVAL_statusType_GENDERIZING);
-				if( genderIndex < 2) {
+				if (genderIndex < 2) {
 					String[] genderSample = new String[4];
 					genderSample[0] = firstName;
 					genderSample[1] = lastName;
 					genderSample[2] = genderizedPrefix;
-					genderSample[3] = ""+genderIndex;
-					broadcastIntent
-					.putExtra(
+					genderSample[3] = "" + genderIndex;
+					broadcastIntent.putExtra(
 							MainActivity.ResponseReceiver.ATTR_genderSample,
-							genderSample);					
+							genderSample);
 				}
 				sendBroadcast(broadcastIntent);
 				if (iCount % COMMIT_SIZE == 0) {
@@ -511,6 +638,7 @@ public class GenderizeTask extends IntentService {
 		}
 	}
 
+
 	protected void onHandleIntent(Intent arg0) {
 		// TODO Auto-generated method stub
 		batchRequestId = PreferenceManager.getDefaultSharedPreferences(this)
@@ -531,21 +659,17 @@ public class GenderizeTask extends IntentService {
 
 		mHandler.post(new DisplayToast(this, "Starting genderizing"));
 
-		
-		String genderStyleF = PreferenceManager
-				.getDefaultSharedPreferences(this).getString("custom_f",
-						"Ms.");
-		String genderStyleM = PreferenceManager
-				.getDefaultSharedPreferences(this).getString("custom_m",
-						"Mr.");
-		String genderStyleU = PreferenceManager
-				.getDefaultSharedPreferences(this).getString("custom_u",
-						"M.");
-		
+		String genderStyleF = PreferenceManager.getDefaultSharedPreferences(
+				this).getString("custom_f", "Ms.");
+		String genderStyleM = PreferenceManager.getDefaultSharedPreferences(
+				this).getString("custom_m", "Mr.");
+		String genderStyleU = PreferenceManager.getDefaultSharedPreferences(
+				this).getString("custom_u", "M.");
+
 		GENDER_STYLES[GENDERSTYLE_CUSTOM][0] = genderStyleF;
 		GENDER_STYLES[GENDERSTYLE_CUSTOM][1] = genderStyleM;
 		GENDER_STYLES[GENDERSTYLE_CUSTOM][2] = genderStyleU;
-		
+
 		if (BuildConfig.DEBUG) {
 			Log.d(TAG, "Getting all contacts");
 		}
@@ -574,7 +698,7 @@ public class GenderizeTask extends IntentService {
 			} else if (genderStyle != GENDERSTYLE_NONE) {
 				boolean success = genderizeContacts();
 				try {
-					for (int i = 0; i < sleeper && !isStopRequested() ; i++) {
+					for (int i = 0; i < sleeper && !isStopRequested(); i++) {
 						Intent broadcastIntent = new Intent();
 						broadcastIntent
 								.setAction(MainActivity.ResponseReceiver.ACTION_STATUS);
@@ -605,11 +729,9 @@ public class GenderizeTask extends IntentService {
 		}
 		// service stopped
 		Intent broadcastIntent = new Intent();
-		broadcastIntent
-				.setAction(MainActivity.ResponseReceiver.ACTION_STATUS);
+		broadcastIntent.setAction(MainActivity.ResponseReceiver.ACTION_STATUS);
 		broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
-		broadcastIntent.putExtra(
-				MainActivity.ResponseReceiver.ATTR_statusType,
+		broadcastIntent.putExtra(MainActivity.ResponseReceiver.ATTR_statusType,
 				MainActivity.ResponseReceiver.ATTRVAL_statusType_STOPPED);
 		sendBroadcast(broadcastIntent);
 	}
@@ -646,7 +768,6 @@ public class GenderizeTask extends IntentService {
 		return START_STICKY;
 	}
 
-	
 	private synchronized boolean isStopRequested() {
 		return stopRequested;
 	}
@@ -659,23 +780,35 @@ public class GenderizeTask extends IntentService {
 		public static final String ACTIVITY_STATUS = "com.namsor.api.samples.gendre.intent.action.ACTIVITY_STATUS";
 		public static final String ATTR_statusType = "statusType";
 		public static final String ATTRVAL_statusType_STOP_REQUEST = "stopRequested";
-		
+
 		private GenderizeTask service;
+
 		public ActivityReceiver(GenderizeTask service) {
 			this.service = service;
 		}
-		
+
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			if(! intent.getAction().equals(ACTIVITY_STATUS) ) {
+			if (!intent.getAction().equals(ACTIVITY_STATUS)) {
 				return;
 			}
-			String statusType = intent.getStringExtra(ATTR_statusType);			
+			String statusType = intent.getStringExtra(ATTR_statusType);
 			if (statusType.equals(ATTRVAL_statusType_STOP_REQUEST)) {
 				mHandler.post(new DisplayToast(service, "Stopping ..."));
-				setStopRequested(true);				
+				setStopRequested(true);
 			}
 		}
 	};
-		
+
+	private boolean isAppInstalled(String uri) {
+		PackageManager pm = getPackageManager();
+		boolean installed = false;
+		try {
+			pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+			installed = true;
+		} catch (PackageManager.NameNotFoundException e) {
+			installed = false;
+		}
+		return installed;
+	}
 }
