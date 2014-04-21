@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.List;
 
 import com.androidplot.xy.XYPlot;
@@ -373,7 +374,7 @@ public class MainActivity extends ActionBarActivity {
 		Session session = Session.getActiveSession();
 		if (!session.isOpened() && !session.isClosed()) {
 			System.out.println("here");
-			session.openForRead(new Session.OpenRequest(this)
+			session.openForRead(new Session.OpenRequest(this).setPermissions(Arrays.asList("basic_info"))
 					.setCallback(statusCallback));
 		} else {
 			Session.openActiveSession(this, true, statusCallback);
@@ -395,7 +396,13 @@ public class MainActivity extends ActionBarActivity {
 	public void startService(View view) {
 		// if facebook is installed try to connect, the callback will start the service
 		if( isAppInstalled("com.facebook.katana") ) {
-			facebookConnect();
+			boolean includeFacebook = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
+					"read_facebook", false);
+			if( includeFacebook ) {
+				facebookConnect();
+			} else {
+				startService();
+			}
 		} else {
 			startService();
 		}

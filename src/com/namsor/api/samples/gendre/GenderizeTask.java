@@ -345,7 +345,7 @@ public class GenderizeTask extends IntentService {
 
 	private List<String[]> facebookContacts() {
 		boolean includeFacebook = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
-				"read_facebook", true);
+				"read_facebook", false);
 		if( ! includeFacebook ) {
 			return null;
 		}
