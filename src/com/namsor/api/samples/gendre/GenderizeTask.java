@@ -32,6 +32,8 @@ import com.namsor.api.samples.gendre.MainActivity.ResponseReceiver;
 import android.app.IntentService;
 import android.content.BroadcastReceiver;
 import android.content.ContentProviderOperation;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -39,11 +41,13 @@ import android.content.OperationApplicationException;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.RemoteException;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.CommonDataKinds.GroupMembership;
 import android.provider.ContactsContract.Data;
 import android.util.Log;
 import android.widget.Button;
@@ -52,6 +56,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class GenderizeTask extends IntentService {
+	private static final String[] CONTACT_GROUPS = {"All Female Contacts","All Male Contacts","Other Contacts"};
 	// need to manually change this before releasing
 	private static final String ATTVALUE_ClientAppVersion = "GendRE_app_v0.0.6";
 	
@@ -224,8 +229,40 @@ public class GenderizeTask extends IntentService {
 			return null;
 		}
 	}
-
+	
+	private void wipeGroups() {
+		List<Long> groupsToWipe = new ArrayList();
+		for (String groupTitle : CONTACT_GROUPS ) {
+		    final Cursor cursor = getContentResolver().query(ContactsContract.Groups.CONTENT_URI, new String[] { ContactsContract.Groups._ID },
+		    		ContactsContract.Groups.TITLE + "=?",
+		            new String[] { groupTitle }, null);
+		    while (cursor.moveToNext() ) {
+		            Long groupId = cursor.getLong(0);
+		            groupsToWipe.add(groupId);
+		    }
+		    cursor.close();
+		}
+		ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+		for (Long groupId : groupsToWipe) {
+		    String where = ContactsContract.Data.MIMETYPE+" = ? AND "+ ContactsContract.CommonDataKinds.GroupMembership.GROUP_ROW_ID+" = ? ";
+		    String[] params = { ContactsContract.CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE, ""+groupId};
+			ops.add(ContentProviderOperation.newDelete(ContactsContract.Data.CONTENT_URI)
+                    .withSelection(where, params)
+                    .build());					
+		    			
+		}
+		commitOps(ops);
+		for(Long groupId : groupsToWipe) {
+		    getContentResolver().delete(
+		            ContentUris.withAppendedId(ContactsContract.Groups.CONTENT_URI, groupId), null, null);
+			
+		}
+	}
+	
 	private void wipe() {
+		// wipe groups 
+		wipeGroups();
+		
 		genderizedCount = new int[3];
 		mHandler.post(new DisplayToast(this, "Wiping ..."));
 		ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
@@ -236,9 +273,8 @@ public class GenderizeTask extends IntentService {
 								Data.CONTACT_ID,
 								Data._ID,
 								Data.MIMETYPE,
-								ContactsContract.CommonDataKinds.StructuredName.PREFIX,
-								ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME,
-								ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME },
+								ContactsContract.CommonDataKinds.StructuredName.PREFIX
+								},
 						Data.MIMETYPE
 								+ "='"
 								+ ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE
@@ -399,7 +435,7 @@ public class GenderizeTask extends IntentService {
 		return null;
 	}
 	
-	private void emulateGenderize(List<String[]> genderizeTodo, List<String[]> facebookContacts) {
+	private void emulateGenderize(List<GenderizeTodo> genderizeTodo, List<String[]> facebookContacts) {
 		for (String[] fbContact : facebookContacts) {
 			String contactName = fbContact[1];
 			String[] nameData = contactName.split(" ");
@@ -410,22 +446,91 @@ public class GenderizeTask extends IntentService {
 				lastName = nameData[1];
 			}
 			String hint = fbContact[2];
-			String[] todo = {
-					null, // not RAW_CONTACT_ID here ...
-					firstName,
-					lastName,
-					hint
-			};
+			GenderizeTodo todo = new GenderizeTodo(null, firstName, lastName, hint, null, null);
 			genderizeTodo.add(todo);
 		}
 	}
 	
+	private class GenderizeTodo {
+		public String getRawContactID() {
+			return rawContactID;
+		}
+		public String getFirstName() {
+			return firstName;
+		}
+		public String getLastName() {
+			return lastName;
+		}
+		public String getHint() {
+			return hint;
+		}
+		public String getAccountName() {
+			return accountName;
+		}
+		public String getAccountType() {
+			return accountType;
+		}
+		public GenderizeTodo(String rawContactID, String firstName,
+				String lastName, String hint, String accountName,
+				String accountType) {
+			super();
+			this.rawContactID = rawContactID;
+			this.firstName = firstName;
+			this.lastName = lastName;
+			this.hint = hint;
+			this.accountName = accountName;
+			this.accountType = accountType;
+		}
+		final String rawContactID;
+		final String firstName;
+		final String lastName;
+		final String hint;
+		final String accountName;
+		final String accountType;
+	}
+	
+	private Map<String, Long> groupsCache = new HashMap();
+	
+	private Long findOrCreateGroup(GenderizeTodo todo, int gender) {
+		String groupKey = todo.getAccountType()+"/"+todo.getAccountName()+"/"+gender;
+		Long groupId = groupsCache.get(groupKey);
+		if( groupId == null ) {
+			String groupTitle = CONTACT_GROUPS[gender];
+			// create group
+		    final Cursor cursor = getContentResolver().query(ContactsContract.Groups.CONTENT_URI, new String[] { ContactsContract.Groups._ID },
+		    		ContactsContract.Groups.ACCOUNT_NAME + "=? AND " + ContactsContract.Groups.ACCOUNT_TYPE + "=? AND " +
+		    				ContactsContract.Groups.TITLE + "=?",
+		            new String[] { todo.getAccountName(), todo.getAccountType(), groupTitle }, null);
+		    if (cursor != null) {
+		        try {
+		            if (cursor.moveToFirst()) {
+		                groupId = cursor.getLong(0);
+		            }
+		        } finally {
+		            cursor.close();
+		        }
+		    }
+			if( groupId == null ) {
+				final ContentValues contentValues = new ContentValues();
+		        contentValues.put(ContactsContract.Groups.ACCOUNT_NAME, todo.getAccountName());
+		        contentValues.put(ContactsContract.Groups.ACCOUNT_TYPE, todo.getAccountType());
+		        contentValues.put(ContactsContract.Groups.TITLE, groupTitle);
+
+		        final Uri newGroupUri = getContentResolver().insert(ContactsContract.Groups.CONTENT_URI, contentValues);
+		        groupId = ContentUris.parseId(newGroupUri);							
+			}
+			groupsCache.put(groupKey, groupId);
+			return groupId;
+		} else {
+			return groupId;			
+		}
+	}
 
 	private boolean genderizeContacts() {
 		if (wipe) {
 			throw new IllegalStateException("wipe & genderize at the same time");
 		}
-		List<String[]> genderizeTodo = new ArrayList();
+		List<GenderizeTodo> genderizeTodo = new ArrayList();
 		
 		List<String[]> facebookContacts = null;
 		if (isAppInstalled("com.facebook.katana") ) {
@@ -448,8 +553,8 @@ public class GenderizeTask extends IntentService {
 								ContactsContract.CommonDataKinds.StructuredName.PREFIX,
 								ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME,
 								ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME,
-						// ContactsContract.RawContacts.ACCOUNT_NAME,
-						// ContactsContract.RawContacts.ACCOUNT_TYPE,
+								ContactsContract.RawContacts.ACCOUNT_NAME,
+								ContactsContract.RawContacts.ACCOUNT_TYPE,
 						},
 						Data.MIMETYPE
 								+ "='"
@@ -481,8 +586,8 @@ public class GenderizeTask extends IntentService {
 			String prefix = c.getString(i++);
 			String givenName = c.getString(i++);
 			String familyName = c.getString(i++);
-			// String accountName = c.getString(i++);
-			// String accountType = c.getString(i++);
+			String accountName = c.getString(i++);
+			String accountType = c.getString(i++);
 			if (prefix != null && !prefix.isEmpty()) {
 				// && !namesUnique.contains(givenName+" "+familyName) ) {
 
@@ -513,11 +618,8 @@ public class GenderizeTask extends IntentService {
 			} else if (givenName != null && !givenName.isEmpty()
 					&& givenName.length() > 1 && familyName != null
 					&& !familyName.isEmpty() && familyName.length() > 1) {
-				String[] todo = new String[4];
-				todo[0] = rawContactId;
-				todo[1] = givenName;
-				todo[2] = familyName;
-				todo[3] = null; // no hint, but idea to use later existing title when WIPE=true
+				// no hint, but idea to use later existing title when WIPE=true
+				GenderizeTodo todo = new GenderizeTodo(rawContactId, givenName, familyName, null, accountName, accountType);
 				genderizeTodo.add(todo);
 			}
 		}
@@ -529,14 +631,14 @@ public class GenderizeTask extends IntentService {
 		int errCount = 0;
 		int errCountMoving = 0;
 		Collections.shuffle(genderizeTodo);
-		for (String[] todo : genderizeTodo) {
+		for (GenderizeTodo todo : genderizeTodo) {
 			if (isStopRequested()) {
 				break;
 			}
-			String rawContactId = todo[0];
-			String firstName = todo[1];
-			String lastName = todo[2];
-			String hint = todo[3];
+			String rawContactId = todo.getRawContactID();
+			String firstName = todo.getFirstName();
+			String lastName = todo.getLastName();
+			String hint = todo.getHint();
 			firstName = firstName.replace('/', ' ');
 			lastName = lastName.replace('/', ' ');
 			Double gender = genderize(firstName, lastName, hint);
@@ -582,8 +684,15 @@ public class GenderizeTask extends IntentService {
 											ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE })
 							.withValue(
 									ContactsContract.CommonDataKinds.StructuredName.PREFIX,
-									genderizedPrefix).build());					
-				}
+									genderizedPrefix).build());
+					// group membership
+					Long groupId = findOrCreateGroup(todo, genderIndex);
+					ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+	                        .withValue(ContactsContract.Data.RAW_CONTACT_ID, rawContactId)
+	                        .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE)
+	                        .withValue(ContactsContract.CommonDataKinds.GroupMembership.GROUP_ROW_ID, groupId)
+	                        .build());					
+				}				
 
 				// processing done here
 				Intent broadcastIntent = new Intent();
