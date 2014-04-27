@@ -61,6 +61,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -309,6 +310,8 @@ public class MainActivity extends ActionBarActivity {
 				return;
 			}
 			pie.setVisibility(PieChart.INVISIBLE);
+			ImageView img = (ImageView) findViewById(R.id.cover_image);
+			img.setVisibility(ImageView.VISIBLE);
 		}
 	}
 
@@ -342,9 +345,12 @@ public class MainActivity extends ActionBarActivity {
 			// DonutMode.PERCENT);
 
 			pie.getBorderPaint().setColor(Color.TRANSPARENT);
-			pie.getBackgroundPaint().setColor(Color.TRANSPARENT);
+			pie.getBackgroundPaint().setColor(Color.WHITE);
 
 			pie.setVisibility(PieChart.VISIBLE);
+			ImageView img = (ImageView) findViewById(R.id.cover_image);
+			img.setVisibility(ImageView.INVISIBLE);
+			
 		} else {
 			pie.redraw();
 		}
@@ -397,7 +403,7 @@ public class MainActivity extends ActionBarActivity {
 		// if facebook is installed try to connect, the callback will start the service
 		if( isAppInstalled("com.facebook.katana") ) {
 			boolean includeFacebook = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
-					"read_facebook", false);
+					"read_facebook", true);
 			if( includeFacebook ) {
 				facebookConnect();
 			} else {

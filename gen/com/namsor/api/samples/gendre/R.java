@@ -1333,7 +1333,7 @@ containing a value of this type.
         public static final int com_facebook_list_section_header_background=0x7f020064;
         public static final int com_facebook_loginbutton_silver=0x7f020065;
         public static final int com_facebook_logo=0x7f020066;
-        public static final int com_facebook_picker_default_separator_color=0x7f020098;
+        public static final int com_facebook_picker_default_separator_color=0x7f020099;
         public static final int com_facebook_picker_item_background=0x7f020067;
         public static final int com_facebook_picker_list_focused=0x7f020068;
         public static final int com_facebook_picker_list_longpressed=0x7f020069;
@@ -1374,15 +1374,16 @@ containing a value of this type.
         public static final int common_signin_btn_text_normal_light=0x7f02008c;
         public static final int common_signin_btn_text_pressed_dark=0x7f02008d;
         public static final int common_signin_btn_text_pressed_light=0x7f02008e;
-        public static final int ic_facebook=0x7f02008f;
-        public static final int ic_googleplus=0x7f020090;
-        public static final int ic_launcher=0x7f020091;
-        public static final int ic_plusone_medium_off_client=0x7f020092;
-        public static final int ic_plusone_small_off_client=0x7f020093;
-        public static final int ic_plusone_standard_off_client=0x7f020094;
-        public static final int ic_plusone_tall_off_client=0x7f020095;
-        public static final int ic_tweet=0x7f020096;
-        public static final int ic_twitter2=0x7f020097;
+        public static final int gender_scale=0x7f02008f;
+        public static final int ic_facebook=0x7f020090;
+        public static final int ic_googleplus=0x7f020091;
+        public static final int ic_launcher=0x7f020092;
+        public static final int ic_plusone_medium_off_client=0x7f020093;
+        public static final int ic_plusone_small_off_client=0x7f020094;
+        public static final int ic_plusone_standard_off_client=0x7f020095;
+        public static final int ic_plusone_tall_off_client=0x7f020096;
+        public static final int ic_tweet=0x7f020097;
+        public static final int ic_twitter2=0x7f020098;
     }
     public static final class id {
         public static final int action_bar=0x7f060021;
@@ -1396,7 +1397,7 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f06001b;
         public static final int action_menu_presenter=0x7f06001c;
         public static final int action_mode_close_button=0x7f060029;
-        public static final int action_settings=0x7f060068;
+        public static final int action_settings=0x7f060069;
         public static final int activity_chooser_view_content=0x7f06002a;
         public static final int always=0x7f060011;
         public static final int beginning=0x7f060016;
@@ -1425,6 +1426,7 @@ containing a value of this type.
         public static final int com_facebook_usersettingsfragment_logo_image=0x7f060054;
         public static final int com_facebook_usersettingsfragment_profile_name=0x7f060055;
         public static final int container=0x7f060041;
+        public static final int cover_image=0x7f060067;
         public static final int default_activity_button=0x7f06002d;
         public static final int dialog=0x7f060014;
         public static final int disableHome=0x7f06000e;
@@ -1447,7 +1449,7 @@ containing a value of this type.
         public static final int listMode=0x7f060007;
         public static final int list_item=0x7f06002e;
         public static final int middle=0x7f060017;
-        public static final int mySimplePieChart=0x7f060067;
+        public static final int mySimplePieChart=0x7f060068;
         public static final int never=0x7f06000f;
         public static final int none=0x7f060003;
         public static final int normal=0x7f060001;
@@ -1733,28 +1735,29 @@ containing a value of this type.
         public static final int common_signin_button_text_long=0x7f09002c;
         public static final int facebook_app_id=0x7f090041;
         public static final int hello_world=0x7f090043;
+        public static final int imgCoverDesc=0x7f09004c;
         /**  Location client code resources (prefix with location_client) 
          */
         public static final int location_client_powered_by_google=0x7f090033;
-        public static final int pref_description_read_facebook=0x7f090057;
-        public static final int pref_description_social_recommendations=0x7f090051;
+        public static final int pref_description_read_facebook=0x7f090058;
+        public static final int pref_description_social_recommendations=0x7f090052;
         /**  Example settings for Data & Sync 
          */
-        public static final int pref_header_data_sync=0x7f090058;
+        public static final int pref_header_data_sync=0x7f090059;
         /**  Strings related to Settings 
  Example General settings 
          */
-        public static final int pref_header_general=0x7f09004f;
-        public static final int pref_title_add_friends_to_messages=0x7f090052;
-        public static final int pref_title_custom_f=0x7f090053;
-        public static final int pref_title_custom_m=0x7f090054;
-        public static final int pref_title_custom_u=0x7f090055;
-        public static final int pref_title_read_facebook=0x7f090056;
-        public static final int pref_title_social_recommendations=0x7f090050;
-        public static final int pref_title_sync_frequency=0x7f090059;
-        public static final int sharethis=0x7f09004c;
-        public static final int title_activity_gendre_settings=0x7f09004e;
-        public static final int txt_quote=0x7f09004d;
+        public static final int pref_header_general=0x7f090050;
+        public static final int pref_title_add_friends_to_messages=0x7f090053;
+        public static final int pref_title_custom_f=0x7f090054;
+        public static final int pref_title_custom_m=0x7f090055;
+        public static final int pref_title_custom_u=0x7f090056;
+        public static final int pref_title_read_facebook=0x7f090057;
+        public static final int pref_title_social_recommendations=0x7f090051;
+        public static final int pref_title_sync_frequency=0x7f09005a;
+        public static final int sharethis=0x7f09004d;
+        public static final int title_activity_gendre_settings=0x7f09004f;
+        public static final int txt_quote=0x7f09004e;
     }
     public static final class style {
         /** 

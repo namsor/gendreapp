@@ -153,7 +153,7 @@
         android:visibility="invisible"
          />
 
-    <LinearLayout
+        <FrameLayout
         android:id="@+id/linearLayout1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -161,15 +161,22 @@
         android:layout_alignLeft="@+id/textView2"
         android:layout_alignRight="@+id/textView2"
         android:layout_below="@+id/textView_contact"
-        android:orientation="vertical" >
-        
-    	<com.androidplot.pie.PieChart
-            android:id="@+id/mySimplePieChart"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:visibility="invisible"
+    		>
+    		<ImageView android:id="@+id/cover_image"
+    		    android:contentDescription="@string/imgCoverDesc"
+        		android:scaleType="fitCenter"
+        		android:layout_width="fill_parent"
+        		android:layout_height="fill_parent" 
+		        android:clickable="false"
+				android:src="@drawable/gender_scale" 
+				android:visibility="visible"
+        		/>
+    		<com.androidplot.pie.PieChart
+            	android:id="@+id/mySimplePieChart"
+            	android:layout_width="fill_parent"
+            	android:layout_height="fill_parent"
+            	android:visibility="invisible"
             />
-    </LinearLayout>
+		</FrameLayout>
 
 </RelativeLayout>
