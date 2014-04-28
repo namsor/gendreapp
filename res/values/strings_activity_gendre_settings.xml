@@ -7,16 +7,17 @@
 
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
-    <string name="pref_title_social_recommendations">Wipe titles?</string>
-    <string name="pref_description_social_recommendations">Beware, this will wipe existing TITLE information in your contacts.</string>
-    <string name="pref_title_add_friends_to_messages">Select gender format</string>
+    <string name="pref_title_wipe">Wipe titles?</string>
+    <string name="pref_description_wipe">Beware, this will wipe existing TITLE information in your contacts.</string>
+
+    <string name="pref_title_gender_format">Select gender format</string>
     <string name="pref_title_custom_f">Female title</string>
     <string name="pref_title_custom_m">Male title</string>
     <string name="pref_title_custom_u">Unknown title</string>
     <string name="pref_title_read_facebook">Include Facebook?</string>
     <string name="pref_description_read_facebook">Include Facebook contacts in overall stats.</string>
     
-    <string-array name="pref_example_list_titles">
+    <string-array name="pref_list_titles">
         <item>Classic (Ms.,Mr.,M.)</item>
         <item>Gender (♀,♂,∅)</item>
         <item>Heart (♥,♤,♢)</item>
@@ -24,7 +25,7 @@
         <item>Custom</item>
         <item>None</item>
         </string-array>
-    <string-array name="pref_example_list_values">
+    <string-array name="pref_list_values">
         <item>0</item>
         <item>1</item>
         <item>2</item>
@@ -49,6 +50,5 @@
         <item>600</item>
         <item>3600</item>
     </string-array>
-
 
 </resources>

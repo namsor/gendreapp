@@ -10,20 +10,19 @@
     tools:context="com.namsor.api.samples.gendre.MainActivity$PlaceholderFragment" >
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/textViewMissionStatement"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:text="@string/mission_statement" />
 
     <Button
         android:id="@+id/button_genderize"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView1"
-        android:layout_below="@+id/textView1"
-        android:text="@string/btn_genderize"
+        android:layout_alignLeft="@+id/textViewMissionStatement"
+        android:layout_below="@+id/textViewMissionStatement"
         android:onClick="startService"
-        />
+        android:text="@string/btn_genderize_start" />
 
     <TextView
         android:id="@+id/textView_unknown"
@@ -47,7 +46,7 @@
         android:id="@+id/button_stop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView1"
+        android:layout_below="@+id/textViewMissionStatement"
         android:layout_toRightOf="@+id/button_genderize"
         android:onClick="stopService"
         android:text="@string/btn_stop"
@@ -57,11 +56,11 @@
         android:id="@+id/textView_contact"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView2"
+        android:layout_below="@+id/textViewQuote"
         android:layout_centerHorizontal="true" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/textViewQuote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/button_genderize"
@@ -74,7 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/textView_venus"
         android:layout_alignBottom="@+id/textView_venus"
-        android:layout_alignRight="@+id/textView2"
+        android:layout_alignRight="@+id/textViewQuote"
         android:text="♂"
         android:textSize="@dimen/abc_gender_counter_size" />
 
@@ -92,7 +91,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/textView_female"
-        android:layout_alignLeft="@+id/textView2"
+        android:layout_alignLeft="@+id/textViewQuote"
         android:text="♀"
         android:textSize="@dimen/abc_gender_counter_size" />
 
@@ -158,8 +157,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/imageButton_tweet"
-        android:layout_alignLeft="@+id/textView2"
-        android:layout_alignRight="@+id/textView2"
+        android:layout_alignLeft="@+id/textViewQuote"
+        android:layout_alignRight="@+id/textViewQuote"
         android:layout_below="@+id/textView_contact"
     		>
     		<ImageView android:id="@+id/cover_image"

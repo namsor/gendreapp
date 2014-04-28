@@ -69,13 +69,13 @@ import android.provider.MediaStore;
 
 public class MainActivity extends ActionBarActivity {
 
-	private static final String TAG = "MainActivity";
+	private static final String TAG = "MainActivity"; //$NON-NLS-1$
 
 	private PieChart pie;
 
-	private final Segment sM = new Segment("♂", 1);
-	private final Segment sU = new Segment("", 1);
-	private final Segment sF = new Segment("♀", 1);
+	private final Segment sM = new Segment("♂", 1); //$NON-NLS-1$
+	private final Segment sU = new Segment("", 1); //$NON-NLS-1$
+	private final Segment sF = new Segment("♀", 1); //$NON-NLS-1$
 
 	private UiLifecycleHelper uiHelper;
 	private boolean serviceRunning = false;
@@ -109,8 +109,8 @@ public class MainActivity extends ActionBarActivity {
 		this.genderSample = genderSample;
 	}
 
-	private static final String TWEET_URL = "http://namesorts.com/api/gendre";
-	private static final String FACEBOOKAPP_NAME = "GendRE App";
+	private static final String TWEET_URL = Messages.getString("MainActivity.share_url"); //$NON-NLS-1$
+	private static final String FACEBOOKAPP_NAME = Messages.getString("MainActivity.facebook_app_name"); //$NON-NLS-1$
 
 	private class AnimationRunnable implements Runnable {
 		public AnimationRunnable(MainActivity activity) {
@@ -180,8 +180,8 @@ public class MainActivity extends ActionBarActivity {
 			public void call(Session session, SessionState state,
 					Exception exception) {
 				if (exception != null) {
-					Log.e("Activity",
-							String.format("Error: %s", exception.toString()));
+					Log.e("Activity", //$NON-NLS-1$
+							String.format("Error: %s", exception.toString())); //$NON-NLS-1$
 					exception.printStackTrace();
 				}
 			}
@@ -207,10 +207,10 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	public void animateContact(String[] sample) {
-		TextView textView2 = (TextView) findViewById(R.id.textView2);
+		TextView textView2 = (TextView) findViewById(R.id.textViewQuote);
 
 		TextView contactView = (TextView) findViewById(R.id.textView_contact);
-		contactView.setText(sample[0] + " " + sample[1]);
+		contactView.setText(sample[0] + " " + sample[1]); //$NON-NLS-1$
 		contactView.setX(textView2.getX() + textView2.getWidth() / 2
 				- contactView.getWidth() / 2);
 		contactView.setY(textView2.getY() + textView2.getHeight());
@@ -230,27 +230,27 @@ public class MainActivity extends ActionBarActivity {
 					- contactView.getX() - contactView.getWidth()) / 2;
 		}
 
-		ObjectAnimator fadeIn = ObjectAnimator.ofFloat(contactView, "alpha",
+		ObjectAnimator fadeIn = ObjectAnimator.ofFloat(contactView, "alpha", //$NON-NLS-1$
 				0f, 1f);
 		fadeIn.setDuration(300);
 		fadeIn.start();
 
 		ObjectAnimator moveDown1 = ObjectAnimator.ofFloat(contactView,
-				"translationY", 0, 100 + distY * 2 / 3);
+				"translationY", 0, 100 + distY * 2 / 3); //$NON-NLS-1$
 		moveDown1.setDuration(300);
 		moveDown1.setInterpolator(new DecelerateInterpolator());
 
 		ObjectAnimator moveDown2 = ObjectAnimator.ofFloat(contactView,
-				"translationY", 0, distY * 1 / 3);
+				"translationY", 0, distY * 1 / 3); //$NON-NLS-1$
 		moveDown2.setDuration(300);
 		moveDown2.setInterpolator(new AccelerateInterpolator());
 
 		ObjectAnimator moveSide = ObjectAnimator.ofFloat(contactView,
-				"translationX", 0, distX);
+				"translationX", 0, distX); //$NON-NLS-1$
 		moveSide.setDuration(300);
 		moveSide.setInterpolator(new AccelerateInterpolator());
 
-		ObjectAnimator fadeOut = ObjectAnimator.ofFloat(contactView, "alpha",
+		ObjectAnimator fadeOut = ObjectAnimator.ofFloat(contactView, "alpha", //$NON-NLS-1$
 				0f);
 		fadeOut.setDuration(300);
 
@@ -360,11 +360,11 @@ public class MainActivity extends ActionBarActivity {
 			Exception exception) {
 		if (state.isOpened()) {
 			// Facebook logged in...
-			Log.i(TAG, "Facebook logged in");
+			Log.i(TAG, "Facebook logged in"); //$NON-NLS-1$
 			startService();
 		} else if (state.isClosed()) {
 			// Facebook logged out...
-			Log.i(TAG, "Facebook logged out");
+			Log.i(TAG, "Facebook logged out"); //$NON-NLS-1$
 		}
 	}
 
@@ -379,8 +379,8 @@ public class MainActivity extends ActionBarActivity {
 		};
 		Session session = Session.getActiveSession();
 		if (!session.isOpened() && !session.isClosed()) {
-			System.out.println("here");
-			session.openForRead(new Session.OpenRequest(this).setPermissions(Arrays.asList("basic_info"))
+			System.out.println("here"); //$NON-NLS-1$
+			session.openForRead(new Session.OpenRequest(this).setPermissions(Arrays.asList("basic_info")) //$NON-NLS-1$
 					.setCallback(statusCallback));
 		} else {
 			Session.openActiveSession(this, true, statusCallback);
@@ -401,9 +401,9 @@ public class MainActivity extends ActionBarActivity {
 
 	public void startService(View view) {
 		// if facebook is installed try to connect, the callback will start the service
-		if( isAppInstalled("com.facebook.katana") ) {
+		if( isAppInstalled("com.facebook.katana") ) { //$NON-NLS-1$
 			boolean includeFacebook = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
-					"read_facebook", true);
+					"read_facebook", false); //$NON-NLS-1$
 			if( includeFacebook ) {
 				facebookConnect();
 			} else {
@@ -443,9 +443,9 @@ public class MainActivity extends ActionBarActivity {
 		if (genderStats == null) {
 			return;
 		}
-		String shareText = "My Android contacts: " + genderStats[0]
-				+ GenderizeTask.PREFIX_GENDERF + " and " + genderStats[1]
-				+ GenderizeTask.PREFIX_GENDERM + " via GendRE #gender App ";
+		String shareText = Messages.getString("MainActivity.share_facebook_part1") + genderStats[0] //$NON-NLS-1$
+				+ GenderizeTask.PREFIX_GENDERF + Messages.getString("MainActivity.share_facebook_part2") + genderStats[1] //$NON-NLS-1$
+				+ GenderizeTask.PREFIX_GENDERM + Messages.getString("MainActivity.share_facebook_part3"); //$NON-NLS-1$
 		String shareURL = TWEET_URL;
 		FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(this)
 				.setDescription(shareText).setApplicationName(FACEBOOKAPP_NAME)
@@ -473,13 +473,13 @@ public class MainActivity extends ActionBarActivity {
 			return;
 
 		}
-		String shareText = "My Android contacts: " + genderStats[0]
-				+ GenderizeTask.PREFIX_GENDERF + " and " + genderStats[1]
-				+ GenderizeTask.PREFIX_GENDERM + " via GendRE #gender App ";
+		String shareText = Messages.getString("MainActivity.share_gplus_part1") + genderStats[0] //$NON-NLS-1$
+				+ GenderizeTask.PREFIX_GENDERF + Messages.getString("MainActivity.share_gplus_part2") + genderStats[1] //$NON-NLS-1$
+				+ GenderizeTask.PREFIX_GENDERM + Messages.getString("MainActivity.share_gplus_part3"); //$NON-NLS-1$
 		String shareURL = TWEET_URL;
 
 		// Launch the Google+ share dialog with attribution to your app.
-		Intent shareIntent = new PlusShare.Builder(this).setType("text/plain")
+		Intent shareIntent = new PlusShare.Builder(this).setType("text/plain") //$NON-NLS-1$
 				.setText(shareText).setContentUrl(Uri.parse(shareURL))
 				.getIntent();
 
@@ -490,14 +490,14 @@ public class MainActivity extends ActionBarActivity {
 		// Add code to print out the key hash
 		try {
 			PackageInfo info = getPackageManager().getPackageInfo(
-					"com.namsor.api.samples.gendre",
+					"com.namsor.api.samples.gendre", //$NON-NLS-1$
 					PackageManager.GET_SIGNATURES);
 			for (Signature signature : info.signatures) {
-				MessageDigest md = MessageDigest.getInstance("SHA");
+				MessageDigest md = MessageDigest.getInstance("SHA"); //$NON-NLS-1$
 				md.update(signature.toByteArray());
 				String keyHash = Base64.encodeToString(md.digest(),
 						Base64.DEFAULT);
-				Log.d("KeyHash:", keyHash);
+				Log.d("KeyHash:", keyHash); //$NON-NLS-1$
 			}
 		} catch (NameNotFoundException e) {
 			e.printStackTrace();
@@ -512,16 +512,16 @@ public class MainActivity extends ActionBarActivity {
 		if (genderStats == null) {
 			return;
 		}
-		String tweetText = "My Android contacts: " + genderStats[0]
-				+ GenderizeTask.PREFIX_GENDERF + " and " + genderStats[1]
-				+ GenderizeTask.PREFIX_GENDERM + " via @gendreapp #Gender App";
+		String tweetText = Messages.getString("MainActivity.share_twitter_part1") + genderStats[0] //$NON-NLS-1$
+				+ GenderizeTask.PREFIX_GENDERF + Messages.getString("MainActivity.share_twitter_part2") + genderStats[1] //$NON-NLS-1$
+				+ GenderizeTask.PREFIX_GENDERM + Messages.getString("MainActivity.share_twitter_part3"); //$NON-NLS-1$
 		String tweetURL = TWEET_URL;
 		String tweetUrl;
 		try {
 			tweetUrl = String.format(
-					"https://twitter.com/intent/tweet?text=%s&url=%s",
-					URLEncoder.encode(tweetText, "UTF-8"),
-					URLEncoder.encode(tweetURL, "UTF-8"));
+					"https://twitter.com/intent/tweet?text=%s&url=%s", //$NON-NLS-1$
+					URLEncoder.encode(tweetText, "UTF-8"), //$NON-NLS-1$
+					URLEncoder.encode(tweetURL, "UTF-8")); //$NON-NLS-1$
 			Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(tweetUrl));
 
 			// Narrow down to official Twitter app, if available:
@@ -529,7 +529,7 @@ public class MainActivity extends ActionBarActivity {
 					.queryIntentActivities(intent, 0);
 			for (ResolveInfo info : matches) {
 				if (info.activityInfo.packageName.toLowerCase().startsWith(
-						"com.twitter")) {
+						"com.twitter")) { //$NON-NLS-1$
 					intent.setPackage(info.activityInfo.packageName);
 				}
 			}
@@ -541,16 +541,16 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	public class ResponseReceiver extends BroadcastReceiver {
-		public static final String ACTION_STATUS = "com.namsor.api.samples.gendre.intent.action.SERVICE_STATUS";
-		public static final String ATTR_genderCount = "genderCount";
-		public static final String ATTR_genderSample = "genderSample";
-		public static final String ATTR_statusType = "statusType";
-		public static final String ATTRVAL_statusType_COUNTING = "counting";
-		public static final String ATTRVAL_statusType_GENDERIZING = "genderizing";
-		public static final String ATTRVAL_statusType_GENDERIZED = "genderized";
-		public static final String ATTRVAL_statusType_WIPING = "wiping";
-		public static final String ATTRVAL_statusType_WIPED = "wiped";
-		public static final String ATTRVAL_statusType_STOPPED = "stopped";
+		public static final String ACTION_STATUS = "com.namsor.api.samples.gendre.intent.action.SERVICE_STATUS"; //$NON-NLS-1$
+		public static final String ATTR_genderCount = "genderCount"; //$NON-NLS-1$
+		public static final String ATTR_genderSample = "genderSample"; //$NON-NLS-1$
+		public static final String ATTR_statusType = "statusType"; //$NON-NLS-1$
+		public static final String ATTRVAL_statusType_COUNTING = "counting"; //$NON-NLS-1$
+		public static final String ATTRVAL_statusType_GENDERIZING = "genderizing"; //$NON-NLS-1$
+		public static final String ATTRVAL_statusType_GENDERIZED = "genderized"; //$NON-NLS-1$
+		public static final String ATTRVAL_statusType_WIPING = "wiping"; //$NON-NLS-1$
+		public static final String ATTRVAL_statusType_WIPED = "wiped"; //$NON-NLS-1$
+		public static final String ATTRVAL_statusType_STOPPED = "stopped"; //$NON-NLS-1$
 		private static final int REDRAW_MOD = 20;
 
 		private MainActivity activity;
@@ -599,9 +599,9 @@ public class MainActivity extends ActionBarActivity {
 					TextView tvf = (TextView) findViewById(R.id.textView_female);
 					TextView tvm = (TextView) findViewById(R.id.textView_male);
 					TextView tvu = (TextView) findViewById(R.id.textView_unknown);
-					tvf.setText("" + data[0]);
-					tvm.setText("" + data[1]);
-					tvu.setText("" + data[2]);
+					tvf.setText("" + data[0]); //$NON-NLS-1$
+					tvm.setText("" + data[1]); //$NON-NLS-1$
+					tvu.setText("" + data[2]); //$NON-NLS-1$
 					sF.setValue(data[0]);
 					sM.setValue(data[1]);
 					sU.setValue(data[2]);
@@ -645,7 +645,7 @@ public class MainActivity extends ActionBarActivity {
 				}
 			} else if (statusType.equals(ATTRVAL_statusType_STOPPED)) {
 				Button btn = (Button) findViewById(R.id.button_genderize);
-				btn.setText(R.string.btn_genderize);
+				btn.setText(R.string.btn_genderize_start);
 				btn.setEnabled(true);
 
 				Button btnStop = (Button) findViewById(R.id.button_stop);

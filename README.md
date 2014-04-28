@@ -20,8 +20,13 @@ We recommend backing up your contacts before running the program.
 - You can share this #funstat on Twitter, G+, Facebook if you like
 
 ## Known issues
-- Facebook contacts don't seem to be synchronized in Android the way other contacts are synchronized (LinkedIn, Google,...)
+- Facebook contacts don't seem to be synchronized in Android the way other contacts are synchronized (LinkedIn, Google,...) so GendRE cannot enrich gender, but you can include Facebook contacts in the statistics
 http://stackoverflow.com/questions/23195352/query-android-contacts-synchronized-from-facebook
+
+## Languages and Localization
+GendRE works with all international names (with very few exceptions). To help with translation/localization of the user interface, please visit
+https://www.transifex.com/projects/p/gendre-gender-app/
+It helps if you can run the software once, to see the main messages in context.
 
 ## Gender API
 GenderApp uses the GendreAPI for name gender prediction. This is a free Application Programming Interface (API) to predict the gender of a personal name on a -1 (Male) to +1 (Female) scale, for a given geography/locale. You can test it directly from your web browser, entering this kind URL:

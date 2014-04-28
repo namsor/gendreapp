@@ -56,9 +56,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class GenderizeTask extends IntentService {
-	private static final String[] CONTACT_GROUPS = {"All Female Contacts","All Male Contacts","Other Contacts"};
 	// need to manually change this before releasing
-	private static final String ATTVALUE_ClientAppVersion = "GendRE_app_v0.0.7";
+	private static final String ATTVALUE_ClientAppVersion = "GendRE_app_v0.0.7"; //$NON-NLS-1$
+
+	private static final String CONTACT_GROUP_ALL_FEMALES = Messages.getString("GenderizeTask.contact_group_females"); //$NON-NLS-1$
+	private static final String CONTACT_GROUP_ALL_MALES = Messages.getString("GenderizeTask.contact_group_males"); //$NON-NLS-1$
+	private static final String CONTACT_GROUP_OTHERS = Messages.getString("GenderizeTask.contact_group_other"); //$NON-NLS-1$
+	private static final String[] CONTACT_GROUPS = {
+		CONTACT_GROUP_ALL_FEMALES,
+		CONTACT_GROUP_ALL_MALES,
+		CONTACT_GROUP_OTHERS};
 	
 	Handler mHandler = new Handler();
 
@@ -93,27 +100,27 @@ public class GenderizeTask extends IntentService {
 	public static final int GENDERSTYLE_NONE = 5;
 	private int genderStyle = GENDERSTYLE_DEFAULT;
 
-	private static final String PREFIX_MS = "Ms.";
-	private static final String PREFIX_MR = "Mr.";
-	private static final String PREFIX_UNKNOWN = "M.";
+	private static final String PREFIX_MS = "Ms."; //$NON-NLS-1$
+	private static final String PREFIX_MR = "Mr."; //$NON-NLS-1$
+	private static final String PREFIX_UNKNOWN = "M."; //$NON-NLS-1$
 
-	public static final String PREFIX_GENDERF = "♀";
-	public static final String PREFIX_GENDERM = "♂";
-	private static final String PREFIX_GENDERU = "∅";
+	public static final String PREFIX_GENDERF = "♀"; //$NON-NLS-1$
+	public static final String PREFIX_GENDERM = "♂"; //$NON-NLS-1$
+	private static final String PREFIX_GENDERU = "∅"; //$NON-NLS-1$
 
-	private static final String PREFIX_HEART = "♥";
-	private static final String PREFIX_SPADE = "♤";
-	private static final String PREFIX_DIAMOND = "♢";
+	private static final String PREFIX_HEART = "♥"; //$NON-NLS-1$
+	private static final String PREFIX_SPADE = "♤"; //$NON-NLS-1$
+	private static final String PREFIX_DIAMOND = "♢"; //$NON-NLS-1$
 
-	private static final String PREFIX_CHINAF = "女";
-	private static final String PREFIX_CHINAM = "男";
-	private static final String PREFIX_CHINAU = "另"; // check this
+	private static final String PREFIX_CHINAF = "女"; //$NON-NLS-1$
+	private static final String PREFIX_CHINAM = "男"; //$NON-NLS-1$
+	private static final String PREFIX_CHINAU = "另"; // check this //$NON-NLS-1$
 
-	private static final String PREFIX_CUSTOMF = "%f";
-	private static final String PREFIX_CUSTOMM = "%m";
-	private static final String PREFIX_CUSTOMU = "%u"; // check this
+	private static final String PREFIX_CUSTOMF = "%f"; //$NON-NLS-1$
+	private static final String PREFIX_CUSTOMM = "%m"; //$NON-NLS-1$
+	private static final String PREFIX_CUSTOMU = "%u"; // check this //$NON-NLS-1$
 
-	private static final String PREFIX_NONE = "";
+	private static final String PREFIX_NONE = ""; //$NON-NLS-1$
 
 	private static final boolean WIPE_DEFAULT = false;
 	private boolean wipe = WIPE_DEFAULT;
@@ -129,10 +136,10 @@ public class GenderizeTask extends IntentService {
 			{ PREFIX_CUSTOMF, PREFIX_CUSTOMM, PREFIX_CUSTOMU },
 			{ PREFIX_NONE, PREFIX_NONE, PREFIX_NONE }, };
 
-	private static final String ATTR_XBatchRequest = "X-BatchRequest-Id";
-	private static final String ATTR_XLocale = "X-Locale";
-	private static final String ATTR_XHint = "X-Hint";
-	private static final String ATTR_XClientVersion = "X-Client-Version";
+	private static final String ATTR_XBatchRequest = "X-BatchRequest-Id"; //$NON-NLS-1$
+	private static final String ATTR_XLocale = "X-Locale"; //$NON-NLS-1$
+	private static final String ATTR_XHint = "X-Hint"; //$NON-NLS-1$
+	private static final String ATTR_XClientVersion = "X-Client-Version"; //$NON-NLS-1$
 	private long batchRequestId = -1;
 
 	private boolean stopRequested = false;
@@ -145,7 +152,7 @@ public class GenderizeTask extends IntentService {
 	private int[] genderizedCount;
 
 	public GenderizeTask() {
-		super("genderize");
+		super("genderize"); //$NON-NLS-1$
 		xLocale = Locale.getDefault().toString();
 		xCountry = Locale.getDefault().getCountry();
 	}
@@ -169,7 +176,7 @@ public class GenderizeTask extends IntentService {
 	}
 
 	// Defines a tag for identifying log entries
-	private static final String TAG = "GenderizeTask";
+	private static final String TAG = "GenderizeTask"; //$NON-NLS-1$
 	private static final int COMMIT_SIZE = 50;
 
 	/**
@@ -180,29 +187,29 @@ public class GenderizeTask extends IntentService {
 	 * @return
 	 */
 	public Double genderize(String firstName, String lastName, String hint) {
-		Double result = CACHE.get(firstName + "/" + lastName);
+		Double result = CACHE.get(firstName + "/" + lastName); //$NON-NLS-1$
 		if (result != null) {
 			return result;
 		}
 
 		try {
 			if (BuildConfig.DEBUG) {
-				Log.d(TAG, "Contact firstName " + firstName + " lastName "
+				Log.d(TAG, "Contact firstName " + firstName + " lastName " //$NON-NLS-1$ //$NON-NLS-2$
 						+ lastName);
 			}
 			DefaultHttpClient httpclient = new DefaultHttpClient();
-			String url = "http://api.onomatic.com/onomastics/api/gendre/"
-					+ URLEncoder.encode(firstName, "UTF-8") + "/"
-					+ URLEncoder.encode(lastName, "UTF-8");
+			String url = "http://api.onomatic.com/onomastics/api/gendre/" //$NON-NLS-1$
+					+ URLEncoder.encode(firstName, "UTF-8") + "/" //$NON-NLS-1$ //$NON-NLS-2$
+					+ URLEncoder.encode(lastName, "UTF-8"); //$NON-NLS-1$
 			if (xCountry != null && xCountry.length() == 2) {
-				url = url + "/" + xCountry;
+				url = url + "/" + xCountry; //$NON-NLS-1$
 			}
 			if (BuildConfig.DEBUG) {
-				Log.d(TAG, "Getting " + url);
+				Log.d(TAG, "Getting " + url); //$NON-NLS-1$
 			}
 			HttpGet httpget = new HttpGet(url);
-			httpget.addHeader(ATTR_XBatchRequest, "" + batchRequestId);
-			httpget.addHeader(ATTR_XLocale, "" + xLocale);
+			httpget.addHeader(ATTR_XBatchRequest, "" + batchRequestId); //$NON-NLS-1$
+			httpget.addHeader(ATTR_XLocale, "" + xLocale); //$NON-NLS-1$
 			if(hint!=null&&!hint.trim().isEmpty()) {
 				httpget.addHeader(ATTR_XHint, hint);
 			}
@@ -211,20 +218,20 @@ public class GenderizeTask extends IntentService {
 			BufferedReader in = new BufferedReader(new InputStreamReader(
 					response.getEntity().getContent()));
 			String line = in.readLine();
-			if (line != null && !line.trim().equals("")) {
+			if (line != null && !line.trim().equals("")) { //$NON-NLS-1$
 				result = Double.parseDouble(line);
 				if (BuildConfig.DEBUG) {
-					Log.d(TAG, "Got " + result + 0 + " at " + url);
+					Log.d(TAG, "Got " + result + 0 + " at " + url); //$NON-NLS-1$ //$NON-NLS-2$
 				}
-				CACHE.put(firstName + "/" + lastName, result);
+				CACHE.put(firstName + "/" + lastName, result); //$NON-NLS-1$
 			}
 			in.close();
 			return result;
 		} catch (Exception e) {
-			Log.e(TAG, "Failed to get gender for firstName " + firstName
-					+ " lastName " + lastName + " ex=" + e.getMessage());
+			Log.e(TAG, "Failed to get gender for firstName " + firstName //$NON-NLS-1$
+					+ " lastName " + lastName + " ex=" + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
 			// display error msg
-			mHandler.post(new DisplayToast(this, "API Error " + e.getMessage()));
+			mHandler.post(new DisplayToast(this, Messages.getString("GenderizeTask.api_error") + e.getMessage())); //$NON-NLS-1$
 			// empty or null? should we retry?
 			return null;
 		}
@@ -234,7 +241,7 @@ public class GenderizeTask extends IntentService {
 		List<Long> groupsToWipe = new ArrayList();
 		for (String groupTitle : CONTACT_GROUPS ) {
 		    final Cursor cursor = getContentResolver().query(ContactsContract.Groups.CONTENT_URI, new String[] { ContactsContract.Groups._ID },
-		    		ContactsContract.Groups.TITLE + "=?",
+		    		ContactsContract.Groups.TITLE + "=?", //$NON-NLS-1$
 		            new String[] { groupTitle }, null);
 		    while (cursor.moveToNext() ) {
 		            Long groupId = cursor.getLong(0);
@@ -244,8 +251,8 @@ public class GenderizeTask extends IntentService {
 		}
 		ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
 		for (Long groupId : groupsToWipe) {
-		    String where = ContactsContract.Data.MIMETYPE+" = ? AND "+ ContactsContract.CommonDataKinds.GroupMembership.GROUP_ROW_ID+" = ? ";
-		    String[] params = { ContactsContract.CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE, ""+groupId};
+		    String where = ContactsContract.Data.MIMETYPE+" = ? AND "+ ContactsContract.CommonDataKinds.GroupMembership.GROUP_ROW_ID+" = ? "; //$NON-NLS-1$ //$NON-NLS-2$
+		    String[] params = { ContactsContract.CommonDataKinds.GroupMembership.CONTENT_ITEM_TYPE, ""+groupId}; //$NON-NLS-1$
 			ops.add(ContentProviderOperation.newDelete(ContactsContract.Data.CONTENT_URI)
                     .withSelection(where, params)
                     .build());					
@@ -264,7 +271,7 @@ public class GenderizeTask extends IntentService {
 		wipeGroups();
 		
 		genderizedCount = new int[3];
-		mHandler.post(new DisplayToast(this, "Wiping ..."));
+		mHandler.post(new DisplayToast(this, Messages.getString("GenderizeTask.wiping_titles"))); //$NON-NLS-1$
 		ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
 		Cursor c = getContentResolver()
 				.query(ContactsContract.Data.CONTENT_URI,
@@ -276,17 +283,17 @@ public class GenderizeTask extends IntentService {
 								ContactsContract.CommonDataKinds.StructuredName.PREFIX
 								},
 						Data.MIMETYPE
-								+ "='"
+								+ "='" //$NON-NLS-1$
 								+ ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE
-								+ "'"
-								+ " AND "
+								+ "'" //$NON-NLS-1$
+								+ " AND " //$NON-NLS-1$
 								+ ContactsContract.CommonDataKinds.StructuredName.PREFIX
-								+ " IS NOT NULL",
+								+ " IS NOT NULL", //$NON-NLS-1$
 						null,
 						ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME);
 		int cCount = c.getCount();
 		if (BuildConfig.DEBUG && cCount > 0) {
-			Log.d(TAG, "Wiping " + cCount + " contacts");
+			Log.d(TAG, Messages.getString("GenderizeTask.wiping_titles_part1") + cCount + Messages.getString("GenderizeTask.wiping_titles_part2")); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		int iCount = 0;
 		List<Object[]> wipeTodo = new ArrayList();
@@ -337,14 +344,14 @@ public class GenderizeTask extends IntentService {
 			ops.add(ContentProviderOperation
 					.newUpdate(ContactsContract.Data.CONTENT_URI)
 					.withSelection(
-							ContactsContract.Data.RAW_CONTACT_ID + "=? AND "
-									+ ContactsContract.Data.MIMETYPE + "=?",
+							ContactsContract.Data.RAW_CONTACT_ID + "=? AND " //$NON-NLS-1$
+									+ ContactsContract.Data.MIMETYPE + "=?", //$NON-NLS-1$
 							new String[] {
 									(String) toWipe[0],
 									ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE })
 					.withValue(
 							ContactsContract.CommonDataKinds.StructuredName.PREFIX,
-							"").build());
+							"").build()); //$NON-NLS-1$
 			genderizedCount[(Integer) toWipe[1]]--;
 			Intent broadcastIntent = new Intent();
 			broadcastIntent
@@ -375,58 +382,58 @@ public class GenderizeTask extends IntentService {
 		broadcastIntent.putExtra(MainActivity.ResponseReceiver.ATTR_statusType,
 				MainActivity.ResponseReceiver.ATTRVAL_statusType_WIPED);
 		sendBroadcast(broadcastIntent);
-		mHandler.post(new DisplayToast(this, "Wiped " + wipeTodo.size()
-				+ " titles."));
+		mHandler.post(new DisplayToast(this, Messages.getString("GenderizeTask.wiped_titles_part1") + wipeTodo.size() //$NON-NLS-1$
+				+ Messages.getString("GenderizeTask.wiped_titles_part2"))); //$NON-NLS-1$
 	}
 
 	private List<String[]> facebookContacts() {
 		boolean includeFacebook = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
-				"read_facebook", false);
+				"read_facebook", false); //$NON-NLS-1$
 		if( ! includeFacebook ) {
 			return null;
 		}
 
 		Session session = Session.getActiveSession();
 		if (session.isOpened()) {
-			mHandler.post(new DisplayToast(this, "Get Facebook contacts"));
+			mHandler.post(new DisplayToast(this, Messages.getString("GenderizeTask.toast_get_facebook_contacts"))); //$NON-NLS-1$
 		} else {
 			mHandler.post(new DisplayToast(this,
-					"SKIP: Facebook contacts (logged out)"));
+					Messages.getString("GenderizeTask.toast_skip_fb_contacts"))); //$NON-NLS-1$
 			return null;
 		}
 		List<String[]> facebookContacts = new ArrayList();
 		try {
-			String fqlQuery = "SELECT uid, name, sex FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me())";
+			String fqlQuery = "SELECT uid, name, sex FROM user WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me())"; //$NON-NLS-1$
 			Bundle params = new Bundle();
-			params.putString("q", fqlQuery);
+			params.putString("q", fqlQuery); //$NON-NLS-1$
 
-			Request request = new Request(session, "/fql", params,
+			Request request = new Request(session, "/fql", params, //$NON-NLS-1$
 					HttpMethod.GET);
 			Response response = Request.executeAndWait(request);
 			GraphObject graphObject = response.getGraphObject();
 			if (graphObject != null) {
 				// clear contacts
 				JSONObject jsonObject = graphObject.getInnerJSONObject();
-				JSONArray jsonArray = jsonObject.getJSONArray("data");
+				JSONArray jsonArray = jsonObject.getJSONArray("data"); //$NON-NLS-1$
 				for (int i = 0; i < jsonArray.length(); i++) {
 					JSONObject object = jsonArray.getJSONObject(i);
-					String userFriendId = object.getString("uid");
-					String userFriendName = object.getString("name");
-					String userFriendSex = object.getString("sex");
+					String userFriendId = object.getString("uid"); //$NON-NLS-1$
+					String userFriendName = object.getString("name"); //$NON-NLS-1$
+					String userFriendSex = object.getString("sex"); //$NON-NLS-1$
 					String[] fbContact = { userFriendId, userFriendName,
 							userFriendSex };
 					facebookContacts.add(fbContact);
 				}
-				mHandler.post(new DisplayToast(this, "Got "
-						+ jsonArray.length() + " Facebook contacts"));
+				mHandler.post(new DisplayToast(this, Messages.getString("GenderizeTask.got_facebook_contacts_part1") //$NON-NLS-1$
+						+ jsonArray.length() + Messages.getString("GenderizeTask.got_facebook_contacts_part2"))); //$NON-NLS-1$
 			}
 			
 			// try reading facebook just once
 			PreferenceManager.getDefaultSharedPreferences(this).edit()
-			.putBoolean("read_facebook", false).commit();
+			.putBoolean("read_facebook", false).commit(); //$NON-NLS-1$
 			return facebookContacts;
 		} catch (Exception ex) {
-			String msg = "Error getting FB contacts "+ex.getMessage();
+			String msg = Messages.getString("GenderizeTask.toast_error_getting_fb_contacts")+ex.getMessage(); //$NON-NLS-1$
 			Log.e(TAG,msg,ex);
 			mHandler.post(new DisplayToast(this, msg));
 		}
@@ -438,7 +445,7 @@ public class GenderizeTask extends IntentService {
 	private void emulateGenderize(List<GenderizeTodo> genderizeTodo, List<String[]> facebookContacts) {
 		for (String[] fbContact : facebookContacts) {
 			String contactName = fbContact[1];
-			String[] nameData = contactName.split(" ");
+			String[] nameData = contactName.split(" "); //$NON-NLS-1$
 			String firstName = contactName;
 			String lastName = xCountry;
 			if( nameData.length == 2 ) {
@@ -492,14 +499,14 @@ public class GenderizeTask extends IntentService {
 	private Map<String, Long> groupsCache = new HashMap();
 	
 	private Long findOrCreateGroup(GenderizeTodo todo, int gender) {
-		String groupKey = todo.getAccountType()+"/"+todo.getAccountName()+"/"+gender;
+		String groupKey = todo.getAccountType()+"/"+todo.getAccountName()+"/"+gender; //$NON-NLS-1$ //$NON-NLS-2$
 		Long groupId = groupsCache.get(groupKey);
 		if( groupId == null ) {
 			String groupTitle = CONTACT_GROUPS[gender];
 			// create group
 		    final Cursor cursor = getContentResolver().query(ContactsContract.Groups.CONTENT_URI, new String[] { ContactsContract.Groups._ID },
-		    		ContactsContract.Groups.ACCOUNT_NAME + "=? AND " + ContactsContract.Groups.ACCOUNT_TYPE + "=? AND " +
-		    				ContactsContract.Groups.TITLE + "=?",
+		    		ContactsContract.Groups.ACCOUNT_NAME + "=? AND " + ContactsContract.Groups.ACCOUNT_TYPE + "=? AND " + //$NON-NLS-1$ //$NON-NLS-2$
+		    				ContactsContract.Groups.TITLE + "=?", //$NON-NLS-1$
 		            new String[] { todo.getAccountName(), todo.getAccountType(), groupTitle }, null);
 		    if (cursor != null) {
 		        try {
@@ -528,12 +535,12 @@ public class GenderizeTask extends IntentService {
 
 	private boolean genderizeContacts() {
 		if (wipe) {
-			throw new IllegalStateException("wipe & genderize at the same time");
+			throw new IllegalStateException("wipe & genderize at the same time"); //$NON-NLS-1$
 		}
 		List<GenderizeTodo> genderizeTodo = new ArrayList();
 		
 		List<String[]> facebookContacts = null;
-		if (isAppInstalled("com.facebook.katana") ) {
+		if (isAppInstalled("com.facebook.katana") ) { //$NON-NLS-1$
 			// try and get FB contacts
 			facebookContacts = facebookContacts();
 			if( facebookContacts!=null ) {
@@ -557,22 +564,22 @@ public class GenderizeTask extends IntentService {
 								ContactsContract.RawContacts.ACCOUNT_TYPE,
 						},
 						Data.MIMETYPE
-								+ "='"
+								+ "='" //$NON-NLS-1$
 								+ ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE
-								+ "'"
-								+ " AND "
+								+ "'" //$NON-NLS-1$
+								+ " AND " //$NON-NLS-1$
 								+ ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME
-								+ " IS NOT NULL "
-								+ (genderizedCount == null ? ""
-										: " AND "
+								+ " IS NOT NULL " //$NON-NLS-1$
+								+ (genderizedCount == null ? "" //$NON-NLS-1$
+										: " AND " //$NON-NLS-1$
 												+ ContactsContract.CommonDataKinds.StructuredName.PREFIX
-												+ " IS NULL"),
+												+ " IS NULL"), //$NON-NLS-1$
 						null,
 						ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME);
 
 		int cCount = c.getCount();
 		if (BuildConfig.DEBUG && cCount > 0) {
-			Log.d(TAG, "Got " + cCount + " android contacts");
+			Log.d(TAG, "Got " + cCount + " android contacts"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		if (genderizedCount == null) {
 			genderizedCount = new int[3];
@@ -625,7 +632,7 @@ public class GenderizeTask extends IntentService {
 		}
 		c.close();
 		if (BuildConfig.DEBUG && cCount > 0) {
-			Log.d(TAG, "Got " + genderizeTodo.size() + " contacts to genderize");
+			Log.d(TAG, "Got " + genderizeTodo.size() + " contacts to genderize"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		int iCount = 0;
 		int errCount = 0;
@@ -677,8 +684,8 @@ public class GenderizeTask extends IntentService {
 							.newUpdate(ContactsContract.Data.CONTENT_URI)
 							.withSelection(
 									ContactsContract.Data.RAW_CONTACT_ID
-											+ "=? AND "
-											+ ContactsContract.Data.MIMETYPE + "=?",
+											+ "=? AND " //$NON-NLS-1$
+											+ ContactsContract.Data.MIMETYPE + "=?", //$NON-NLS-1$
 									new String[] {
 											rawContactId,
 											ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE })
@@ -711,7 +718,7 @@ public class GenderizeTask extends IntentService {
 					genderSample[0] = firstName;
 					genderSample[1] = lastName;
 					genderSample[2] = genderizedPrefix;
-					genderSample[3] = "" + genderIndex;
+					genderSample[3] = "" + genderIndex; //$NON-NLS-1$
 					broadcastIntent.putExtra(
 							MainActivity.ResponseReceiver.ATTR_genderSample,
 							genderSample);
@@ -726,8 +733,8 @@ public class GenderizeTask extends IntentService {
 				if (errCountMoving > ERROR_COUNT_MOVING_MAX) {
 					// no point continuing
 					mHandler.post(new DisplayToast(this,
-							"Too many API Errors (" + errCount + "/"
-									+ (iCount + errCount) + ") check network"));
+							Messages.getString("GenderizeTask.toast_toomany_api_errors") + errCount + "/" //$NON-NLS-1$ //$NON-NLS-2$
+									+ (iCount + errCount) + ") check network")); //$NON-NLS-1$
 					break;
 				}
 			}
@@ -751,36 +758,36 @@ public class GenderizeTask extends IntentService {
 	protected void onHandleIntent(Intent arg0) {
 		// TODO Auto-generated method stub
 		batchRequestId = PreferenceManager.getDefaultSharedPreferences(this)
-				.getLong("batchRequestId", -1);
+				.getLong("batchRequestId", -1); //$NON-NLS-1$
 		if (batchRequestId == -1) {
 			batchRequestId = System.currentTimeMillis();
 			PreferenceManager.getDefaultSharedPreferences(this).edit()
-					.putLong("batchRequestId", batchRequestId).commit();
+					.putLong("batchRequestId", batchRequestId).commit(); //$NON-NLS-1$
 		}
 		genderStyle = Integer.parseInt(PreferenceManager
-				.getDefaultSharedPreferences(this).getString("example_list",
-						"2"));
+				.getDefaultSharedPreferences(this).getString("example_list", //$NON-NLS-1$
+						"2")); //$NON-NLS-1$
 		sleeper = Long.parseLong(PreferenceManager.getDefaultSharedPreferences(
-				this).getString("sync_frequency", "60"))
+				this).getString("sync_frequency", "60")) //$NON-NLS-1$ //$NON-NLS-2$
 				* SECONDS;
 		wipe = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
-				"example_checkbox", false);
+				"example_checkbox", false); //$NON-NLS-1$
 
-		mHandler.post(new DisplayToast(this, "Starting genderizing"));
+		mHandler.post(new DisplayToast(this, Messages.getString("GenderizeTask.toast_starting_genderizing"))); //$NON-NLS-1$
 
 		String genderStyleF = PreferenceManager.getDefaultSharedPreferences(
-				this).getString("custom_f", "Ms.");
+				this).getString("custom_f", "Ms."); //$NON-NLS-1$ //$NON-NLS-2$
 		String genderStyleM = PreferenceManager.getDefaultSharedPreferences(
-				this).getString("custom_m", "Mr.");
+				this).getString("custom_m", "Mr."); //$NON-NLS-1$ //$NON-NLS-2$
 		String genderStyleU = PreferenceManager.getDefaultSharedPreferences(
-				this).getString("custom_u", "M.");
+				this).getString("custom_u", "M."); //$NON-NLS-1$ //$NON-NLS-2$
 
 		GENDER_STYLES[GENDERSTYLE_CUSTOM][0] = genderStyleF;
 		GENDER_STYLES[GENDERSTYLE_CUSTOM][1] = genderStyleM;
 		GENDER_STYLES[GENDERSTYLE_CUSTOM][2] = genderStyleU;
 
 		if (BuildConfig.DEBUG) {
-			Log.d(TAG, "Getting all contacts");
+			Log.d(TAG, "Getting all contacts"); //$NON-NLS-1$
 		}
 
 		while (!isStopRequested()) {
@@ -790,7 +797,7 @@ public class GenderizeTask extends IntentService {
 				wipe();
 				wipe = false;
 				PreferenceManager.getDefaultSharedPreferences(this).edit()
-						.putBoolean("example_checkbox", false).commit();
+						.putBoolean("example_checkbox", false).commit(); //$NON-NLS-1$
 				// wipe contacts only once
 				if (genderStyle == GENDERSTYLE_NONE) {
 					// wipe & none : stop servicing
@@ -851,22 +858,22 @@ public class GenderizeTask extends IntentService {
 		}
 		try {
 			if (BuildConfig.DEBUG) {
-				Log.d(TAG, "Updating " + ops.size() + " contacts");
+				Log.d(TAG, "Updating " + ops.size() + " contacts"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 			getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
 			ops.clear();
 			if (BuildConfig.DEBUG) {
-				Log.d(TAG, "Updating " + ops.size() + " contacts");
+				Log.d(TAG, "Updating " + ops.size() + " contacts"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			if (BuildConfig.DEBUG) {
-				Log.d(TAG, "Save failed");
+				Log.d(TAG, "Save failed"); //$NON-NLS-1$
 			}
 		} catch (OperationApplicationException e) {
 			if (BuildConfig.DEBUG) {
-				Log.d(TAG, "Save failed");
+				Log.d(TAG, "Save failed"); //$NON-NLS-1$
 			}
 		}
 	}
@@ -886,9 +893,9 @@ public class GenderizeTask extends IntentService {
 	}
 
 	public class ActivityReceiver extends BroadcastReceiver {
-		public static final String ACTIVITY_STATUS = "com.namsor.api.samples.gendre.intent.action.ACTIVITY_STATUS";
-		public static final String ATTR_statusType = "statusType";
-		public static final String ATTRVAL_statusType_STOP_REQUEST = "stopRequested";
+		public static final String ACTIVITY_STATUS = "com.namsor.api.samples.gendre.intent.action.ACTIVITY_STATUS"; //$NON-NLS-1$
+		public static final String ATTR_statusType = "statusType"; //$NON-NLS-1$
+		public static final String ATTRVAL_statusType_STOP_REQUEST = "stopRequested"; //$NON-NLS-1$
 
 		private GenderizeTask service;
 
@@ -903,7 +910,7 @@ public class GenderizeTask extends IntentService {
 			}
 			String statusType = intent.getStringExtra(ATTR_statusType);
 			if (statusType.equals(ATTRVAL_statusType_STOP_REQUEST)) {
-				mHandler.post(new DisplayToast(service, "Stopping ..."));
+				mHandler.post(new DisplayToast(service, Messages.getString("GenderizeTask.toast_stopping"))); //$NON-NLS-1$
 				setStopRequested(true);
 			}
 		}

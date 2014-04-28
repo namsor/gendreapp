@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="facebook_app_id">539805382800829</string>
+    <string name="app_name">GendRE</string>
+    <string name="mission_statement">Enrichissez vos contacts avec sexe et civilité</string>
+    <string name="action_settings">Préférences</string>
+    <string name="btn_stop">Stopper</string>
+    <string name="btn_genderize_start">Démarrer</string>
+    <string name="btn_genderize_counting">Comptage</string>
+    <string name="btn_genderize_wiping">Nettoyage</string>
+    <string name="btn_genderize_running">Calcul</string>
+    <string name="btn_genderize_stopping">Arrêt</string>
+    <string name="btn_genderize_wiped">Effacé</string>
+    <string name="imgCoverDesc">La balance à mesurer l\'écart de genre</string>
+    <string name="sharethis">Partager</string>
+    <string name="txt_quote">\"Tu es qui tu fréquentes.\" Hmm merci GendRE, compte juste les ♀ et les ♂.</string>
+</resources>

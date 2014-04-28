@@ -17,8 +17,8 @@ public final class R {
         public static final int abc_slide_out_top=0x7f040005;
     }
     public static final class array {
-        public static final int pref_example_list_titles=0x7f0d0000;
-        public static final int pref_example_list_values=0x7f0d0001;
+        public static final int pref_list_titles=0x7f0d0000;
+        public static final int pref_list_values=0x7f0d0001;
         public static final int pref_sync_frequency_titles=0x7f0d0002;
         public static final int pref_sync_frequency_values=0x7f0d0003;
     }
@@ -1478,8 +1478,8 @@ containing a value of this type.
         public static final int submit_area=0x7f06003e;
         public static final int tabMode=0x7f060008;
         public static final int terrain=0x7f060005;
-        public static final int textView1=0x7f060058;
-        public static final int textView2=0x7f060060;
+        public static final int textViewMissionStatement=0x7f060058;
+        public static final int textViewQuote=0x7f060060;
         public static final int textView_contact=0x7f06005f;
         public static final int textView_female=0x7f060063;
         public static final int textView_male=0x7f06005b;
@@ -1630,13 +1630,13 @@ containing a value of this type.
         [CHAR LIMIT=70] 
          */
         public static final int auth_client_using_bad_version_title=0x7f09002d;
-        public static final int btn_genderize=0x7f090045;
         public static final int btn_genderize_counting=0x7f090047;
         public static final int btn_genderize_running=0x7f090049;
+        public static final int btn_genderize_start=0x7f090046;
         public static final int btn_genderize_stopping=0x7f09004a;
         public static final int btn_genderize_wiped=0x7f09004b;
         public static final int btn_genderize_wiping=0x7f090048;
-        public static final int btn_stop=0x7f090046;
+        public static final int btn_stop=0x7f090045;
         public static final int com_facebook_choose_friends=0x7f09000f;
         public static final int com_facebook_dialogloginactivity_ok_button=0x7f090000;
         public static final int com_facebook_internet_permission_error_message=0x7f090013;
@@ -1734,27 +1734,30 @@ containing a value of this type.
          */
         public static final int common_signin_button_text_long=0x7f09002c;
         public static final int facebook_app_id=0x7f090041;
-        public static final int hello_world=0x7f090043;
         public static final int imgCoverDesc=0x7f09004c;
         /**  Location client code resources (prefix with location_client) 
          */
         public static final int location_client_powered_by_google=0x7f090033;
+        public static final int mission_statement=0x7f090043;
         public static final int pref_description_read_facebook=0x7f090058;
-        public static final int pref_description_social_recommendations=0x7f090052;
+        public static final int pref_description_wipe=0x7f090052;
         /**  Example settings for Data & Sync 
+ Example settings for Data & Sync 
          */
         public static final int pref_header_data_sync=0x7f090059;
         /**  Strings related to Settings 
  Example General settings 
+ Strings related to Settings 
+ Example General settings 
          */
         public static final int pref_header_general=0x7f090050;
-        public static final int pref_title_add_friends_to_messages=0x7f090053;
         public static final int pref_title_custom_f=0x7f090054;
         public static final int pref_title_custom_m=0x7f090055;
         public static final int pref_title_custom_u=0x7f090056;
+        public static final int pref_title_gender_format=0x7f090053;
         public static final int pref_title_read_facebook=0x7f090057;
-        public static final int pref_title_social_recommendations=0x7f090051;
         public static final int pref_title_sync_frequency=0x7f09005a;
+        public static final int pref_title_wipe=0x7f090051;
         public static final int sharethis=0x7f09004d;
         public static final int title_activity_gendre_settings=0x7f09004f;
         public static final int txt_quote=0x7f09004e;
