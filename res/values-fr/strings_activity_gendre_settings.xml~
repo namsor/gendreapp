@@ -1,11 +1,11 @@
 <resources>
 
-    <string name="title_activity_gendre_settings">Préférences</string>
+    <string name="title_activity_gendre_settings">Settings</string>
 
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->
-    <string name="pref_header_general">Général</string>
+    <string name="pref_header_general">Préférences</string>
     <string name="pref_title_wipe">Modifier les titres?</string>
     <string name="pref_description_wipe">Attention, les titres de civilité déjà renseignés dans vos contacts pourront être modifiés.</string>
 

@@ -624,10 +624,14 @@ public class GenderizeTask extends IntentService {
 				continue;
 			} else if (givenName != null && !givenName.isEmpty()
 					&& givenName.length() > 1 && familyName != null
-					&& !familyName.isEmpty() && familyName.length() > 1) {
+					&& !familyName.isEmpty() 
+					// && familyName.length() > 1 // Oops, that filtered out Chinese names...
+					) {
 				// no hint, but idea to use later existing title when WIPE=true
 				GenderizeTodo todo = new GenderizeTodo(rawContactId, givenName, familyName, null, accountName, accountType);
 				genderizeTodo.add(todo);
+			} else {
+				// do nothing
 			}
 		}
 		c.close();
