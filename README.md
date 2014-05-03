@@ -4,8 +4,10 @@ Predict gender from contact name. Gendre enriches Android contact titles (Mr., M
 
 ![GenderApp](https://raw.githubusercontent.com/namsor/gendreapp/master/gendre_logo_v128.png)
 
-Get Gendre_v006 now:
-https://raw.githubusercontent.com/namsor/gendreapp/master/dist/Gendre_v006.apk
+Get Gendre_v007 now:
+https://raw.githubusercontent.com/namsor/gendreapp/master/dist/Gendre_v007.apk
+On Opera
+http://apps.opera.com/en_en/gender_app.html
 
 Get the latest dev version:
 https://raw.githubusercontent.com/namsor/gendreapp/master/bin/Gendre.apk
@@ -14,6 +16,7 @@ We recommend backing up your contacts before running the program.
 
 ## Features
 - Possibility to choose between three Title formats : Classic (Ms.,Mr.,M.), Gender (♀,♂,∅), Heart (♥,♤,♢), Chinese (女, 男) or Custom
+- Creates groups to easily filter contacts (Male/Female)
 - The gender prediction runs as a background service (every 10 sec, or 1 min, or 10 min or 1 hour)
 - Your existing Title data (Mr., Dr. etc.) is not overwritten, unless you specifically request a wipe 
 - Once all contacts are genderized, the App shows a summary of how many Female / Male contacts were detected

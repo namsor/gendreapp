@@ -166,7 +166,9 @@ public class MainActivity extends ActionBarActivity {
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
 		// dump hash for FB integration
-		dumpHash();
+		if(BuildConfig.DEBUG) {				
+			dumpHash();
+		}
 
 		IntentFilter filter = new IntentFilter(ResponseReceiver.ACTION_STATUS);
 		filter.addCategory(Intent.CATEGORY_DEFAULT);
@@ -360,11 +362,15 @@ public class MainActivity extends ActionBarActivity {
 			Exception exception) {
 		if (state.isOpened()) {
 			// Facebook logged in...
-			Log.i(TAG, "Facebook logged in"); //$NON-NLS-1$
+			if(BuildConfig.DEBUG) {
+				Log.i(TAG, "Facebook logged in"); //$NON-NLS-1$
+			}
 			startService();
 		} else if (state.isClosed()) {
 			// Facebook logged out...
-			Log.i(TAG, "Facebook logged out"); //$NON-NLS-1$
+			if(BuildConfig.DEBUG) {
+				Log.i(TAG, "Facebook logged out"); //$NON-NLS-1$
+			}
 		}
 	}
 
@@ -497,7 +503,9 @@ public class MainActivity extends ActionBarActivity {
 				md.update(signature.toByteArray());
 				String keyHash = Base64.encodeToString(md.digest(),
 						Base64.DEFAULT);
-				Log.d("KeyHash:", keyHash); //$NON-NLS-1$
+				if(BuildConfig.DEBUG) {				
+					Log.d("KeyHash:", keyHash); //$NON-NLS-1$
+				}
 			}
 		} catch (NameNotFoundException e) {
 			e.printStackTrace();

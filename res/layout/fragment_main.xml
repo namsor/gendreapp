@@ -156,7 +156,7 @@
         android:id="@+id/linearLayout1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/imageButton_tweet"
+        android:layout_above="@+id/textView_tweetthis"
         android:layout_alignLeft="@+id/textViewQuote"
         android:layout_alignRight="@+id/textViewQuote"
         android:layout_below="@+id/textView_contact"
