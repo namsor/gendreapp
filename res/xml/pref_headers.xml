@@ -3,10 +3,10 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
-        android:fragment="com.namsor.api.samples.gendre.GendreSettingsActivity$GeneralPreferenceFragment"
+        android:fragment="com.namsor.api.samples.gendreapp.GendreSettingsActivity$GeneralPreferenceFragment"
         android:title="@string/pref_header_general" />
     <header
-        android:fragment="com.namsor.api.samples.gendre.GendreSettingsActivity$DataSyncPreferenceFragment"
+        android:fragment="com.namsor.api.samples.gendreapp.GendreSettingsActivity$DataSyncPreferenceFragment"
         android:title="@string/pref_header_data_sync" />
 
 </preference-headers>
