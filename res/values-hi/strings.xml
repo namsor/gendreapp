@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="facebook_app_id">539805382800829</string>
+  <string name="app_name">GendRE</string>
+  <string name="mission_statement">नाम लिंग के साथ संपर्क खिताब को समृद्ध करता है</string>
+  <string name="action_settings">सेट्टिंग्स</string>
+  <string name="btn_stop">रुकें</string>
+  <string name="btn_genderize_start">शुरू करें</string>
+  <string name="btn_genderize_counting">गिनती चल रही है</string>
+  <string name="btn_genderize_wiping">साफ़ करते</string>
+  <string name="btn_genderize_running">चल रही है</string>
+  <string name="btn_genderize_stopping">रुक रही है</string>
+  <string name="btn_genderize_wiped">साफ़ हो गयी</string>
+  <string name="imgCoverDesc">लैंगिक अंतर को मापने के लिए लिंग पैमाने</string>
+  <string name="sharethis">इसे शेयर करें </string>
+  <string name="txt_quote">\"यह वो नहीं है जो आप जानते हैं, पर वो है जिसे आप जानते हैं | यह वो नहीं है, जिनको आप जानते हैं, पर वो है जो आपको जानते हैं\" \nधन्यवाद Gendre... बस मेरे संपर्कों का वर्गिकर्ण करदो |</string>
+</resources>

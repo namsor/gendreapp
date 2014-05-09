@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="title_activity_gendre_settings">Установки</string>
+  <!--Strings related to Settings-->
+  <!--Example General settings-->
+  <string name="pref_header_general">Общие</string>
+  <string name="pref_title_wipe">Удалить обращения?</string>
+  <string name="pref_description_wipe">Внимание! Этим вы удалите существующее обращение в Вашем списке контактов</string>
+  <string name="pref_title_gender_format">Выберите формат обозначения полового признака </string>
+  <string name="pref_title_custom_f">Обращение к женщине</string>
+  <string name="pref_title_custom_m">Обращение к мужчине</string>
+  <string name="pref_title_custom_u">Неизвестно</string>
+  <string name="pref_title_read_facebook">Включить список с Фейсбука?</string>
+  <string name="pref_description_read_facebook">Включить список из Фейсбука в общую статистику?</string>
+  <string-array name="pref_list_titles">
+    <item>Классический (Ms.,Mr.,M.)</item>
+    <item>Пол (♀,♂,∅)</item>
+    <item>Сердце (♥,♤,♢)</item>
+    <item>китайский (女,男,另)</item>
+    <item>русский (г-жа г-н) или нестандартного </item>
+    <item> Ничего </item>
+  </string-array>
+  <string-array name="pref_list_values">
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+  </string-array>
+  <!--Example settings for Data & Sync-->
+  <string name="pref_header_data_sync">Типовые установки для данных и синхронизации</string>
+  <string name="pref_title_sync_frequency">Частотность синхронизации</string>
+  <string-array name="pref_sync_frequency_titles">
+    <item>10 секунд </item>
+    <item>1 минуту </item>
+    <item>10 минут </item>
+    <item>1 час </item>
+  </string-array>
+  <string-array name="pref_sync_frequency_values">
+    <item>10</item>
+    <item>60</item>
+    <item>600</item>
+    <item>3600</item>
+  </string-array>
+</resources>

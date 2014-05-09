@@ -1,11 +1,14 @@
-# gendreapp
+# GendRE Gender APP for Android
 
 Predict gender from contact name. Gendre enriches Android contact titles (Mr., Ms., M.) with the gender inferred from a contact name.
 
 ![GenderApp](https://raw.githubusercontent.com/namsor/gendreapp/master/gendre_logo_v128.png)
 
-Get Gendre_v007 now:
-https://raw.githubusercontent.com/namsor/gendreapp/master/dist/Gendre_v007.apk
+Get GendRE App now on Google Play
+https://play.google.com/store/apps/details?id=com.namsor.api.samples.gendreapp
+
+Or here 
+https://raw.githubusercontent.com/namsor/gendreapp/master/dist/Gendre_signed_v008_10.apk
 On Opera
 http://apps.opera.com/en_en/gender_app.html
 
@@ -27,9 +30,9 @@ We recommend backing up your contacts before running the program.
 http://stackoverflow.com/questions/23195352/query-android-contacts-synchronized-from-facebook
 
 ## Languages and Localization
-GendRE works with all international names (with very few exceptions). To help with translation/localization of the user interface, please visit
+GendRE works with all international names (with very few exceptions). To help with translation/localization of the user interface (~300 words), please visit
 https://www.transifex.com/projects/p/gendre-gender-app/
-It helps if you can run the software once, to see the main messages in context.
+It helps if you can run the software once, to see the main messages in context. GendRE is currently available in: English, Arabic, Portuguese, Russian, Italian, French, Hindi.   
 
 ## Gender API
 GenderApp uses the GendreAPI for name gender prediction. This is a free Application Programming Interface (API) to predict the gender of a personal name on a -1 (Male) to +1 (Female) scale, for a given geography/locale. You can test it directly from your web browser, entering this kind URL:

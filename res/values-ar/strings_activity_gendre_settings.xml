@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="title_activity_gendre_settings">الاعدادات</string>
+  <!--Strings related to Settings-->
+  <!--Example General settings-->
+  <string name="pref_header_general">عام</string>
+  <string name="pref_title_wipe">مسح الالقاب؟</string>
+  <string name="pref_description_wipe">انتبه, هذا سيمسح كل معلومات الالقاب الموجودة في جهات الاتصال الخاصة بك. </string>
+  <string name="pref_title_gender_format">اختيار صيغة الجنس </string>
+  <string name="pref_title_custom_f">لقب الانثى</string>
+  <string name="pref_title_custom_m">لقب الذكر </string>
+  <string name="pref_title_custom_u">لقب غير معروف</string>
+  <string name="pref_title_read_facebook">اضافة فيسبوك؟</string>
+  <string name="pref_description_read_facebook">اضافة جهات اتصال فيسبوك في الاحصاءات الشاملة.</string>
+
+    
+    <string-array name="pref_list_titles">
+        <item>Classique EN (Ms.,Mr.,M.)</item>
+        <item>Sexe (♀,♂,∅)</item>
+        <item>Coeur (♥,♤,♢)</item>
+        <item>Sinogrammes (女,男,另)</item>
+        <item>Personalisé</item>
+        <item>Aucun</item>
+        </string-array>
+    <string-array name="pref_list_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        </string-array>
+  
+  <!--Example settings for Data & Sync-->
+  <string name="pref_header_data_sync">البيانات &amp; المزامنة</string>
+  <string name="pref_title_sync_frequency">تكرار المزامنة</string>
+  
+  <string-array name="pref_sync_frequency_titles">
+        <item>10 secondes</item>
+        <item>1 minute</item>
+        <item>10 minutes</item>
+        <item>1 heure</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>10</item>
+        <item>60</item>
+        <item>600</item>
+        <item>3600</item>
+    </string-array>
+</resources>

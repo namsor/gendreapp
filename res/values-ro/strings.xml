@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="facebook_app_id">539805382800829</string>
+  <string name="app_name">GendRE</string>
+  <string name="mission_statement">Imbogatiti titlurile contactelor cu sexul numelui</string>
+  <string name="action_settings">Setari</string>
+  <string name="btn_stop">Opreste</string>
+  <string name="btn_genderize_start">Porneste</string>
+  <string name="btn_genderize_counting">Numarare</string>
+  <string name="btn_genderize_wiping">Stergere</string>
+  <string name="btn_genderize_running">Functionare</string>
+  <string name="btn_genderize_stopping">Oprirea</string>
+  <string name="btn_genderize_wiped">Sters</string>
+  <string name="imgCoverDesc">Scara sexului pentru a masura diferentele sexului</string>
+  <string name="sharethis">Impartaseste acest</string>
+  <string name="txt_quote">\"Nu conteaza ce cunosti, dar pe cine cunosti. Nu e pe cine cunosti, dar cine te cunoaste pe TINE.\" Multumesc, Gendre... doar corelez contactele mele cu sexul lor.</string>
+</resources>

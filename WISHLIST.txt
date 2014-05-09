@@ -1,9 +1,9 @@
 XP1 Dynamic prefs
 XP2 Other Icon Choices
--P1 Groups
+XP1 Groups
 
--P2 Localization
--P2 Service Binding
+XP2 Localization
+XP2 Service AutoStart
 -P2 Error Diagnoses (ex. Con error, reversed fn/ln, unsupported language,...)
 
 -P3 Ringtone
@@ -17,8 +17,8 @@ Philip
 X Dynamic Settings: Change settings while the service runs
 - 'Twitter immediately force closes when trying to open it from the app.'
 X- 'Contact numbers are incorrect and misaligned.'
-- 'Application doesnt seem to work with contacts merged from Facebook.'
-- 'add some color or graphics to the main page of the app.'
+X 'Application doesnt seem to work with contacts merged from Facebook.'
+X 'add some color or graphics to the main page of the app.'
 
 Fani
 X '1. Add stop button'
@@ -33,8 +33,8 @@ X Dynamic settings
 X Start, Stop, Uninstall, Service ... 
 
 Marc Edward
-- Add Facebook button
-- Background theme (design)
+X Add Facebook button
+X Background theme (design)
 
 Tasha
 X Add stop button

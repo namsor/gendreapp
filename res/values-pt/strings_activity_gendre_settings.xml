@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="title_activity_gendre_settings">Configuração</string>
+  <!--Strings related to Settings-->
+  <!--Example General settings-->
+  <string name="pref_header_general">Geral</string>
+  <string name="pref_title_wipe">Eliminar os títulos?</string>
+  <string name="pref_description_wipe">Atenção, vai eliminar a informação existente nos TÍTULOS dos seus contactos.</string>
+  <string name="pref_title_gender_format">Seleccionar o formato do género</string>
+  <string name="pref_title_custom_f">Título Feminino</string>
+  <string name="pref_title_custom_m">Título Masculino</string>
+  <string name="pref_title_custom_u">Titulo Desconhecido</string>
+  <string name="pref_title_read_facebook">Incluir o Facebook?</string>
+  <string name="pref_description_read_facebook">Incluir os contactos do Facebook nas estatísticas gerais.</string>
+  <string-array name="pref_list_titles">
+    <item>Clássico (Ms., o Sr., M.)</item>
+    <item> Gênero (♀, ♂, ∅) </item>
+    <item> Coração (♥, ♤, ♢) </item>
+    <item> Chinês (女, 男, 另) </item>
+    <item> Personalizado </item>
+    <item> Nenhum </item>
+  </string-array>
+  <string-array name="pref_list_values">
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+  </string-array>
+  <!--Example settings for Data & Sync-->
+  <string name="pref_header_data_sync">Dados  &amp; sincronizar</string>
+  <string name="pref_title_sync_frequency">Frequência de sincronização</string>
+  <string-array name="pref_sync_frequency_titles">
+    <item>10 segundos</item>
+    <item>1 minuto</item>
+    <item>10 minutos</item>
+    <item>1 hora</item>
+  </string-array>
+  <string-array name="pref_sync_frequency_values">
+    <item>10</item>
+    <item>60</item>
+    <item>600</item>
+    <item>3600</item>
+  </string-array>
+</resources>

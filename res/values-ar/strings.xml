@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="facebook_app_id">539805382800829</string>
+  <string name="app_name">GendRE</string>
+  <string name="mission_statement">اثري القاب جهات الاتصال باضافة الجنس للاسم</string>
+  <string name="action_settings">الاعدادات</string>
+  <string name="btn_stop">توقف</string>
+  <string name="btn_genderize_start">ابدأ</string>
+  <string name="btn_genderize_counting">جاري العد </string>
+  <string name="btn_genderize_wiping">جاري المسح </string>
+  <string name="btn_genderize_running">جاري التنفيذ</string>
+  <string name="btn_genderize_stopping">جاري التوقف</string>
+  <string name="btn_genderize_wiped">تم المسح</string>
+  <string name="imgCoverDesc">ميزان الجنسين لقياس الهوة بين الجنسين</string>
+  <string name="sharethis">شارك هذا </string>
+  <string name="txt_quote">\" ليس المهم ما تعرف, بل من تعرف. ليس المهم من تعرف, بل من يعرفك.\" شكراً GendRE ... لقد اضاف نوع الجنس الى جهات اتصالي.</string>
+</resources>

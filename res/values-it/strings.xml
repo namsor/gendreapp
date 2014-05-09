@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="facebook_app_id">539805382800829</string>
+  <string name="app_name">GendRE</string>
+  <string name="mission_statement">Arricchisci i titoli dei contatti con il sesso</string>
+  <string name="action_settings">Impostazioni</string>
+  <string name="btn_stop">Interrompi</string>
+  <string name="btn_genderize_start">Avvia</string>
+  <string name="btn_genderize_counting">Conteggio</string>
+  <string name="btn_genderize_wiping">Rimozione</string>
+  <string name="btn_genderize_running">In Esecuzione</string>
+  <string name="btn_genderize_stopping">Interruzione</string>
+  <string name="btn_genderize_wiped">Rimosso</string>
+  <string name="imgCoverDesc">Bilancia di genere per misurare la disparità fra i due sessi</string>
+  <string name="sharethis">Condividi questo elemento</string>
+  <string name="txt_quote">\"Non si tratta di quello che conosci, ma di chi conosci. Non si tratta di chi conosci, ma di chi conosce TE.\"\nGrazie, GendRE... assegna un sesso ai miei contatti.</string>
+</resources>

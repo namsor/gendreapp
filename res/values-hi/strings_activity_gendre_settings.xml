@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="title_activity_gendre_settings">सेट्टिंग्स </string>
+  <!--Strings related to Settings-->
+  <!--Example General settings-->
+  <string name="pref_header_general">सामान्य </string>
+  <string name="pref_title_wipe">खिताब साफ़ करें ?</string>
+  <string name="pref_description_wipe">खबरदार, यह आपके वर्तमान में सभी संपर्कों के  खिताब की जानकारी मिटा देगा</string>
+  <string name="pref_title_gender_format">लिंग प्रारूप का चयन करें</string>
+  <string name="pref_title_custom_f">स्त्री खिताब</string>
+  <string name="pref_title_custom_m">पुरुष खिताब</string>
+  <string name="pref_title_custom_u">अज्ञात खिताब</string>
+  <string name="pref_title_read_facebook">फेसबुक को शामिल करें?</string>
+  <string name="pref_description_read_facebook">फ़ेसबुक संपर्कों को समग्र आँकड़ों में शामिल करें</string>
+  <string-array name="pref_list_titles">
+    <item>शास्त्रीय (Ms.,Mr.,M.)</item>
+    <item>लिंग (♀,♂,∅)</item>
+    <item>दिल (♥,♤,♢)</item>
+    <item>चीनी (女,男,另)</item>
+    <item>कस्टम (श्री, सुश्री, एम.) </item>
+    <item>कोई नहीं</item>
+  </string-array>
+  <string-array name="pref_list_values">
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+  </string-array>
+  <!--Example settings for Data & Sync-->
+  <string name="pref_header_data_sync">तिथि &amp; सिंक</string>
+  <string name="pref_title_sync_frequency">सिंक आवृत्ति </string>
+  <string-array name="pref_sync_frequency_titles">
+    <item>10 सेकंड्स </item>
+    <item>1 मिनट </item>
+    <item>10 मिनट </item>
+    <item>1 घंटा </item>
+  </string-array>
+  <string-array name="pref_sync_frequency_values">
+    <item>10</item>
+    <item>60</item>
+    <item>600</item>
+    <item>3600</item>
+  </string-array>
+</resources>

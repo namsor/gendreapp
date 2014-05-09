@@ -1,0 +1,5 @@
+"C:\Program Files\Java\jdk1.7.0_51\bin\keytool" -genkey -v -keystore C:\Users\ELC201203\.android\gendreapp.keystore -alias gendreapp -keyalg RSA -keysize 2048 -validity 36500
+"C:\Program Files\Java\jdk1.7.0_51\bin\keytool" -exportcert -alias gendreapp -keystore C:\Users\ELC201203\.android\gendreapp.keystore | C:\APPS\openssl\bin\openssl sha1 -binary | C:\APPS\openssl\bin\openssl base64
+
+
+"C:\Program Files\Java\jdk1.7.0_51\bin\keytool" -exportcert -alias androiddebugkey -keystore C:\Users\ELC201203\.android\debug.keystore | C:\APPS\openssl\bin\openssl sha1 -binary | C:\APPS\openssl\bin\openssl base64

@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="facebook_app_id">539805382800829</string>
+  <string name="app_name">GendRE</string>
+  <string name="mission_statement">Enriquecer os títulos dos contactos com o género</string>
+  <string name="action_settings">Configuração</string>
+  <string name="btn_stop">Terminar</string>
+  <string name="btn_genderize_start">Iniciar</string>
+  <string name="btn_genderize_counting">Contando</string>
+  <string name="btn_genderize_wiping">Limpando</string>
+  <string name="btn_genderize_running">Executando</string>
+  <string name="btn_genderize_stopping">Parando</string>
+  <string name="btn_genderize_wiped">Limpo</string>
+  <string name="imgCoverDesc">Sexo escala para medir a diferença de gênero</string>
+  <string name="sharethis">Partilhe isto</string>
+  <string name="txt_quote">\"Não se trata do que sabes, mas de quem conheces. Não se trata de quem conheces, mas de quem TE conhece.\"\nObrigado, Gendre... simplesmente incorpora o género nos meus contactos.</string>
+</resources>

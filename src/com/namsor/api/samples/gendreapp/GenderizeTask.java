@@ -265,6 +265,7 @@ public class GenderizeTask extends IntentService {
 		            ContentUris.withAppendedId(ContactsContract.Groups.CONTENT_URI, groupId), null, null);
 			
 		}
+		groupsCache.clear();
 	}
 	
 	private void wipe() {

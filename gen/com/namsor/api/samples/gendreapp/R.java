@@ -1742,13 +1742,31 @@ containing a value of this type.
         public static final int pref_description_read_facebook=0x7f080058;
         public static final int pref_description_wipe=0x7f080052;
         /**  Example settings for Data & Sync 
+Example settings for Data & Sync
  Example settings for Data & Sync 
+Example settings for Data & Sync
+Example settings for Data & Sync
+Example settings for Data & Sync
+Example settings for Data & Sync
+Example settings for Data & Sync
          */
         public static final int pref_header_data_sync=0x7f080059;
         /**  Strings related to Settings 
  Example General settings 
+Strings related to Settings
+Example General settings
  Strings related to Settings 
  Example General settings 
+Strings related to Settings
+Example General settings
+Strings related to Settings
+Example General settings
+Strings related to Settings
+Example General settings
+Strings related to Settings
+Example General settings
+Strings related to Settings
+Example General settings
          */
         public static final int pref_header_general=0x7f080050;
         public static final int pref_title_custom_f=0x7f080054;

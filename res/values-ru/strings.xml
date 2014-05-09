@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="facebook_app_id">539805382800829</string>
+  <string name="app_name">GendRE</string>
+  <string name="mission_statement">Классифицируйте свой список контактов на Андройд по половому признаку</string>
+  <string name="action_settings">Настройки</string>
+  <string name="btn_stop">остановить,</string>
+  <string name="btn_genderize_start">запустить</string>
+  <string name="btn_genderize_counting">Подсчет </string>
+  <string name="btn_genderize_wiping">удалять</string>
+  <string name="btn_genderize_running">Запуск</string>
+  <string name="btn_genderize_stopping">остановка</string>
+  <string name="btn_genderize_wiped">Удаленные</string>
+  <string name="imgCoverDesc">Пол шкала для измерения гендерного разрыва</string>
+  <string name="sharethis">Рассказать об этом</string>
+  <string name="txt_quote">\"Где черт не сумеет, туда бабу пошлет. \" CEO/Генеральный директор, тоже ?</string>
+</resources>

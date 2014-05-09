@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="title_activity_gendre_settings">Setari</string>
+  <!--Strings related to Settings-->
+  <!--Example General settings-->
+  <string name="pref_header_general">General</string>
+  <string name="pref_title_wipe">Stergeti titlurie?</string>
+  <string name="pref_description_wipe">Atentie, acesta va sterge informatiile titlurilor existente in contacte</string>
+  <string name="pref_title_gender_format">Selectati formatul sexului</string>
+  <string name="pref_title_custom_f">Titlul feminin</string>
+  <string name="pref_title_custom_m">Titlul masculin</string>
+  <string name="pref_title_custom_u">Titlu necunoscut</string>
+  <string name="pref_title_read_facebook">Includeti Facebook-ul?</string>
+  <string name="pref_description_read_facebook">Includeti contactele Facebook in statistica generala.</string>
+  <string-array name="pref_list_titles">
+    <item>Clasic (Drei.,Dl.,Dna.)</item>
+    <item>Sexul (♀,♂,∅)</item>
+    <item>Inima (♥,♤,♢)</item>
+    <item>Chineza (女,男,另)</item>
+    <item>Personalizat</item>
+    <item>Nici una</item>
+  </string-array>
+  <string-array name="pref_list_values">
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+  </string-array>
+  <!--Example settings for Data & Sync-->
+  <string name="pref_header_data_sync">Data &amp; sincronizare</string>
+  <string name="pref_title_sync_frequency">Sincronizarea frecventei</string>
+  <string-array name="pref_sync_frequency_titles">
+    <item>10 secunde</item>
+    <item>1 minut</item>
+    <item>10 minute</item>
+    <item>1 ora</item>
+  </string-array>
+  <string-array name="pref_sync_frequency_values">
+    <item>10</item>
+    <item>60</item>
+    <item>600</item>
+    <item>3600</item>
+  </string-array>
+</resources>
