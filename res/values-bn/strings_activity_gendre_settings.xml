@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="title_activity_gendre_settings">সেটিংস</string>
+  <!--Strings related to Settings-->
+  <!--Example General settings-->
+  <string name="pref_header_general">সাধারণ</string>
+  <string name="pref_title_wipe">শিরোনামসমূহ নিশ্চিহ্ন করা হবে?</string>
+  <string name="pref_description_wipe">হুঁশিয়ার, এটি আপনার বিদ্যমান শিরোনাম তথ্য নিশ্চিহ্ন করে ফেলবে।</string>
+  <string name="pref_title_gender_format">লিঙ্গ বিন্যাস নির্বাচন</string>
+  <string name="pref_title_custom_f">মহিলা শিরোনাম</string>
+  <string name="pref_title_custom_m">পুরুষ শিরোনাম</string>
+  <string name="pref_title_custom_u">অজানা শিরোনাম</string>
+  <string name="pref_title_read_facebook">ফেসবুক অন্তর্ভুক্ত করা হবে?</string>
+  <string name="pref_description_read_facebook">সামগ্রিক পরিসংখ্যানের মধ্যে ফেসবুক কনট্যাক্ট অন্তর্ভুক্ত করুন।</string>
+  <string-array name="pref_list_titles">
+    <item>শ্রেণী (মিস.,মিস্টার.,মিস্টার.)</item>
+    <item>লিঙ্গ (♀,♂,∅)</item>
+    <item>হৃদয় (♥,♤,♢)</item>
+    <item>চীনা (女,男,另)</item>
+    <item>প্রথা</item>
+    <item>কোনোটা না</item>
+  </string-array>
+    <string-array name="pref_list_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        </string-array>
+  <!--Example settings for Data & Sync-->
+  <string name="pref_header_data_sync">তথ্য ও সুসংগতি</string>
+  <string name="pref_title_sync_frequency">সিঙ্ক ফ্রিকোয়েন্সি</string>
+  <string-array name="pref_sync_frequency_titles">
+    <item>১০ সেকেন্ড</item>
+    <item>১ মিনিট</item>
+    <item>১০ মিনিট</item>
+    <item>১ ঘন্টা</item>
+  </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>10</item>
+        <item>60</item>
+        <item>600</item>
+        <item>3600</item>
+    </string-array>
+</resources>

@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="title_activity_gendre_settings">Einstellungen</string>
+  <!--Strings related to Settings-->
+  <!--Example General settings-->
+  <string name="pref_header_general">Allgemeine</string>
+  <string name="pref_title_wipe">Anreden löschen?</string>
+  <string name="pref_description_wipe">Bitte beachten Sie, dass dies alle existierenden Titelinformation in ihren Kontakten löscht.</string>
+  <string name="pref_title_gender_format">Geschlechtsanzeigeformat</string>
+  <string name="pref_title_custom_f">weiblichen Titel</string>
+  <string name="pref_title_custom_m">männlichen Anreden</string>
+  <string name="pref_title_custom_u">unbekannte Anrede</string>
+  <string name="pref_title_read_facebook">Facebook mit einbeziehen?</string>
+  <string name="pref_description_read_facebook">Facebook Kontakte mit in die Statistiken aufnehmen.</string>
+  <string-array name="pref_list_titles">
+    <item>Klassisch (Ms.,Mr.,M.)</item>
+    <item>Geschlecht (♀,♂,∅)</item>
+    <item>Herzen (♥,♤,♢)</item>
+    <item>Chinesisch (女,男,另)</item>
+    <item>Benutzerdeifiniert (Herr, Frau)</item>
+    <item>Keine</item>
+  </string-array>
+  <string-array name="pref_list_values">
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+  </string-array>
+  <!--Example settings for Data & Sync-->
+  <string name="pref_header_data_sync">Daten &amp; sync</string>
+  <string name="pref_title_sync_frequency">Synchronisierungsfrequenz</string>
+  <string-array name="pref_sync_frequency_titles">
+    <item>10 Sekunden </item>
+    <item>1 Minute </item>
+    <item>10 Minuten </item>
+    <item>1 Stunde </item>
+  </string-array>
+  <string-array name="pref_sync_frequency_values">
+    <item>10</item>
+    <item>60</item>
+    <item>600</item>
+    <item>3600</item>
+  </string-array>
+</resources>

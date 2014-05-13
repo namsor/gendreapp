@@ -112,8 +112,10 @@ public class MainActivity extends ActionBarActivity {
 		this.genderSample = genderSample;
 	}
 
-	private static final String TWEET_URL = Messages.getString("MainActivity.share_url"); //$NON-NLS-1$
-	private static final String FACEBOOKAPP_NAME = Messages.getString("MainActivity.facebook_app_name"); //$NON-NLS-1$
+	private static final String TWEET_URL = Messages.getMessageString("MainActivity.share_url"); //$NON-NLS-1$
+	private static final String FACEBOOKAPP_NAME = Messages.getMessageString("MainActivity.facebook_app_name"); //$NON-NLS-1$
+	private static final String FACEBOOKAPP_URL = "http://namesorts.com/api/gendre/";
+	private static final String FACEBOOKAPP_IMG = "http://namesorts.files.wordpress.com/2014/04/google_1024_x_500a.png?w=256&h=256&crop=1";
 
 	private class AnimationRunnable implements Runnable {
 		public AnimationRunnable(MainActivity activity) {
@@ -452,12 +454,17 @@ public class MainActivity extends ActionBarActivity {
 		if (genderStats == null) {
 			return;
 		}
-		String shareText = Messages.getString("MainActivity.share_facebook_part1") + genderStats[0] //$NON-NLS-1$
-				+ GenderizeTask.PREFIX_GENDERF + Messages.getString("MainActivity.share_facebook_part2") + genderStats[1] //$NON-NLS-1$
-				+ GenderizeTask.PREFIX_GENDERM + Messages.getString("MainActivity.share_facebook_part3"); //$NON-NLS-1$
-		String shareURL = TWEET_URL;
+		String shareText = Messages.getMessageString("MainActivity.share_facebook_part1") + genderStats[0] //$NON-NLS-1$
+				+ GenderizeTask.PREFIX_GENDERF + Messages.getMessageString("MainActivity.share_facebook_part2") + genderStats[1] //$NON-NLS-1$
+				+ GenderizeTask.PREFIX_GENDERM + Messages.getMessageString("MainActivity.share_facebook_part3"); //$NON-NLS-1$
+		String shareURL = FACEBOOKAPP_URL;
+		String imgURL = FACEBOOKAPP_IMG;
+		String tagline = Messages.getAboutString("About.tag_line");
 		FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(this)
-				.setDescription(shareText).setApplicationName(FACEBOOKAPP_NAME)
+				.setDescription(shareText)
+				.setApplicationName(FACEBOOKAPP_NAME)
+				.setCaption(tagline)
+				.setPicture(imgURL)
 				.setLink(shareURL).build();
 		uiHelper.trackPendingDialogCall(shareDialog.present());
 	}
@@ -482,9 +489,9 @@ public class MainActivity extends ActionBarActivity {
 			return;
 
 		}
-		String shareText = Messages.getString("MainActivity.share_gplus_part1") + genderStats[0] //$NON-NLS-1$
-				+ GenderizeTask.PREFIX_GENDERF + Messages.getString("MainActivity.share_gplus_part2") + genderStats[1] //$NON-NLS-1$
-				+ GenderizeTask.PREFIX_GENDERM + Messages.getString("MainActivity.share_gplus_part3"); //$NON-NLS-1$
+		String shareText = Messages.getMessageString("MainActivity.share_gplus_part1") + genderStats[0] //$NON-NLS-1$
+				+ GenderizeTask.PREFIX_GENDERF + Messages.getMessageString("MainActivity.share_gplus_part2") + genderStats[1] //$NON-NLS-1$
+				+ GenderizeTask.PREFIX_GENDERM + Messages.getMessageString("MainActivity.share_gplus_part3"); //$NON-NLS-1$
 		String shareURL = TWEET_URL;
 
 		// Launch the Google+ share dialog with attribution to your app.
@@ -523,9 +530,9 @@ public class MainActivity extends ActionBarActivity {
 		if (genderStats == null) {
 			return;
 		}
-		String tweetText = Messages.getString("MainActivity.share_twitter_part1") + genderStats[0] //$NON-NLS-1$
-				+ GenderizeTask.PREFIX_GENDERF + Messages.getString("MainActivity.share_twitter_part2") + genderStats[1] //$NON-NLS-1$
-				+ GenderizeTask.PREFIX_GENDERM + Messages.getString("MainActivity.share_twitter_part3"); //$NON-NLS-1$
+		String tweetText = Messages.getMessageString("MainActivity.share_twitter_part1") + genderStats[0] //$NON-NLS-1$
+				+ GenderizeTask.PREFIX_GENDERF + Messages.getMessageString("MainActivity.share_twitter_part2") + genderStats[1] //$NON-NLS-1$
+				+ GenderizeTask.PREFIX_GENDERM + Messages.getMessageString("MainActivity.share_twitter_part3"); //$NON-NLS-1$
 		String tweetURL = TWEET_URL;
 		String tweetUrl;
 		try {

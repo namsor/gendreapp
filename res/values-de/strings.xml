@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="facebook_app_id">539805382800829</string>
+  <string name="app_name">GendRE</string>
+  <string name="mission_statement">Fügen Sie zu ihren Kontakten geschlechtspezifische Anreden hinzu</string>
+  <string name="action_settings">Einstellungen</string>
+  <string name="btn_stop">Stop</string>
+  <string name="btn_genderize_start">Start</string>
+  <string name="btn_genderize_counting">Zählen</string>
+  <string name="btn_genderize_wiping">Löschen</string>
+  <string name="btn_genderize_running">Arbeite</string>
+  <string name="btn_genderize_stopping">Stoppe</string>
+  <string name="btn_genderize_wiped">Gelöscht</string>
+  <string name="imgCoverDesc">Geschlechterskala für das Geschlechterverhältnis</string>
+  <string name="sharethis">Teilen</string>
+  <string name="txt_quote">\"Es ist nicht was du weißt, sondern wen du kennst. Es ist nicht wen du kennst, sondern wer DICH kennt.\" Danke, Gendre.... fügt nur Geschlechter zu meinen Kontakten hinzu.</string>
+</resources>

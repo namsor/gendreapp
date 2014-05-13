@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="facebook_app_id">539805382800829</string>
+  <string name="app_name">GendRE</string>
+  <string name="mission_statement">העשר את אנשי הקשר בתארים עם שם מין</string>
+  <string name="action_settings">הגדרות</string>
+  <string name="btn_stop">עצור</string>
+  <string name="btn_genderize_start">התחל</string>
+  <string name="btn_genderize_counting">סופר</string>
+  <string name="btn_genderize_wiping">דוחה</string>
+  <string name="btn_genderize_running">טוען</string>
+  <string name="btn_genderize_stopping">עוצר</string>
+  <string name="btn_genderize_wiped">נדחה</string>
+  <string name="imgCoverDesc">קנה מידה כדי למדוד את הפער המגדרי</string>
+  <string name="sharethis">שתף את זה</string>
+  <string name="txt_quote">זה לא מה אתה מכיר, זה את מי אתה מכיר. זה לא מי מכיר אותך, זה מי מכיר אותך. תודה,מין... רק מיין על פי מין את אנשי הקשר שלי</string>
+</resources>

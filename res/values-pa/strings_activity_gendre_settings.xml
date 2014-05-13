@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="title_activity_gendre_settings">ਸੈਟਿੰਗ  </string>
+  <!--Strings related to Settings-->
+  <!--Example General settings-->
+  <string name="pref_header_general">ਆਮ  </string>
+  <string name="pref_title_wipe">ਖਿਤਾਬ ਸਾਫ਼ ਕਰੋ ?</string>
+  <string name="pref_description_wipe">ਬਚੋ, ਇਹ ਤੁਹਾਡੇ ਮੌਜੂਦਾ ਸੰਪਰਕਾਂ ਦੀ ਖਿਤਾਬ ਸੰਬੰਧੀ ਜਾਣਕਾਰੀ ਸਾਫ਼ ਕਰ ਦੇਗਾ </string>
+  <string name="pref_title_gender_format">ਲਿੰਗ ਫਾਰਮੈਟ ਦੀ ਚੋਣ ਕਰੋ</string>
+  <string name="pref_title_custom_f">ਜਨਾਨਾ ਖਿਤਾਬ </string>
+  <string name="pref_title_custom_m">ਮਰਦਾਨਾ ਖਿਤਾਬ</string>
+  <string name="pref_title_custom_u">ਅਣਜਾਣ ਖਿਤਾਬ</string>
+  <string name="pref_title_read_facebook">ਫੇਸ੍ਬੂਕ ਸ਼ਾਮਿਲ ਕਰੋ?</string>
+  <string name="pref_description_read_facebook">ਫੇਸ੍ਬੂਕ ਸੰਪਰਕਾਂ ਨੂੰ ਸਮੁੱਚੇ ਤੌਰ \'ਤੇ ਅੰਕੜੇ ਵਿੱਚ ਸ਼ਾਮਿਲ ਕਰੋ </string>
+  <string-array name="pref_list_titles">
+    <item>ਕਲਾਸਿਕ (ਮਿਸ, ਸ਼੍ਰੀ, ਐੱਮ)</item>
+    <item>ਲਿੰਗ (♀,♂,∅)</item>
+    <item>ਦਿਲ (♥,♤,♢)</item>
+    <item>ਚੀਨੀ (女,男,另)</item>
+    <item>ਕਸਟਮ </item>
+    <item>ਕੋਈ ਨਹੀਂ</item>
+  </string-array>
+  <string-array name="pref_list_values">
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+  </string-array>
+  <!--Example settings for Data & Sync-->
+  <string name="pref_header_data_sync">ਮਿਤੀ &amp; ਸਮਕਾਲੀ</string>
+  <string name="pref_title_sync_frequency">ਸਮਕਾਲੀ ਆਵਿਰਤੀ</string>
+  <string-array name="pref_sync_frequency_titles">
+    <item>10 ਸਕਿੰਟ </item>
+    <item>1 ਮਿੰਟ </item>
+    <item>10 ਮਿੰਟ </item>
+    <item>1 ਘੰਟਾ </item>
+  </string-array>
+  <string-array name="pref_sync_frequency_values">
+    <item>10</item>
+    <item>60</item>
+    <item>600</item>
+    <item>3600</item>
+  </string-array>
+</resources>

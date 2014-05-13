@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="title_activity_gendre_settings">הגדרות</string>
+  <!--Strings related to Settings-->
+  <!--Example General settings-->
+  <string name="pref_header_general">כללי</string>
+  <string name="pref_title_wipe">לדחות תארים?</string>
+  <string name="pref_description_wipe">הזהר, זה ידחה תארים קיימים מאנשי הקשר שלך</string>
+  <string name="pref_title_gender_format">בחר סוג מין</string>
+  <string name="pref_title_custom_f">תואר נקבה</string>
+  <string name="pref_title_custom_m">תואר זכר</string>
+  <string name="pref_title_custom_u">תואר לא ידוע</string>
+  <string name="pref_title_read_facebook">לכלול פייסבוק?</string>
+  <string name="pref_description_read_facebook">כלול אנשי קשר מפייסבוק בסך הכל </string>
+  <string-array name="pref_list_titles">
+    <item>קלאסי(Ms.,Mr.,M.)</item>
+    <item>מין(♀,♂,∅)</item>
+    <item>לב(♥,♤,♢)</item>
+    <item>סינית(女,男,另)</item>
+    <item>מותאם אישית</item>
+    <item>ללא</item>
+  </string-array>
+  <string-array name="pref_list_values">
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+  </string-array>
+  <!--Example settings for Data & Sync-->
+  <string name="pref_header_data_sync">Data &amp; sync</string>
+  <string name="pref_title_sync_frequency">תדירות סנכרון</string>
+  <string-array name="pref_sync_frequency_titles">
+    <item>10 שניות</item>
+    <item>דקה</item>
+    <item>10 דקות</item>
+    <item>שעה</item>
+  </string-array>
+  <string-array name="pref_sync_frequency_values">
+    <item>10</item>
+    <item>60</item>
+    <item>600</item>
+    <item>3600</item>
+  </string-array>
+</resources>

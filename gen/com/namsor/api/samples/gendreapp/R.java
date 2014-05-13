@@ -1743,7 +1743,11 @@ containing a value of this type.
         public static final int pref_description_wipe=0x7f080052;
         /**  Example settings for Data & Sync 
 Example settings for Data & Sync
+Example settings for Data & Sync
+Example settings for Data & Sync
  Example settings for Data & Sync 
+Example settings for Data & Sync
+Example settings for Data & Sync
 Example settings for Data & Sync
 Example settings for Data & Sync
 Example settings for Data & Sync
@@ -1755,8 +1759,16 @@ Example settings for Data & Sync
  Example General settings 
 Strings related to Settings
 Example General settings
+Strings related to Settings
+Example General settings
+Strings related to Settings
+Example General settings
  Strings related to Settings 
  Example General settings 
+Strings related to Settings
+Example General settings
+Strings related to Settings
+Example General settings
 Strings related to Settings
 Example General settings
 Strings related to Settings

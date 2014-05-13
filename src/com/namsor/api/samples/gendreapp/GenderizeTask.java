@@ -60,9 +60,9 @@ public class GenderizeTask extends IntentService {
 	// need to manually change this before releasing
 	private static final String ATTVALUE_ClientAppVersion = "GendRE_app_v0.0.8"; //$NON-NLS-1$
 
-	private static final String CONTACT_GROUP_ALL_FEMALES = Messages.getString("GenderizeTask.contact_group_females"); //$NON-NLS-1$
-	private static final String CONTACT_GROUP_ALL_MALES = Messages.getString("GenderizeTask.contact_group_males"); //$NON-NLS-1$
-	private static final String CONTACT_GROUP_OTHERS = Messages.getString("GenderizeTask.contact_group_other"); //$NON-NLS-1$
+	private static final String CONTACT_GROUP_ALL_FEMALES = Messages.getMessageString("GenderizeTask.contact_group_females"); //$NON-NLS-1$
+	private static final String CONTACT_GROUP_ALL_MALES = Messages.getMessageString("GenderizeTask.contact_group_males"); //$NON-NLS-1$
+	private static final String CONTACT_GROUP_OTHERS = Messages.getMessageString("GenderizeTask.contact_group_other"); //$NON-NLS-1$
 	private static final String[] CONTACT_GROUPS = {
 		CONTACT_GROUP_ALL_FEMALES,
 		CONTACT_GROUP_ALL_MALES,
@@ -232,7 +232,7 @@ public class GenderizeTask extends IntentService {
 			Log.e(TAG, "Failed to get gender for firstName " + firstName //$NON-NLS-1$
 					+ " lastName " + lastName + " ex=" + e.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$
 			// display error msg
-			mHandler.post(new DisplayToast(this, Messages.getString("GenderizeTask.api_error") + e.getMessage())); //$NON-NLS-1$
+			mHandler.post(new DisplayToast(this, Messages.getMessageString("GenderizeTask.api_error") + e.getMessage())); //$NON-NLS-1$
 			// empty or null? should we retry?
 			return null;
 		}
@@ -273,7 +273,7 @@ public class GenderizeTask extends IntentService {
 		wipeGroups();
 		
 		genderizedCount = new int[3];
-		mHandler.post(new DisplayToast(this, Messages.getString("GenderizeTask.wiping_titles"))); //$NON-NLS-1$
+		mHandler.post(new DisplayToast(this, Messages.getMessageString("GenderizeTask.wiping_titles"))); //$NON-NLS-1$
 		ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
 		Cursor c = getContentResolver()
 				.query(ContactsContract.Data.CONTENT_URI,
@@ -295,7 +295,7 @@ public class GenderizeTask extends IntentService {
 						ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME);
 		int cCount = c.getCount();
 		if (BuildConfig.DEBUG && cCount > 0) {
-			Log.d(TAG, Messages.getString("GenderizeTask.wiping_titles_part1") + cCount + Messages.getString("GenderizeTask.wiping_titles_part2")); //$NON-NLS-1$ //$NON-NLS-2$
+			Log.d(TAG, Messages.getMessageString("GenderizeTask.wiping_titles_part1") + cCount + Messages.getMessageString("GenderizeTask.wiping_titles_part2")); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		int iCount = 0;
 		List<Object[]> wipeTodo = new ArrayList();
@@ -384,8 +384,8 @@ public class GenderizeTask extends IntentService {
 		broadcastIntent.putExtra(MainActivity.ResponseReceiver.ATTR_statusType,
 				MainActivity.ResponseReceiver.ATTRVAL_statusType_WIPED);
 		sendBroadcast(broadcastIntent);
-		mHandler.post(new DisplayToast(this, Messages.getString("GenderizeTask.wiped_titles_part1") + wipeTodo.size() //$NON-NLS-1$
-				+ Messages.getString("GenderizeTask.wiped_titles_part2"))); //$NON-NLS-1$
+		mHandler.post(new DisplayToast(this, Messages.getMessageString("GenderizeTask.wiped_titles_part1") + wipeTodo.size() //$NON-NLS-1$
+				+ Messages.getMessageString("GenderizeTask.wiped_titles_part2"))); //$NON-NLS-1$
 	}
 
 	private List<String[]> facebookContacts() {
@@ -397,10 +397,10 @@ public class GenderizeTask extends IntentService {
 
 		Session session = Session.getActiveSession();
 		if (session.isOpened()) {
-			mHandler.post(new DisplayToast(this, Messages.getString("GenderizeTask.toast_get_facebook_contacts"))); //$NON-NLS-1$
+			mHandler.post(new DisplayToast(this, Messages.getMessageString("GenderizeTask.toast_get_facebook_contacts"))); //$NON-NLS-1$
 		} else {
 			mHandler.post(new DisplayToast(this,
-					Messages.getString("GenderizeTask.toast_skip_fb_contacts"))); //$NON-NLS-1$
+					Messages.getMessageString("GenderizeTask.toast_skip_fb_contacts"))); //$NON-NLS-1$
 			return null;
 		}
 		List<String[]> facebookContacts = new ArrayList();
@@ -426,8 +426,8 @@ public class GenderizeTask extends IntentService {
 							userFriendSex };
 					facebookContacts.add(fbContact);
 				}
-				mHandler.post(new DisplayToast(this, Messages.getString("GenderizeTask.got_facebook_contacts_part1") //$NON-NLS-1$
-						+ jsonArray.length() + Messages.getString("GenderizeTask.got_facebook_contacts_part2"))); //$NON-NLS-1$
+				mHandler.post(new DisplayToast(this, Messages.getMessageString("GenderizeTask.got_facebook_contacts_part1") //$NON-NLS-1$
+						+ jsonArray.length() + Messages.getMessageString("GenderizeTask.got_facebook_contacts_part2"))); //$NON-NLS-1$
 			}
 			
 			// try reading facebook just once
@@ -435,7 +435,7 @@ public class GenderizeTask extends IntentService {
 			.putBoolean("read_facebook", false).commit(); //$NON-NLS-1$
 			return facebookContacts;
 		} catch (Exception ex) {
-			String msg = Messages.getString("GenderizeTask.toast_error_getting_fb_contacts")+ex.getMessage(); //$NON-NLS-1$
+			String msg = Messages.getMessageString("GenderizeTask.toast_error_getting_fb_contacts")+ex.getMessage(); //$NON-NLS-1$
 			Log.e(TAG,msg,ex);
 			mHandler.post(new DisplayToast(this, msg));
 		}
@@ -597,6 +597,12 @@ public class GenderizeTask extends IntentService {
 			String familyName = c.getString(i++);
 			String accountName = c.getString(i++);
 			String accountType = c.getString(i++);
+			if( accountName==null ) {
+				accountName="";
+			}
+			if( accountType == null) {
+				accountType="";
+			}
 			if (prefix != null && !prefix.isEmpty()) {
 				// && !namesUnique.contains(givenName+" "+familyName) ) {
 
@@ -739,7 +745,7 @@ public class GenderizeTask extends IntentService {
 				if (errCountMoving > ERROR_COUNT_MOVING_MAX) {
 					// no point continuing
 					mHandler.post(new DisplayToast(this,
-							Messages.getString("GenderizeTask.toast_toomany_api_errors") + errCount + "/" //$NON-NLS-1$ //$NON-NLS-2$
+							Messages.getMessageString("GenderizeTask.toast_toomany_api_errors") + errCount + "/" //$NON-NLS-1$ //$NON-NLS-2$
 									+ (iCount + errCount) + ") check network")); //$NON-NLS-1$
 					break;
 				}
@@ -779,7 +785,7 @@ public class GenderizeTask extends IntentService {
 		wipe = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(
 				"example_checkbox", false); //$NON-NLS-1$
 
-		mHandler.post(new DisplayToast(this, Messages.getString("GenderizeTask.toast_starting_genderizing"))); //$NON-NLS-1$
+		mHandler.post(new DisplayToast(this, Messages.getMessageString("GenderizeTask.toast_starting_genderizing"))); //$NON-NLS-1$
 
 		String genderStyleF = PreferenceManager.getDefaultSharedPreferences(
 				this).getString("custom_f", "Ms."); //$NON-NLS-1$ //$NON-NLS-2$
@@ -916,7 +922,7 @@ public class GenderizeTask extends IntentService {
 			}
 			String statusType = intent.getStringExtra(ATTR_statusType);
 			if (statusType.equals(ATTRVAL_statusType_STOP_REQUEST)) {
-				mHandler.post(new DisplayToast(service, Messages.getString("GenderizeTask.toast_stopping"))); //$NON-NLS-1$
+				mHandler.post(new DisplayToast(service, Messages.getMessageString("GenderizeTask.toast_stopping"))); //$NON-NLS-1$
 				setStopRequested(true);
 			}
 		}

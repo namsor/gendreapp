@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="facebook_app_id">539805382800829</string>
+  <string name="app_name">GendRE</string>
+  <string name="mission_statement">ਨਾਮ ਦੇ ਲਿੰਗ ਦੇ ਨਾਲ ਸੰਪਰਕ ਖ਼ਿਤਾਬ ਨੂੰ ਸਮਰਿੱਧ ਬਣਾਉ </string>
+  <string name="action_settings">ਸੈਟਿੰਗ</string>
+  <string name="btn_stop">ਰੋਕੋ</string>
+  <string name="btn_genderize_start">ਸ਼ੁਰੂ ਕਰੋ </string>
+  <string name="btn_genderize_counting">ਗਿਣਤੀ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ</string>
+  <string name="btn_genderize_wiping">ਸਾਫ਼ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ</string>
+  <string name="btn_genderize_running">ਚਲ ਰਿਹਾ ਹੈ</string>
+  <string name="btn_genderize_stopping">ਰੁੱਕ ਰਿਹਾ ਹੈ</string>
+  <string name="btn_genderize_wiped">ਸਾਫ਼ ਹੋ ਗ਼ਆ </string>
+  <string name="imgCoverDesc">ਲਿੰਗ ਪਾੜੇ ਨੂੰ ਮਾਪਣ ਲਈ ਲਿੰਗ ਪੈਮਾਨਾ</string>
+  <string name="sharethis">ਇਸ ਨੂੰ ਸ਼ੇਯਰ ਕਰੋ </string>
+  <string name="txt_quote">\"ਇਹ ਓਹ ਨਹੀਂ ਕੇ ਤੁਹਾਨੂ ਕੀ ਪਤਾ ਹੈ, ਪਰ ਤੁਹਾਨੂ ਕੌਣ ਪਤਾ ਹੈ | ਇਹ ਓਹ ਨਹੀਂ ਕੇ ਤੁਸੀਂ ਕਿਸ ਨੂੰ ਜਾਣਦੇ ਹੋ, ਪਰ ਕੌਣ ਤੁਹਾਨੂ ਜਾਣਦਾ ਹੈ \"\nਧੰਨਵਾਦ GendRE... ਬਸ ਮੇਰੇ ਸੰਪਰਕਾਂ ਦਾ ਵਰਗੀਕਰਨ ਕਰਦੇ|</string>
+</resources>

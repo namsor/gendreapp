@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+    <string name="facebook_app_id">539805382800829</string>
+    <string name="app_name">GendRE</string>
+  <string name="mission_statement">কনট্যাক্ট শিরোনাম সমৃদ্ধ করুন লিঙ্গনামের দ্বারা</string>
+  <string name="action_settings">সেটিংস</string>
+  <string name="btn_stop">থামুন</string>
+  <string name="btn_genderize_start">শুরু</string>
+  <string name="btn_genderize_counting">গণনা চলছে</string>
+  <string name="btn_genderize_wiping">নিশ্চিহ্ন করা হচ্ছে</string>
+  <string name="btn_genderize_running">চালু</string>
+  <string name="btn_genderize_stopping">বন্ধ হচ্ছে</string>
+  <string name="btn_genderize_wiped">নিশ্চিহ্ন করা হয়েছে</string>
+  <string name="imgCoverDesc">লিঙ্গ স্কেল যার দ্বারা লিঙ্গ শূন্যস্থান পরিমাপ করা হয়</string>
+  <string name="sharethis">এটা শেয়ার করুন</string>
+  <string name="txt_quote">\"এটা সেটি নয় যা আপনি জানেন, কিন্তু কে আপনাকে জানেন। এটা নয় কে আপনাকে জানে, কিন্তু কে আপনাকে চেনে.\"\nধন্যবাদ, জেনড্রে... শুধু আমার পরিচিতি লিঙ্গভিত্তিক করেছে.</string>
+</resources>

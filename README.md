@@ -8,9 +8,14 @@ Get GendRE App now on Google Play
 https://play.google.com/store/apps/details?id=com.namsor.api.samples.gendreapp
 
 Or here 
-https://raw.githubusercontent.com/namsor/gendreapp/master/dist/Gendre_signed_v008_10.apk
+https://raw.githubusercontent.com/namsor/gendreapp/master/dist/Gendre_signed_v008_15.apk
 On Opera
 http://apps.opera.com/en_en/gender_app.html
+http://apps.opera.com/fr_fr/gender_app.html
+http://apps.opera.com/de_de/gender_app.html
+http://apps.opera.com/pt_pt/gender_app.html
+http://apps.opera.com/it_it/gender_app.html
+http://apps.opera.com/ru_ru/gender_app.html
 
 Get the latest dev version:
 https://raw.githubusercontent.com/namsor/gendreapp/master/bin/Gendre.apk
@@ -32,15 +37,16 @@ http://stackoverflow.com/questions/23195352/query-android-contacts-synchronized-
 ## Languages and Localization
 GendRE works with all international names (with very few exceptions). To help with translation/localization of the user interface (~300 words), please visit
 https://www.transifex.com/projects/p/gendre-gender-app/
-It helps if you can run the software once, to see the main messages in context. GendRE is currently available in: English, Arabic, Portuguese, Russian, Italian, French, Hindi.   
+It helps if you can run the software once, to see the main messages in context. GendRE is currently available in: English, Arabic, Portuguese, Russian, Italian, French, German, Hebrew, Romanian, Hindi. 
+We have issues with Bengali and Panjabi.   
 
 ## Gender API
 GenderApp uses the GendreAPI for name gender prediction. This is a free Application Programming Interface (API) to predict the gender of a personal name on a -1 (Male) to +1 (Female) scale, for a given geography/locale. You can test it directly from your web browser, entering this kind URL:
 http://api.onomatic.com/onomastics/api/gendre/John/Smith/us
 returns  -0.99 (ie. Male)  
 
-![GenderApp](https://raw.githubusercontent.com/namsor/gendreapp/master/20140323_Gendre_pic1.png)
-![GenderApp](https://raw.githubusercontent.com/namsor/gendreapp/master/20140323_Gendre_pic2.png)
+![GenderApp](https://raw.githubusercontent.com/namsor/gendreapp/master/pics/gendre_1_en.png)
+![GenderApp](https://raw.githubusercontent.com/namsor/gendreapp/master/pics/gendre_2_en.png)
 
 ## License
 
