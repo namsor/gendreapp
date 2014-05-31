@@ -1780,6 +1780,8 @@ Strings related to Settings
 Example General settings
 Strings related to Settings
 Example General settings
+Strings related to Settings
+Example General settings
          */
         public static final int pref_header_general=0x7f080050;
         public static final int pref_title_custom_f=0x7f080054;
@@ -1788,6 +1790,8 @@ Example General settings
         public static final int pref_title_gender_format=0x7f080053;
         public static final int pref_title_live_wallpaper=0x7f080059;
         public static final int pref_title_read_facebook=0x7f080057;
+        /** Example settings for Data & Sync
+         */
         public static final int pref_title_sync_frequency=0x7f08005c;
         public static final int pref_title_wipe=0x7f080051;
         public static final int sharethis=0x7f08004d;

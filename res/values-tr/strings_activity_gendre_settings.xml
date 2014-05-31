@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="title_activity_gendre_settings">Ayarlar</string>
+  <!--Strings related to Settings-->
+  <!--Example General settings-->
+  <string name="pref_header_general">Genel</string>
+  <string name="pref_title_wipe">Unvanları sil?</string>
+  <string name="pref_description_wipe">Dikkat! Bu işlem kişilerinizde var olan unvan bilgilerini silecek. </string>
+  <string name="pref_title_gender_format">Cinsiyet formatını seçiniz</string>
+  <string name="pref_title_custom_f">Kadın unvanı</string>
+  <string name="pref_title_custom_m">Erkek unvanı</string>
+  <string name="pref_title_custom_u">Bilinmeyen unvan</string>
+  <string name="pref_title_read_facebook">Facebook\'u dahil et?</string>
+  <string name="pref_description_read_facebook">Facebook kişilerini tüm durumlarda dahil et</string>
+  <string-array name="pref_list_titles">
+    <item>Klasik (Mr., Ms.)</item>
+    <item>Cinsiyet (♀,♂,∅)</item>
+    <item>Kalp (♥,♤,♢)</item>
+    <item>Çince (女,男,另)</item>
+    <item>Özel (Bay, Bayan)</item>
+    <item>Hiçbiri</item>
+  </string-array>
+  <string-array name="pref_list_values">
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+  </string-array>
+  <!--Example settings for Data & Sync-->
+  <string name="pref_title_sync_frequency">Senkronize etme sıklığı</string>
+  <string-array name="pref_sync_frequency_titles">
+    <item>10 saniye</item>
+    <item>1 dakika</item>
+    <item>10 dakika</item>
+    <item>1 saat</item>
+  </string-array>
+  <string-array name="pref_sync_frequency_values">
+    <item>10</item>
+    <item>60</item>
+    <item>600</item>
+    <item>3600</item>
+  </string-array>
+</resources>

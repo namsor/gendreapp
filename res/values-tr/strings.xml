@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="facebook_app_id">539805382800829</string>
+  <string name="app_name">GendRE</string>
+  <string name="mission_statement">Kişi unvanlarını isim cinsiyetleriyle zenginleştir</string>
+  <string name="action_settings">Ayarlar</string>
+  <string name="btn_stop">Dur</string>
+  <string name="btn_genderize_start">Başla</string>
+  <string name="btn_genderize_counting">Sayılıyor</string>
+  <string name="btn_genderize_wiping">Siliniyor</string>
+  <string name="btn_genderize_running">Çalıştırılıyor</string>
+  <string name="btn_genderize_stopping">Durduruluyor</string>
+  <string name="btn_genderize_wiped">Silindi</string>
+  <string name="imgCoverDesc">Cinsiyet farklılığını belirlemek için cinsiyet ölçeği</string>
+  <string name="sharethis">Bunu paylaş</string>
+  <string name="txt_quote">\"Mesele neyi bildiğin değil kimi tanıdığın. Mesela kimi tanıdığın değil kimin seni tanıdığı.\" Teşekkürler Gendre... Kişilerimi cinsiyetine göre ayır.</string>
+</resources>

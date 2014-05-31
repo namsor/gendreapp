@@ -465,6 +465,13 @@ public class MainActivity extends ActionBarActivity {
 				launchWallpaperIntent();
 			}
 		};
+		// lauch wallpaper selection
+		final Runnable launchMainActivity = new Runnable() {
+			@Override
+			public void run() {
+				launchMainActivityIntent();
+			}
+		};
 		Runnable launchWallpaperIntentStarter = new Runnable() {
 			@Override
 			public void run() {
@@ -479,10 +486,22 @@ public class MainActivity extends ActionBarActivity {
 					}
 				}
 				runOnUiThread(launchWallpaper);
+				try {
+					Thread.sleep(30000);
+				} catch (InterruptedException e) {
+					// ignore
+				}
+				runOnUiThread(launchMainActivity);				
 			}			
 		};
 		Thread t = new Thread(launchWallpaperIntentStarter);
 		t.start();
+	}
+
+	private void launchMainActivityIntent() {
+		Intent mainActicityIntent = new Intent(this,
+				MainActivity.class);
+		startActivity(mainActicityIntent);	
 	}
 	
 	private void launchWallpaperIntent() {
