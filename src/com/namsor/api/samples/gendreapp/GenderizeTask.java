@@ -58,7 +58,7 @@ import android.widget.Toast;
 
 public class GenderizeTask extends IntentService {
 	// need to manually change this before releasing
-	private static final String ATTVALUE_ClientAppVersion = "GendRE_app_v0.0.8"; //$NON-NLS-1$
+	private static final String ATTVALUE_ClientAppVersion = "GendRE_app_v0.0.9"; //$NON-NLS-1$
 
 	private static final String CONTACT_GROUP_ALL_FEMALES = Messages.getMessageString("GenderizeTask.contact_group_females"); //$NON-NLS-1$
 	private static final String CONTACT_GROUP_ALL_MALES = Messages.getMessageString("GenderizeTask.contact_group_males"); //$NON-NLS-1$
@@ -386,6 +386,9 @@ public class GenderizeTask extends IntentService {
 		sendBroadcast(broadcastIntent);
 		mHandler.post(new DisplayToast(this, Messages.getMessageString("GenderizeTask.wiped_titles_part1") + wipeTodo.size() //$NON-NLS-1$
 				+ Messages.getMessageString("GenderizeTask.wiped_titles_part2"))); //$NON-NLS-1$
+		
+		// clear gender stats
+		GenderStats.clear();
 	}
 
 	private List<String[]> facebookContacts() {
@@ -629,6 +632,10 @@ public class GenderizeTask extends IntentService {
 								MainActivity.ResponseReceiver.ATTR_statusType,
 								MainActivity.ResponseReceiver.ATTRVAL_statusType_COUNTING);
 				sendBroadcast(broadcastIntent);
+				// update stats
+				GenderStats.setFemaleCount(genderizedCount[0]);
+				GenderStats.setMaleCount(genderizedCount[1]);
+				GenderStats.setUnknownCount(genderizedCount[2]);
 				continue;
 			} else if (givenName != null && !givenName.isEmpty()
 					&& givenName.length() > 1 && familyName != null
@@ -739,6 +746,10 @@ public class GenderizeTask extends IntentService {
 				if (iCount % COMMIT_SIZE == 0) {
 					commitOps(ops);
 				}
+				// update stats
+				GenderStats.setFemaleCount(genderizedCount[0]);
+				GenderStats.setMaleCount(genderizedCount[1]);
+				GenderStats.setUnknownCount(genderizedCount[2]);
 			} else {
 				errCount++;
 				errCountMoving++;

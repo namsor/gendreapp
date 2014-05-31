@@ -1,5 +1,5 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-
+    
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="example_checkbox"
@@ -41,5 +41,11 @@
         android:key="read_facebook"
         android:summary="@string/pref_description_read_facebook"
         android:title="@string/pref_title_read_facebook" />
-			
+
+	<CheckBoxPreference
+        android:defaultValue="true"
+        android:key="live_wallpaper"
+        android:summary="@string/pref_description_live_wallpaper"
+        android:title="@string/pref_title_live_wallpaper" />
+	
 </PreferenceScreen>

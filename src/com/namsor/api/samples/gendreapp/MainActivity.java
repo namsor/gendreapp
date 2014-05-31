@@ -35,6 +35,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -66,6 +67,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
@@ -447,6 +449,63 @@ public class MainActivity extends ActionBarActivity {
 		Thread t = new Thread(new AnimationRunnable(this));
 		t.start();
 
+		// start wallpaper selection
+		launchWallpaperIntentLater();
+	}
+	
+	private void launchWallpaperIntentLater() {
+		final boolean launchWallpaperIntent = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("live_wallpaper", true); //$NON-NLS-1$
+		if( ! launchWallpaperIntent ) {
+			return;
+		}
+		// lauch wallpaper selection
+		final Runnable launchWallpaper = new Runnable() {
+			@Override
+			public void run() {
+				launchWallpaperIntent();
+			}
+		};
+		Runnable launchWallpaperIntentStarter = new Runnable() {
+			@Override
+			public void run() {
+				for (int i = 0; i < 3; i++) {
+					try {
+						Thread.sleep(5000);
+						if( GenderStats.getCount() > 10 ) {
+							break;
+						}
+					} catch (InterruptedException e) {
+						// ignore
+					}
+				}
+				runOnUiThread(launchWallpaper);
+			}			
+		};
+		Thread t = new Thread(launchWallpaperIntentStarter);
+		t.start();
+	}
+	
+	private void launchWallpaperIntent() {
+		boolean launchWallpaperIntent = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("live_wallpaper", true); //$NON-NLS-1$
+		if( ! launchWallpaperIntent ) {
+			return;
+		}
+		Toast toast = Toast.makeText(this, "Choose GendRE from the list to start the Live Wallpaper.",Toast.LENGTH_LONG);
+		toast.show();
+		Intent i = new Intent();
+		if(Build.VERSION.SDK_INT > 15){
+		    i.setAction(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
+		    String p = LiquidPhysicsWallpaper.class.getPackage().getName();
+		    String c = LiquidPhysicsWallpaper.class.getCanonicalName();        
+		    i.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT, new ComponentName(p, c));
+		}
+		else{
+		    i.setAction(WallpaperManager.ACTION_LIVE_WALLPAPER_CHOOSER);
+		}
+		startActivityForResult(i, 0);
+		// launch just once
+		PreferenceManager.getDefaultSharedPreferences(this).edit()
+		.putBoolean("live_wallpaper", false).commit(); //$NON-NLS-1$
 	}
 
 	public void facebookThis(View view) {

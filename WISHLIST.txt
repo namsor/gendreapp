@@ -1,3 +1,27 @@
+---------------------- v0.0.8
+
+
+hello and thank you for ordering my gig. I hope you like this review and if you have any questions please dont hesitate to contact me again for more detailed explanation and clarification.
+I downloaded your app on my Samsung tablet and run it. This is what i got from the first eye contact i made with it.
+
+1. When clicked on the link you provided from Google store it opened and said that not page exists. (look into this)
+2. When searched for it in the app store it should have dropped down in the suggestion list but never did which is a big must in my opinion.
+3. The logo is somewhat nice and clever but the app icon on my tablet is very hard to see what it depicts and i have a 8 in screen and comparing with other icons next to it yours was the worst! You have crammed way to many things in it making it hard to see. which leads that maybe the icon should be changed to something new.....maybe a scale that has a M and F on the each side!
+4. Your app description is not that clear when people read it and is something you need to look into, It should clarify better that what it does is a simple count of how many females or male contacts you have and shows the balance or difference.
+19:05   May 20, 2014
+
+akischri
+
+5. The good thing is that it downloaded really fast installed the same and it feels light on the tablet. Thats a positive and try to keep it that way!!
+6. The landing screen when the app opens is not that well designed and appealing to the eye. You need to find a designer and have him design with more detail and make a more modern scale and definitely loose the poker cards!
+7. Lose the "Thx. Gendre......just genderize my contacts" What you can do is instead of start you can put "Genderize my contacts please" or something like that!
+8. I didnt like that when i clicked start it asked me straight away for my Facebook info and contacts and since i did not approve of this i did not go any further than that. Maybe you should have it genderize contacts in the contacts app that 9 out of 10 people will have contacts and not on facebook, also keep in mind that most users are noobs and have synced all contacts from all accounts to all places so there is not reason to ask for faceboook clearance!
+
+akischri
+
+
+---------------------- before 0.0.8
+
 XP1 Dynamic prefs
 XP2 Other Icon Choices
 XP1 Groups

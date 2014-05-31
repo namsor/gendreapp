@@ -1739,6 +1739,7 @@ containing a value of this type.
          */
         public static final int location_client_powered_by_google=0x7f08001a;
         public static final int mission_statement=0x7f080043;
+        public static final int pref_description_live_wallpaper=0x7f08005a;
         public static final int pref_description_read_facebook=0x7f080058;
         public static final int pref_description_wipe=0x7f080052;
         /**  Example settings for Data & Sync 
@@ -1754,7 +1755,7 @@ Example settings for Data & Sync
 Example settings for Data & Sync
 Example settings for Data & Sync
          */
-        public static final int pref_header_data_sync=0x7f080059;
+        public static final int pref_header_data_sync=0x7f08005b;
         /**  Strings related to Settings 
  Example General settings 
 Strings related to Settings
@@ -1785,8 +1786,9 @@ Example General settings
         public static final int pref_title_custom_m=0x7f080055;
         public static final int pref_title_custom_u=0x7f080056;
         public static final int pref_title_gender_format=0x7f080053;
+        public static final int pref_title_live_wallpaper=0x7f080059;
         public static final int pref_title_read_facebook=0x7f080057;
-        public static final int pref_title_sync_frequency=0x7f08005a;
+        public static final int pref_title_sync_frequency=0x7f08005c;
         public static final int pref_title_wipe=0x7f080051;
         public static final int sharethis=0x7f08004d;
         public static final int title_activity_gendre_settings=0x7f08004f;
@@ -2010,12 +2012,13 @@ Example General settings
         public static final int com_facebook_loginview_silver_style=0x7f0b0001;
     }
     public static final class xml {
-        public static final int pie_segment_formatter1=0x7f050000;
-        public static final int pie_segment_formatter2=0x7f050001;
-        public static final int pie_segment_formatter3=0x7f050002;
-        public static final int pref_data_sync=0x7f050003;
-        public static final int pref_general=0x7f050004;
-        public static final int pref_headers=0x7f050005;
+        public static final int liquidwallpaper=0x7f050000;
+        public static final int pie_segment_formatter1=0x7f050001;
+        public static final int pie_segment_formatter2=0x7f050002;
+        public static final int pie_segment_formatter3=0x7f050003;
+        public static final int pref_data_sync=0x7f050004;
+        public static final int pref_general=0x7f050005;
+        public static final int pref_headers=0x7f050006;
     }
     public static final class styleable {
         /**  ============================================ 

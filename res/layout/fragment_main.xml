@@ -161,7 +161,7 @@
         android:layout_alignRight="@+id/textViewQuote"
         android:layout_below="@+id/textView_contact"
     		>
-    		<ImageView android:id="@+id/cover_image"
+            <ImageView android:id="@+id/cover_image"
     		    android:contentDescription="@string/imgCoverDesc"
         		android:scaleType="fitCenter"
         		android:layout_width="fill_parent"
