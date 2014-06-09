@@ -7,7 +7,7 @@
         android:title="@string/pref_title_wipe" />
 
     <ListPreference
-        android:defaultValue="2"
+        android:defaultValue="5"
         android:entries="@array/pref_list_titles"
         android:entryValues="@array/pref_list_values"
         android:key="example_list"

@@ -1,5 +1,7 @@
 eclipse.preferences.version=1
 encoding//src/com/namsor/api/samples/gendreapp/GenderizeTask.java=UTF-8
+encoding//src/com/namsor/api/samples/gendreapp/MyGenderView.java=UTF-8
+encoding//src/com/namsor/api/samples/gendreapp/MyShareView.java=UTF-8
 encoding//src/com/namsor/api/samples/gendreapp/about.properties=UTF-8
 encoding//src/com/namsor/api/samples/gendreapp/about_ar.properties=UTF-8
 encoding//src/com/namsor/api/samples/gendreapp/about_bn.properties=UTF-8

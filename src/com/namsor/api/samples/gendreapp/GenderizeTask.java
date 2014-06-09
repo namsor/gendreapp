@@ -96,7 +96,7 @@ public class GenderizeTask extends IntentService {
 
 	private static final double GENDER_THRESHOLD = .1;
 
-	public static final int GENDERSTYLE_DEFAULT = 2;
+	public static final int GENDERSTYLE_DEFAULT = 5;
 	public static final int GENDERSTYLE_CUSTOM = 4;
 	public static final int GENDERSTYLE_NONE = 5;
 	private int genderStyle = GENDERSTYLE_DEFAULT;
@@ -179,6 +179,11 @@ public class GenderizeTask extends IntentService {
 	// Defines a tag for identifying log entries
 	private static final String TAG = "GenderizeTask"; //$NON-NLS-1$
 	private static final int COMMIT_SIZE = 50;
+
+	// Define prefs for storing gender counters (when GenderStyle = none)
+	private static final String GENDER_COUNTER_F = "genderCountF";
+	private static final String GENDER_COUNTER_M = "genderCountM";
+	private static final String GENDER_COUNTER_U = "genderCountU";
 
 	/**
 	 * Predict Gender from a Personal name
@@ -271,6 +276,8 @@ public class GenderizeTask extends IntentService {
 	private void wipe() {
 		// wipe groups 
 		wipeGroups();
+		// wipe counts in preferences (for case: genderstyle=none)
+		wipePreferenceGenderCounts();
 		
 		genderizedCount = new int[3];
 		mHandler.post(new DisplayToast(this, Messages.getMessageString("GenderizeTask.wiping_titles"))); //$NON-NLS-1$
@@ -339,6 +346,7 @@ public class GenderizeTask extends IntentService {
 			}
 		}
 		c.close();
+		iCount=0;
 		for (Object[] toWipe : wipeTodo) {
 			if (isStopRequested()) {
 				break;
@@ -384,7 +392,7 @@ public class GenderizeTask extends IntentService {
 		broadcastIntent.putExtra(MainActivity.ResponseReceiver.ATTR_statusType,
 				MainActivity.ResponseReceiver.ATTRVAL_statusType_WIPED);
 		sendBroadcast(broadcastIntent);
-		mHandler.post(new DisplayToast(this, Messages.getMessageString("GenderizeTask.wiped_titles_part1") + wipeTodo.size() //$NON-NLS-1$
+		mHandler.post(new DisplayToast(this, Messages.getMessageString("GenderizeTask.wiped_titles_part1") + iCount //$NON-NLS-1$
 				+ Messages.getMessageString("GenderizeTask.wiped_titles_part2"))); //$NON-NLS-1$
 		
 		// clear gender stats
@@ -542,6 +550,7 @@ public class GenderizeTask extends IntentService {
 		if (wipe) {
 			throw new IllegalStateException("wipe & genderize at the same time"); //$NON-NLS-1$
 		}
+		
 		List<GenderizeTodo> genderizeTodo = new ArrayList();
 		
 		List<String[]> facebookContacts = null;
@@ -608,18 +617,19 @@ public class GenderizeTask extends IntentService {
 			}
 			if (prefix != null && !prefix.isEmpty()) {
 				// && !namesUnique.contains(givenName+" "+familyName) ) {
-
+				int genderIndex=2;
 				// never override an existing prefix / phonetic name
 				if (prefix.equals(GENDER_STYLES[genderStyle][0])) {
-					genderizedCount[0]++;
+					genderIndex = 0;
 					// namesUnique.add(givenName+" "+familyName);
 				} else if (prefix.equals(GENDER_STYLES[genderStyle][1])) {
-					genderizedCount[1]++;
+					genderIndex = 1;
 					// namesUnique.add(givenName+" "+familyName);
 				} else if (prefix.equals(GENDER_STYLES[genderStyle][2])) {
-					genderizedCount[2]++;
+					genderIndex = 2;
 					// namesUnique.add(givenName+" "+familyName);
 				}
+				genderizedCount[genderIndex]++;
 				Intent broadcastIntent = new Intent();
 				broadcastIntent
 						.setAction(MainActivity.ResponseReceiver.ACTION_STATUS);
@@ -631,6 +641,15 @@ public class GenderizeTask extends IntentService {
 						.putExtra(
 								MainActivity.ResponseReceiver.ATTR_statusType,
 								MainActivity.ResponseReceiver.ATTRVAL_statusType_COUNTING);
+				String[] genderSample = new String[4];
+				genderSample[0] = givenName;
+				genderSample[1] = familyName;
+				genderSample[2] = prefix;
+				genderSample[3] = "" + genderIndex; //$NON-NLS-1$
+				broadcastIntent.putExtra(
+						MainActivity.ResponseReceiver.ATTR_genderSample,
+						genderSample);
+				
 				sendBroadcast(broadcastIntent);
 				// update stats
 				GenderStats.setFemaleCount(genderizedCount[0]);
@@ -698,7 +717,8 @@ public class GenderizeTask extends IntentService {
 					// }
 					genderIndex = 2;
 				}
-				if( rawContactId!= null ) { // facebook contacts not saved for now
+				if( rawContactId!= null && 
+						genderStyle != GENDERSTYLE_NONE ) { // facebook contacts not saved for now
 					ops.add(ContentProviderOperation
 							.newUpdate(ContactsContract.Data.CONTENT_URI)
 							.withSelection(
@@ -732,7 +752,7 @@ public class GenderizeTask extends IntentService {
 						.putExtra(
 								MainActivity.ResponseReceiver.ATTR_statusType,
 								MainActivity.ResponseReceiver.ATTRVAL_statusType_GENDERIZING);
-				if (genderIndex < 2) {
+				//if (genderIndex < 2) {
 					String[] genderSample = new String[4];
 					genderSample[0] = firstName;
 					genderSample[1] = lastName;
@@ -741,7 +761,7 @@ public class GenderizeTask extends IntentService {
 					broadcastIntent.putExtra(
 							MainActivity.ResponseReceiver.ATTR_genderSample,
 							genderSample);
-				}
+				//}
 				sendBroadcast(broadcastIntent);
 				if (iCount % COMMIT_SIZE == 0) {
 					commitOps(ops);
@@ -762,7 +782,21 @@ public class GenderizeTask extends IntentService {
 				}
 			}
 		}
-		commitOps(ops);
+		
+		if (genderStyle == GENDERSTYLE_NONE) {
+			// save in prefs
+			PreferenceManager.getDefaultSharedPreferences(this).edit()
+			.putInt(GENDER_COUNTER_F, genderizedCount[0]).commit(); 
+
+			PreferenceManager.getDefaultSharedPreferences(this).edit()
+			.putInt(GENDER_COUNTER_M, genderizedCount[1]).commit(); 
+			
+			PreferenceManager.getDefaultSharedPreferences(this).edit()
+			.putInt(GENDER_COUNTER_U, genderizedCount[2]).commit(); 			
+		} else {
+			// save in DB
+			commitOps(ops);
+		}
 		if (errCountMoving > ERROR_COUNT_MOVING_MAX) {
 			// sleep an additional time
 			try {
@@ -778,6 +812,17 @@ public class GenderizeTask extends IntentService {
 	}
 
 
+	private void wipePreferenceGenderCounts() {
+		PreferenceManager.getDefaultSharedPreferences(this).edit()
+		.putInt(GENDER_COUNTER_F, 0).commit(); 
+
+		PreferenceManager.getDefaultSharedPreferences(this).edit()
+		.putInt(GENDER_COUNTER_M, 0).commit(); 
+		
+		PreferenceManager.getDefaultSharedPreferences(this).edit()
+		.putInt(GENDER_COUNTER_U, 0).commit(); 					
+	}
+	
 	protected void onHandleIntent(Intent arg0) {
 		// TODO Auto-generated method stub
 		batchRequestId = PreferenceManager.getDefaultSharedPreferences(this)
@@ -789,7 +834,11 @@ public class GenderizeTask extends IntentService {
 		}
 		genderStyle = Integer.parseInt(PreferenceManager
 				.getDefaultSharedPreferences(this).getString("example_list", //$NON-NLS-1$
-						"2")); //$NON-NLS-1$
+						"5")); //$NON-NLS-1$
+		if( genderStyle != GENDERSTYLE_NONE ) {
+			// clean any cache info
+			wipePreferenceGenderCounts();
+		}
 		sleeper = Long.parseLong(PreferenceManager.getDefaultSharedPreferences(
 				this).getString("sync_frequency", "60")) //$NON-NLS-1$ //$NON-NLS-2$
 				* SECONDS;
@@ -834,7 +883,51 @@ public class GenderizeTask extends IntentService {
 						e.printStackTrace();
 					}
 				}
-			} else if (genderStyle != GENDERSTYLE_NONE) {
+			} else if (genderStyle == GENDERSTYLE_NONE) {
+				boolean success = true;
+				int genderCountF = PreferenceManager.getDefaultSharedPreferences(this).getInt(GENDER_COUNTER_F, 0);
+				int genderCountM = PreferenceManager.getDefaultSharedPreferences(this).getInt(GENDER_COUNTER_M, 0);
+				int genderCountU = PreferenceManager.getDefaultSharedPreferences(this).getInt(GENDER_COUNTER_U, 0);
+				if( genderCountF+genderCountM+genderCountU > 0) {
+					genderizedCount = new int[3];
+					genderizedCount[0]=genderCountF;
+					genderizedCount[1]=genderCountM;
+					genderizedCount[2]=genderCountU;
+					GenderStats.setFemaleCount(genderCountF);
+					GenderStats.setMaleCount(genderCountM);
+					GenderStats.setUnknownCount(genderCountU);
+				} else {
+					success = genderizeContacts();
+				}
+				try {
+					for (int i = 0; i < sleeper && !isStopRequested(); i++) {
+						Intent broadcastIntent = new Intent();
+						broadcastIntent
+								.setAction(MainActivity.ResponseReceiver.ACTION_STATUS);
+						broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
+						broadcastIntent.putExtra(
+								MainActivity.ResponseReceiver.ATTR_genderCount,
+								genderizedCount);
+						if (success) {
+							broadcastIntent
+									.putExtra(
+											MainActivity.ResponseReceiver.ATTR_statusType,
+											MainActivity.ResponseReceiver.ATTRVAL_statusType_GENDERIZED);
+						} else {
+							broadcastIntent
+									.putExtra(
+											MainActivity.ResponseReceiver.ATTR_statusType,
+											MainActivity.ResponseReceiver.ATTRVAL_statusType_GENDERIZING);
+
+						}
+						sendBroadcast(broadcastIntent);
+						Thread.sleep(SECONDS);
+					}
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else { // if (genderStyle != GENDERSTYLE_NONE) {
 				boolean success = genderizeContacts();
 				try {
 					for (int i = 0; i < sleeper && !isStopRequested(); i++) {
@@ -876,7 +969,8 @@ public class GenderizeTask extends IntentService {
 	}
 
 	private void commitOps(ArrayList<ContentProviderOperation> ops) {
-		if (ops == null || ops.size() == 0) {
+		if (ops == null || ops.size() == 0 
+				) {
 			return;
 		}
 		try {

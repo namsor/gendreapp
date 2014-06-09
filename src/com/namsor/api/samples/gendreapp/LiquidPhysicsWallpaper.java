@@ -187,7 +187,7 @@ public class LiquidPhysicsWallpaper extends WallpaperService {
 			// Updates frame rate data from 2 second long sample.
 			public void run() {
 
-				mFrameRate = new String("GendRE"+" ♂:"+GenderStats.getMaleCount()+" ♀:"+GenderStats.getFemaleCount());
+				mFrameRate = new String("GendRE"+" ♀:"+GenderStats.getFemaleCount()+" ♂:"+GenderStats.getMaleCount());
 
 				mFrameCounter = 0;
 
@@ -334,13 +334,13 @@ public class LiquidPhysicsWallpaper extends WallpaperService {
 			 * > 10); getParticles().add(p); } }
 			 */
 			linePaintPlus = new Paint();
-			linePaintPlus.setColor(Color.parseColor("#FFCBDB"));
+			linePaintPlus.setColor(Color.parseColor("#be3a49"));
 			// linePaintPlus.setAntiAlias(false);
 			// linePaintPlus.setStrokeCap(Cap.BUTT);
 			// linePaintPlus.setStrokeWidth(0);
 
 			linePaintMinus = new Paint();
-			linePaintMinus.setColor(Color.parseColor("#ADD8E6"));
+			linePaintMinus.setColor(Color.parseColor("#278dc1"));
 			// linePaintMinus.setAntiAlias(false);
 			// linePaintMinus.setStrokeCap(Cap.BUTT);
 			// linePaintMinus.setStrokeWidth(0);
@@ -589,9 +589,9 @@ public class LiquidPhysicsWallpaper extends WallpaperService {
 
 				// addition : polarity
 				if (p.polarityPlus) {
-					p.x += (float) Math.random() * POLARITY_EFFECT;
-				} else {
 					p.x += -(float) Math.random() * POLARITY_EFFECT;
+				} else {
+					p.x += (float) Math.random() * POLARITY_EFFECT;
 				}
 				// addition : sensor
 				p.x += -(float) getSensorX() * SENSOR_EFFECT_X;

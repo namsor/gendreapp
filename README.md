@@ -2,20 +2,13 @@
 
 Predict gender from contact name. Gendre enriches Android contact titles (Mr., Ms., M.) with the gender inferred from a contact name.
 
-![GenderApp](https://raw.githubusercontent.com/namsor/gendreapp/master/gendre_logo_v128.png)
+![GenderApp](https://raw.githubusercontent.com/namsor/gendreapp/master/gendreapp_logo_withName_v128.png)
 
 Get GendRE App now on Google Play
 https://play.google.com/store/apps/details?id=com.namsor.api.samples.gendreapp
 
 Or here 
-https://raw.githubusercontent.com/namsor/gendreapp/master/dist/Gendre_signed_v008_15.apk
-On Opera
-http://apps.opera.com/en_en/gender_app.html
-http://apps.opera.com/fr_fr/gender_app.html
-http://apps.opera.com/de_de/gender_app.html
-http://apps.opera.com/pt_pt/gender_app.html
-http://apps.opera.com/it_it/gender_app.html
-http://apps.opera.com/ru_ru/gender_app.html
+https://raw.githubusercontent.com/namsor/gendreapp/master/dist/Gendre_signed_v010_20.apk
 
 Get the latest dev version:
 https://raw.githubusercontent.com/namsor/gendreapp/master/bin/Gendre.apk
@@ -24,8 +17,9 @@ We recommend backing up your contacts before running the program.
 
 ## Features
 - NEW: cool Live Wallpaper with particle physics to show off your gender stats 
+- NEW: doesn't make change to contact titles by default (None) 
 - Possibility to choose between three Title formats : Classic (Ms.,Mr.,M.), Gender (♀,♂,∅), Heart (♥,♤,♢), Chinese (女, 男) or Custom
-- Creates groups to easily filter contacts (Male/Female)
+- Creates groups to easily filter contacts (Male/Female) or set custom ringtones according to the caller :-)
 - The gender prediction runs as a background service (every 10 sec, or 1 min, or 10 min or 1 hour)
 - Your existing Title data (Mr., Dr. etc.) is not overwritten, unless you specifically request a wipe 
 - Once all contacts are genderized, the App shows a summary of how many Female / Male contacts were detected
@@ -49,8 +43,9 @@ GenderApp uses the GendreAPI for name gender prediction. This is a free Applicat
 http://api.onomatic.com/onomastics/api/gendre/John/Smith/us
 returns  -0.99 (ie. Male)  
 
-![GenderApp](https://raw.githubusercontent.com/namsor/gendreapp/master/pics/gendre_1_en.png)
-![GenderApp](https://raw.githubusercontent.com/namsor/gendreapp/master/pics/gendre_2_en.png)
+![GenderApp](https://raw.githubusercontent.com/namsor/gendreapp/master/graphics/main_1.png)
+![GenderApp](https://raw.githubusercontent.com/namsor/gendreapp/master/graphics/main_2.png)
+![GenderApp](https://raw.githubusercontent.com/namsor/gendreapp/master/graphics/main_3.png)
 
 ## License
 
