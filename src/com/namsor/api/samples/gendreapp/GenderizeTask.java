@@ -58,7 +58,7 @@ import android.widget.Toast;
 
 public class GenderizeTask extends IntentService {
 	// need to manually change this before releasing
-	private static final String ATTVALUE_ClientAppVersion = "GendRE_app_v0.0.9"; //$NON-NLS-1$
+	private static final String ATTVALUE_ClientAppVersion = "GendRE_app_v0.0.10"; //$NON-NLS-1$
 
 	private static final String CONTACT_GROUP_ALL_FEMALES = Messages.getMessageString("GenderizeTask.contact_group_females"); //$NON-NLS-1$
 	private static final String CONTACT_GROUP_ALL_MALES = Messages.getMessageString("GenderizeTask.contact_group_males"); //$NON-NLS-1$

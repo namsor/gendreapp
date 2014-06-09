@@ -323,6 +323,7 @@ public class MainActivity extends ActionBarActivity {
 			img.setVisibility(ImageView.VISIBLE);
 		}
 	}
+	
 
 	private void drawPie() {
 		if (pie == null) {
@@ -344,7 +345,7 @@ public class MainActivity extends ActionBarActivity {
 
 			SegmentFormatter sMFormat = new SegmentFormatter();
 			sMFormat.configure(getApplicationContext(),
-					R.xml.pie_segment_formatter1);
+					R.xml.pie_segment_formatter_m);
 
 			pie.addSeries(sM, sMFormat);
 			pie.addSeries(sF, sFFormat);

@@ -2017,9 +2017,9 @@ Example General settings
     }
     public static final class xml {
         public static final int liquidwallpaper=0x7f050000;
-        public static final int pie_segment_formatter1=0x7f050001;
-        public static final int pie_segment_formatter2=0x7f050002;
-        public static final int pie_segment_formatter3=0x7f050003;
+        public static final int pie_segment_formatter2=0x7f050001;
+        public static final int pie_segment_formatter3=0x7f050002;
+        public static final int pie_segment_formatter_m=0x7f050003;
         public static final int pref_data_sync=0x7f050004;
         public static final int pref_general=0x7f050005;
         public static final int pref_headers=0x7f050006;

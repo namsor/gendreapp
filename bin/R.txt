@@ -893,9 +893,9 @@ int[] styleable com_facebook_profile_picture_view { 0x7f010021, 0x7f010022 }
 int styleable com_facebook_profile_picture_view_is_cropped 1
 int styleable com_facebook_profile_picture_view_preset_size 0
 int xml liquidwallpaper 0x7f050000
-int xml pie_segment_formatter1 0x7f050001
-int xml pie_segment_formatter2 0x7f050002
-int xml pie_segment_formatter3 0x7f050003
+int xml pie_segment_formatter2 0x7f050001
+int xml pie_segment_formatter3 0x7f050002
+int xml pie_segment_formatter_m 0x7f050003
 int xml pref_data_sync 0x7f050004
 int xml pref_general 0x7f050005
 int xml pref_headers 0x7f050006

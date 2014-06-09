@@ -1,6 +1,7 @@
 package com.namsor.api.samples.gendreapp;
 
 public class GenderStats {
+	
 	private static int maleCount;
 	private static int femaleCount;
 	private static int unknownCount;
